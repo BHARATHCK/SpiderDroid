@@ -9,6 +9,8 @@ import {
 } from "typeorm";
 import { Post } from "./Post";
 
+export type UserRoleType = "browse" | "host";
+
 @ObjectType()
 @Entity()
 export class User extends BaseEntity {
@@ -17,19 +19,23 @@ export class User extends BaseEntity {
   id!: number;
 
   @Field()
-  @Column()
+  @Column({ unique: true })
   username: string;
 
   @Column()
   password: string;
 
   @Field()
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Field()
-  @Column()
-  role: string;
+  @Column({
+    type: "enum",
+    enum: ["browse", "host"],
+    default: "browse",
+  })
+  role: UserRoleType;
 
   @Field()
   @CreateDateColumn()

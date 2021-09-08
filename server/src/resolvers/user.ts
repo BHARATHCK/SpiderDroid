@@ -1,6 +1,7 @@
 import { MyContext } from "src/types";
 import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
-import { User } from "../entities/User";
+import { User, UserRoleType } from "../entities/User";
+import argon2 from "argon2";
 
 @InputType()
 export class UsernamePasswordInput {
@@ -14,7 +15,7 @@ export class UsernamePasswordInput {
   password: string;
 
   @Field()
-  role: string;
+  role: UserRoleType;
 }
 
 @Resolver(User)
@@ -24,19 +25,17 @@ export class UserResolver {
     return await User.findOne({ id: 1 });
   }
 
-  @Mutation(() => Boolean)
-  async register(@Arg("options") options: UsernamePasswordInput): Promise<boolean> {
-    const userCreated = await User.create({
+  @Mutation(() => User)
+  async register(@Arg("options") options: UsernamePasswordInput): Promise<User> {
+    // Hash the password before storing in the DB
+    const hashedPassword = await argon2.hash(options.password);
+    const newUser = await User.create({
       username: options.username,
-      password: options.password,
+      password: hashedPassword,
       email: options.email,
       role: options.role,
     }).save();
 
-    if (userCreated.id) {
-      return true;
-    }
-
-    return false;
+    return newUser;
   }
 }
