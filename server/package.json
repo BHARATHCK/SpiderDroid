@@ -12,6 +12,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "dotenv-safe": "^8.2.0",
         "nodemon": "^2.0.12",
         "pg": "^8.7.1",
         "reflect-metadata": "^0.1.13",

@@ -1,0 +1,1 @@
+export const __PROD__:Boolean = process.env.NODE_ENV === "production" ? true : false;
