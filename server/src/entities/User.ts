@@ -2,25 +2,24 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from "typeor
 
 @Entity()
 export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @PrimaryGeneratedColumn()
-    id: number;
+  @Column()
+  username: string;
 
-    @Column()
-    username: string;
+  @Column()
+  password: string;
 
-    @Column()
-    password: string;
+  @Column()
+  email: string;
 
-    @Column()
-    email: string;
+  @Column()
+  role: string;
 
-    @Column()
-    role: string;
+  @CreateDateColumn()
+  createdAt: Date;
 
-    @CreateDateColumn()
-    createdAt: Date;
-
-    @CreateDateColumn()
-    updatedAt: Date;
+  @CreateDateColumn()
+  updatedAt: Date;
 }
