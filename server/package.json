@@ -1,0 +1,16 @@
+{
+    "name": "spiderdroid_server",
+    "version": "1.0.0",
+    "description": "Backend for SpiderDroid",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@types/node": "^16.7.13",
+        "typescript": "^4.4.2"
+    }
+}
