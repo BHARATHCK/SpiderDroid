@@ -7,6 +7,9 @@ import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { HelloResolver } from "./resolvers/hello";
+import { UserResolver } from "./resolvers/user";
+import { Post } from "./entities/Post";
+import { PostResolver } from "./resolvers/post";
 
 const main = async () => {
   createConnection({
@@ -18,7 +21,7 @@ const main = async () => {
     database: process.env.POSTGRES_DB,
     logging: !__PROD__, // False in production
     synchronize: !__PROD__, // False in production environment
-    entities: [User],
+    entities: [User, Post],
   });
 
   // Setup expres server
@@ -26,9 +29,10 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver],
+      resolvers: [HelloResolver, UserResolver, PostResolver],
       validate: false,
     }),
+    context: ({ req, res }) => ({ req, res }),
   });
 
   // Start apolloServer
