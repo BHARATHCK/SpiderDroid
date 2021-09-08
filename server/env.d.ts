@@ -5,5 +5,6 @@ declare namespace NodeJS {
     POSTGRES_PASS: string;
     POSTGRES_DB: string;
     POSTGRES_PORT: string;
+    SERVER_PORT: string;
   }
 }
