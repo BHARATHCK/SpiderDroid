@@ -21,7 +21,7 @@ export class UsernamePasswordRegistrationInput {
 @Resolver(User)
 export class UserResolver {
   @Query(() => User, { nullable: true })
-  async user(@Ctx() { req }: MyContext): Promise<User | undefined> {
+  async me(@Ctx() { req }: MyContext): Promise<User | undefined> {
     return await User.findOne({ id: req.session.userId });
   }
 
