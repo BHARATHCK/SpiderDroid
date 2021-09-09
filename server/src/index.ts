@@ -10,6 +10,9 @@ import { HelloResolver } from "./resolvers/hello";
 import { UserResolver } from "./resolvers/user";
 import { Post } from "./entities/Post";
 import { PostResolver } from "./resolvers/post";
+import Redis from "ioredis";
+import session from "express-session";
+import connectRedis from "connect-redis";
 
 const main = async () => {
   createConnection({
@@ -27,12 +30,37 @@ const main = async () => {
   // Setup expres server
   const app = express();
 
+  // Redis Client
+  let redis = new Redis();
+
+  // Redis store
+  const redisStore = connectRedis(session);
+
+  // Redis session
+  app.use(
+    session({
+      name: "qid",
+      store: new redisStore({
+        client: redis,
+        disableTouch: true, // Need it alive forever, need not reset based on user behaviour
+      }),
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
+        httpOnly: true,
+        secure: !!__PROD__, // Only in prod while https is available
+      },
+      saveUninitialized: false,
+      secret: process.env.REDIS_SESSION_SECRET || "",
+      resave: false,
+    }),
+  );
+
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [HelloResolver, UserResolver, PostResolver],
       validate: false,
     }),
-    context: ({ req, res }) => ({ req, res }),
+    context: ({ req, res }) => ({ req, res, redis }),
   });
 
   // Start apolloServer

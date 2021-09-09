@@ -1,6 +1,7 @@
-import { Arg, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
 import { User, UserRoleType } from "../entities/User";
 import argon2 from "argon2";
+import { MyContext } from "src/types";
 
 @InputType()
 export class UsernamePasswordRegistrationInput {
@@ -20,12 +21,15 @@ export class UsernamePasswordRegistrationInput {
 @Resolver(User)
 export class UserResolver {
   @Query(() => User, { nullable: true })
-  async user(): Promise<User | undefined> {
-    return await User.findOne({ id: 1 });
+  async user(@Ctx() { req }: MyContext): Promise<User | undefined> {
+    return await User.findOne({ id: req.session.userId });
   }
 
-  @Mutation(() => User)
-  async register(@Arg("options") options: UsernamePasswordRegistrationInput): Promise<User> {
+  @Mutation(() => User, { nullable: true })
+  async register(
+    @Arg("options") options: UsernamePasswordRegistrationInput,
+    @Ctx() { req }: MyContext,
+  ): Promise<User | null> {
     // Hash the password before storing in the DB
     const hashedPassword = await argon2.hash(options.password);
     const newUser = await User.create({
@@ -35,13 +39,20 @@ export class UserResolver {
       role: options.role,
     }).save();
 
-    return newUser;
+    if (newUser) {
+      req.session.userId = newUser.id;
+
+      return newUser;
+    }
+
+    return null;
   }
 
   @Query(() => User, { nullable: true })
   async login(
     @Arg("usernameoremail") userNameOrEmail: string,
     @Arg("password") password: string,
+    @Ctx() { req }: MyContext,
   ): Promise<User | null> {
     // Find if user is present in DB
     const user = await User.findOne(
@@ -61,6 +72,9 @@ export class UserResolver {
       console.log("Incorrect password");
       return null;
     }
+
+    //Set the session
+    req.session.userId = user.id;
 
     return user;
   }
