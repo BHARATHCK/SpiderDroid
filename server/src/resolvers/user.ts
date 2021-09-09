@@ -1,5 +1,4 @@
-import { MyContext } from "src/types";
-import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
 import { User, UserRoleType } from "../entities/User";
 import argon2 from "argon2";
 
@@ -21,7 +20,7 @@ export class UsernamePasswordRegistrationInput {
 @Resolver(User)
 export class UserResolver {
   @Query(() => User, { nullable: true })
-  async user(@Ctx() { req }: MyContext): Promise<User | undefined> {
+  async user(): Promise<User | undefined> {
     return await User.findOne({ id: 1 });
   }
 
@@ -39,6 +38,7 @@ export class UserResolver {
     return newUser;
   }
 
+  @Query(() => User, { nullable: true })
   async login(
     @Arg("usernameoremail") userNameOrEmail: string,
     @Arg("password") password: string,
@@ -58,8 +58,8 @@ export class UserResolver {
     const verifiedPassword = await argon2.verify(user?.password, password);
 
     if (!verifiedPassword) {
-      return null;
       console.log("Incorrect password");
+      return null;
     }
 
     return user;
