@@ -1,0 +1,34 @@
+.embla {
+    overflow: hidden;
+}
+
+.embla__container {
+    display: flex;
+}
+
+.embla__slide {
+    position: relative;
+    flex: 0 0 100%;
+}
+
+.embla__slide_cars {
+    position: relative;
+    /* Needed for the loop effect to work */
+    flex: 0 0 auto;
+    /* Make sure the slide takes up the space it needs */
+    width: 25%;
+    /* Choose desired width */
+    /* Choose desired spacing between slides and match it with the subtracted space from container */
+    padding-left: 14px;
+}
+
+.embla__slide_cars_mobile {
+    position: relative;
+    /* Needed for the loop effect to work */
+    flex: 0 0 auto;
+    /* Make sure the slide takes up the space it needs */
+    width: 70%;
+    /* Choose desired width */
+    /* Choose desired spacing between slides and match it with the subtracted space from container */
+    padding-left: 14px;
+}
