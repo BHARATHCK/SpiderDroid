@@ -1,5 +1,3 @@
-import { GraphQLScalarType } from "graphql";
-import { stringify } from "querystring";
 import { Field, Int, ObjectType } from "type-graphql";
 import {
   BaseEntity,
@@ -10,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Destination } from "./Destination";
 import { User } from "./User";
 
 @ObjectType()
@@ -19,11 +18,11 @@ export class Post extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @CreateDateColumn()
   createdAt: Date;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @UpdateDateColumn()
   updatedAt: Date;
 
@@ -31,11 +30,11 @@ export class Post extends BaseEntity {
   @Column()
   carMake!: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Column()
   carModel!: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Column()
   carYear!: string;
 
@@ -43,15 +42,15 @@ export class Post extends BaseEntity {
   @Column("text", { array: true, nullable: true })
   imageUrl?: string[];
 
-  @Field()
+  @Field({ nullable: true })
   @Column({ default: 0, type: "int" })
   points: number;
 
-  @Field()
+  @Field({ nullable: true })
   @Column({ default: 0, type: "int" })
   trips: number;
 
-  @Field()
+  @Field({ nullable: true })
   @Column()
   creatorId: number;
 
@@ -59,10 +58,17 @@ export class Post extends BaseEntity {
   creator: User;
 
   @Field({ nullable: true })
+  @Column()
+  destinationId: number;
+
+  @ManyToOne(() => Destination, (destination) => destination.posts)
+  destination: Destination;
+
+  @Field({ nullable: true })
   @Column({ nullable: true })
   category: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Column({ nullable: true })
   carVin: string;
 }

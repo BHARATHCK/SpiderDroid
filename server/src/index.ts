@@ -13,6 +13,7 @@ import { PostResolver } from "./resolvers/post";
 import Redis from "ioredis";
 import session from "express-session";
 import connectRedis from "connect-redis";
+import { Destination } from "./entities/Destination";
 
 const main = async () => {
   createConnection({
@@ -22,9 +23,9 @@ const main = async () => {
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASS,
     database: process.env.POSTGRES_DB,
-    //logging: !__PROD__, // False in production
+    logging: !__PROD__, // False in production
     synchronize: !__PROD__, // False in production environment
-    entities: [User, Post],
+    entities: [User, Post, Destination],
   });
 
   // Setup expres server
