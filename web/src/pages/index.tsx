@@ -31,16 +31,7 @@ const Index = () => (
       </Box>
       <TravelogueSection />
       <AllStarHostsSection />
-
-      <Link ml="20%" position="absolute" mt="25%">
-        Book a Car
-      </Link>
-      <Box>
-        <ConcludeSection />
-      </Box>
-      <Link ml="60%" position="absolute" mt="-10%">
-        Become a Host
-      </Link>
+      <ConcludeSection />
     </Layout>
   </>
 );

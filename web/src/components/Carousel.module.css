@@ -16,7 +16,7 @@
     /* Needed for the loop effect to work */
     flex: 0 0 auto;
     /* Make sure the slide takes up the space it needs */
-    width: 25%;
+    width: 35%;
     /* Choose desired width */
     /* Choose desired spacing between slides and match it with the subtracted space from container */
     padding-left: 14px;

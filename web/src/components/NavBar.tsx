@@ -19,7 +19,7 @@ import {
 import { HamburgerIcon, CloseIcon, ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import NextLink from "next/link";
 
-export default function WithSubnavigation() {
+const NavBar = () => {
   const { isOpen, onToggle } = useDisclosure();
 
   return (
@@ -95,7 +95,7 @@ export default function WithSubnavigation() {
       </Collapse>
     </Box>
   );
-}
+};
 
 const DesktopNav = () => {
   const linkColor = useColorModeValue("gray.600", "gray.200");
@@ -267,3 +267,5 @@ const NAV_ITEMS: Array<NavItem> = [
     href: "#",
   },
 ];
+
+export default NavBar;
