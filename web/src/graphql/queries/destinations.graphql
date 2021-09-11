@@ -1,0 +1,7 @@
+query Destinations {
+  browseByDestination {
+    destinationImage
+    destinationName
+    id
+  }
+}

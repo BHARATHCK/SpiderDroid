@@ -127,7 +127,10 @@ const AllStarHostsSection = () => {
     <Carouselize
       children={person.map((p) => {
         return (
-          <div className={isMobile ? styles.embla__slide_cars_mobile : styles.embla__slide_cars}>
+          <div
+            className={isMobile ? styles.embla__slide_cars_mobile : styles.embla__slide_cars}
+            key={p.id}
+          >
             <Box
               mt={20}
               boxShadow="lg"
