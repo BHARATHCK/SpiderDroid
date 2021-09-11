@@ -1,21 +1,26 @@
-import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
-import { User, UserRoleType } from "../entities/User";
 import argon2 from "argon2";
 import { MyContext } from "src/types";
+import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver } from "type-graphql";
+import { User } from "../entities/User";
+import { validateRegister } from "../utils/validateRegister";
+import { UsernamePasswordRegistrationInput } from "./usernamePasswordRegistrationInput";
 
-@InputType()
-export class UsernamePasswordRegistrationInput {
+@ObjectType()
+class FieldError {
   @Field()
-  email: string;
-
-  @Field()
-  username: string;
-
-  @Field()
-  password: string;
+  field: string;
 
   @Field()
-  role: UserRoleType;
+  message: string;
+}
+
+@ObjectType()
+class UserResponse {
+  @Field(() => [FieldError], { nullable: true })
+  errors?: FieldError[];
+
+  @Field(() => User, { nullable: true })
+  user?: User;
 }
 
 @Resolver(User)
@@ -25,27 +30,45 @@ export class UserResolver {
     return await User.findOne({ id: req.session.userId });
   }
 
-  @Mutation(() => User, { nullable: true })
+  @Mutation(() => UserResponse, { nullable: true })
   async register(
     @Arg("options") options: UsernamePasswordRegistrationInput,
     @Ctx() { req }: MyContext,
-  ): Promise<User | null> {
-    // Hash the password before storing in the DB
-    const hashedPassword = await argon2.hash(options.password);
-    const newUser = await User.create({
-      username: options.username,
-      password: hashedPassword,
-      email: options.email,
-      role: options.role,
-    }).save();
+  ): Promise<UserResponse> {
+    const errors = validateRegister(options);
 
-    if (newUser) {
-      req.session.userId = newUser.id;
-
-      return newUser;
+    if (errors) {
+      return { errors };
     }
 
-    return null;
+    // Hash the password before storing in the DB
+    const hashedPassword = await argon2.hash(options.password);
+    let user;
+    try {
+      user = await User.create({
+        username: options.username,
+        password: hashedPassword,
+        email: options.email,
+        role: options.role,
+      }).save();
+    } catch (err) {
+      console.log(err);
+      if (err.code === "23505") {
+        return {
+          errors: [
+            {
+              field: "username",
+              message: "username already exists.",
+            },
+          ],
+        };
+      }
+    }
+
+    if (user) {
+      req.session.userId = user.id;
+    }
+    return { user };
   }
 
   @Query(() => User, { nullable: true })

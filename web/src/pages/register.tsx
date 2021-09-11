@@ -6,20 +6,31 @@ import { InputField } from "../components/InputField";
 import Layout from "../components/Layout";
 import NavBar from "../components/NavBar";
 import { Wrapper } from "../components/Wrapper";
+import { useRegisterMutation } from "../generated/graphql";
+import { toErrorMap } from "../utils/toErrorMap";
 
 interface registerProps {}
 
 const Register: React.FC<registerProps> = ({}) => {
   const router = useRouter();
+  const [register, { loading, error }] = useRegisterMutation({ notifyOnNetworkStatusChange: true });
   return (
     <>
       <NavBar />
       <Layout variantType="regular">
         <Wrapper variant="small">
           <Formik
-            initialValues={{ username: "", email: "", password: "" }}
-            onSubmit={() => {
-              console.log("SUBMITTED");
+            initialValues={{ username: "", email: "", password: "", role: "" }}
+            onSubmit={async (values, { setErrors }) => {
+              const response = await register({
+                variables: { registerOptions: values },
+              });
+
+              if (response.data.register.errors) {
+                setErrors(toErrorMap(response.data.register.errors));
+              } else if (response.data.register.user) {
+                router.push("/");
+              }
             }}
           >
             {({ isSubmitting }) => (
@@ -36,6 +47,9 @@ const Register: React.FC<registerProps> = ({}) => {
                     placeholder="password"
                     type="password"
                   />
+                </Box>
+                <Box mt={4}>
+                  <InputField name="role" label="role" placeholder="Enter the Role" />
                 </Box>
                 <Button mt="4" colorScheme="teal" isLoading={isSubmitting} type="submit">
                   Register
