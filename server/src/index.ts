@@ -22,7 +22,7 @@ const main = async () => {
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASS,
     database: process.env.POSTGRES_DB,
-    logging: !__PROD__, // False in production
+    //logging: !__PROD__, // False in production
     synchronize: !__PROD__, // False in production environment
     entities: [User, Post],
   });
@@ -31,7 +31,7 @@ const main = async () => {
   const app = express();
 
   // Redis Client
-  let redis = new Redis();
+  const redis = new Redis();
 
   // Redis store
   const redisStore = connectRedis(session);
@@ -40,6 +40,7 @@ const main = async () => {
   app.use(
     session({
       name: "qid",
+      // eslint-disable-next-line new-cap
       store: new redisStore({
         client: redis,
         disableTouch: true, // Need it alive forever, need not reset based on user behaviour

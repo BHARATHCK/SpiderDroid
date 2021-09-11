@@ -1,3 +1,5 @@
+import { GraphQLScalarType } from "graphql";
+import { stringify } from "querystring";
 import { Field, Int, ObjectType } from "type-graphql";
 import {
   BaseEntity,
@@ -27,15 +29,27 @@ export class Post extends BaseEntity {
 
   @Field()
   @Column()
-  title!: string;
+  carMake!: string;
 
   @Field()
   @Column()
-  imageUrl: string;
+  carModel!: string;
+
+  @Field()
+  @Column()
+  carYear!: string;
+
+  @Field(() => [String], { nullable: true })
+  @Column("text", { array: true, nullable: true })
+  imageUrl?: string[];
 
   @Field()
   @Column({ default: 0, type: "int" })
   points: number;
+
+  @Field()
+  @Column({ default: 0, type: "int" })
+  trips: number;
 
   @Field()
   @Column()
@@ -43,4 +57,12 @@ export class Post extends BaseEntity {
 
   @ManyToOne(() => User, (user) => user.posts)
   creator: User;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  category: string;
+
+  @Field()
+  @Column({ nullable: true })
+  carVin: string;
 }
