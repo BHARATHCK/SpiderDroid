@@ -1,0 +1,6 @@
+// next.config.js
+module.exports = {
+    images: {
+        domains: ["via.placeholder.com", "s1.cdn.autoevolution.com", "4.bp.blogspot.com", "bringatrailer.com", "gta-5-cars.com", "hdcarwallpapers.com", "photos.classiccars.com", "hdcarwallpapers.com", "dupontregistry.com", "uploads.carandclassic.co.uk", "4.bp.blogspot.com", "auto-database.com", "supercars.net", "milesendmotors.ca", "lookatthecar.org", "cdn.motor1.com", "pictures.topspeed.com", "sanfranciscosportscars.com", "chicagomotorcars.com", "photos.classiccars.com", "classiccarsbay.com", "conceptcarz.com", "chicagomotorcars.com", "cdn.dealeraccelerate.com", "2p2bboli8d61fqhjiqzb8p1a-wpengine.netdna-ssl.com", "uploads.carandclassic.co.uk", "photos7.motorcar.com", "auto-database.com", "conceptcarz.com", "ryanfriedmanmotorcars.com", "i.pinimg.com", "chicagomotorcars.com", "marinoperformancemotors.com", "masbukti.com", "static.cargurus.com", "wallup.net", "bentleytysons.com", "bestcarmag.com", "maserati-chicago.com", "bentleytysons.com", "bentleygoldcoast.com", "historics.co.uk", "bentleytysons.com", "bentleygoldcoast.com", "conceptcarz.com", "bentleytysons.com", "s1.cdn.autoevolution.com", "momentcar.com", "bestcarmag.com", "bentleytysons.com"],
+    },
+}

@@ -16,6 +16,14 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type CreatePostType = {
+  carMake: Scalars['String'];
+  carModel: Scalars['String'];
+  carVin: Scalars['String'];
+  carYear: Scalars['String'];
+  category: Scalars['String'];
+};
+
 export type Destination = {
   __typename?: 'Destination';
   createdAt?: Maybe<Scalars['String']>;
@@ -33,7 +41,14 @@ export type FieldError = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createPost: Scalars['Boolean'];
   register?: Maybe<UserResponse>;
+};
+
+
+export type MutationCreatePostArgs = {
+  imageurl: Array<Scalars['String']>;
+  options: CreatePostType;
 };
 
 
@@ -43,14 +58,15 @@ export type MutationRegisterArgs = {
 
 export type Post = {
   __typename?: 'Post';
+  carCostPerDay?: Maybe<Scalars['Float']>;
   carMake: Scalars['String'];
   carModel?: Maybe<Scalars['String']>;
   carVin?: Maybe<Scalars['String']>;
   carYear?: Maybe<Scalars['String']>;
   category?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
-  creatorId?: Maybe<Scalars['Float']>;
-  destinationId?: Maybe<Scalars['Float']>;
+  creator?: Maybe<User>;
+  destination?: Maybe<Destination>;
   id: Scalars['Int'];
   imageUrl?: Maybe<Array<Scalars['String']>>;
   points?: Maybe<Scalars['Float']>;
@@ -62,11 +78,18 @@ export type Query = {
   __typename?: 'Query';
   browseByCarMake: Array<Post>;
   browseByDestination: Array<Destination>;
+  filterPost: Array<Post>;
   hello: Scalars['String'];
   login?: Maybe<User>;
   me?: Maybe<User>;
   post?: Maybe<Post>;
   posts?: Maybe<Array<Post>>;
+};
+
+
+export type QueryFilterPostArgs = {
+  filterCategory: Scalars['String'];
+  filterCriteria: Scalars['String'];
 };
 
 
@@ -85,6 +108,7 @@ export type User = {
   createdAt: Scalars['DateTime'];
   email: Scalars['String'];
   id: Scalars['Int'];
+  posts: Array<Post>;
   role: Scalars['String'];
   updatedAt: Scalars['DateTime'];
   username: Scalars['String'];
@@ -115,10 +139,25 @@ export type DestinationsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type DestinationsQuery = { __typename?: 'Query', browseByDestination: Array<{ __typename?: 'Destination', destinationImage?: Maybe<string>, destinationName: string, id: number }> };
 
+export type FilterPostQueryVariables = Exact<{
+  filterCategory: Scalars['String'];
+  filterCriteria: Scalars['String'];
+}>;
+
+
+export type FilterPostQuery = { __typename?: 'Query', filterPost: Array<{ __typename?: 'Post', id: number, carMake: string, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', id: number, destinationName: string }> }> };
+
+export type PostQueryVariables = Exact<{
+  postId: Scalars['Float'];
+}>;
+
+
+export type PostQuery = { __typename?: 'Query', post?: Maybe<{ __typename?: 'Post', id: number, carMake: string, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, carCostPerDay?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', destinationName: string }>, creator?: Maybe<{ __typename?: 'User', username: string }> }> };
+
 export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type PostsQuery = { __typename?: 'Query', browseByCarMake: Array<{ __typename?: 'Post', id: number, imageUrl?: Maybe<Array<string>>, carMake: string }> };
+export type PostsQuery = { __typename?: 'Query', browseByCarMake: Array<{ __typename?: 'Post', id: number, carMake: string, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', id: number, destinationName: string }> }> };
 
 
 export const RegisterDocument = gql`
@@ -198,12 +237,114 @@ export function useDestinationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type DestinationsQueryHookResult = ReturnType<typeof useDestinationsQuery>;
 export type DestinationsLazyQueryHookResult = ReturnType<typeof useDestinationsLazyQuery>;
 export type DestinationsQueryResult = Apollo.QueryResult<DestinationsQuery, DestinationsQueryVariables>;
+export const FilterPostDocument = gql`
+    query filterPost($filterCategory: String!, $filterCriteria: String!) {
+  filterPost(filterCategory: $filterCategory, filterCriteria: $filterCriteria) {
+    id
+    carMake
+    carModel
+    imageUrl
+    carYear
+    trips
+    points
+    destination {
+      id
+      destinationName
+    }
+  }
+}
+    `;
+
+/**
+ * __useFilterPostQuery__
+ *
+ * To run a query within a React component, call `useFilterPostQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFilterPostQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFilterPostQuery({
+ *   variables: {
+ *      filterCategory: // value for 'filterCategory'
+ *      filterCriteria: // value for 'filterCriteria'
+ *   },
+ * });
+ */
+export function useFilterPostQuery(baseOptions: Apollo.QueryHookOptions<FilterPostQuery, FilterPostQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FilterPostQuery, FilterPostQueryVariables>(FilterPostDocument, options);
+      }
+export function useFilterPostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FilterPostQuery, FilterPostQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FilterPostQuery, FilterPostQueryVariables>(FilterPostDocument, options);
+        }
+export type FilterPostQueryHookResult = ReturnType<typeof useFilterPostQuery>;
+export type FilterPostLazyQueryHookResult = ReturnType<typeof useFilterPostLazyQuery>;
+export type FilterPostQueryResult = Apollo.QueryResult<FilterPostQuery, FilterPostQueryVariables>;
+export const PostDocument = gql`
+    query Post($postId: Float!) {
+  post(id: $postId) {
+    id
+    carMake
+    carModel
+    imageUrl
+    carYear
+    trips
+    points
+    destination {
+      destinationName
+    }
+    creator {
+      username
+    }
+    carCostPerDay
+  }
+}
+    `;
+
+/**
+ * __usePostQuery__
+ *
+ * To run a query within a React component, call `usePostQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePostQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePostQuery({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function usePostQuery(baseOptions: Apollo.QueryHookOptions<PostQuery, PostQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PostQuery, PostQueryVariables>(PostDocument, options);
+      }
+export function usePostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PostQuery, PostQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PostQuery, PostQueryVariables>(PostDocument, options);
+        }
+export type PostQueryHookResult = ReturnType<typeof usePostQuery>;
+export type PostLazyQueryHookResult = ReturnType<typeof usePostLazyQuery>;
+export type PostQueryResult = Apollo.QueryResult<PostQuery, PostQueryVariables>;
 export const PostsDocument = gql`
     query Posts {
   browseByCarMake {
     id
-    imageUrl
     carMake
+    carModel
+    imageUrl
+    carYear
+    trips
+    points
+    destination {
+      id
+      destinationName
+    }
   }
 }
     `;

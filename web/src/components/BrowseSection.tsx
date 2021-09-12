@@ -1,5 +1,6 @@
 import { Box, Image } from "@chakra-ui/react";
 import React from "react";
+import { useRouter } from "next/dist/client/router";
 import {
   DestinationsQuery,
   PostsQuery,
@@ -14,6 +15,7 @@ interface Props {
 }
 
 const BrowseCarouselSection: React.FC<Props> = ({ itemsToFetch }) => {
+  const router = useRouter();
   let carData: PostsQuery;
   let destinationData: DestinationsQuery;
   let customError, customLoading;
@@ -47,6 +49,8 @@ const BrowseCarouselSection: React.FC<Props> = ({ itemsToFetch }) => {
                   <div className={styles.embla__slide_cars} key={car.id}>
                     <div className={styles.embla__slide__inner}>
                       <Box
+                        onClick={() => router.push(`/browse/${car.carMake}?category=carMake`)}
+                        cursor="pointer"
                         mr={2}
                         maxW="200"
                         maxH="200"
@@ -70,6 +74,9 @@ const BrowseCarouselSection: React.FC<Props> = ({ itemsToFetch }) => {
                   <div className={styles.embla__slide_cars} key={destination.id}>
                     <div className={styles.embla__slide__inner}>
                       <Box
+                        onClick={() =>
+                          router.push(`/browse/${destination.id}?category=destination`)
+                        }
                         mr={2}
                         maxW="200"
                         maxH="200"

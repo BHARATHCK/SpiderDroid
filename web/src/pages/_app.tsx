@@ -1,4 +1,5 @@
 import { ChakraProvider, ColorModeProvider } from "@chakra-ui/react";
+import "../components/DateTimePicker.css";
 
 import theme from "../theme";
 import { ApolloProvider } from "@apollo/client";

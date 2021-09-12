@@ -1,5 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import { Flex, IconButton, useMediaQuery } from "@chakra-ui/react";
+import { Box, Flex, IconButton, useMediaQuery } from "@chakra-ui/react";
 import { useEmblaCarousel } from "embla-carousel/react";
 import { Props } from "framer-motion/types/types";
 import React, { useCallback } from "react";
@@ -27,7 +27,9 @@ const Carouselize: React.FC<Props> = ({ children }) => {
       {isMobile ? (
         ""
       ) : (
-        <IconButton aria-label="previous image" icon={<ChevronLeftIcon />} onClick={scrollPrev} />
+        <Box>
+          <ChevronLeftIcon w={8} h={8} color="black.500" onClick={scrollPrev} cursor="pointer" />
+        </Box>
       )}
       <div className={styles.embla}>
         <div className={styles.embla__viewport} ref={emblaRef}>
@@ -37,7 +39,9 @@ const Carouselize: React.FC<Props> = ({ children }) => {
       {isMobile ? (
         ""
       ) : (
-        <IconButton aria-label="next image" icon={<ChevronRightIcon />} onClick={scrollNext} />
+        <Box>
+          <ChevronRightIcon w={8} h={8} color="black.500" onClick={scrollNext} cursor="pointer" />
+        </Box>
       )}
     </Flex>
   );

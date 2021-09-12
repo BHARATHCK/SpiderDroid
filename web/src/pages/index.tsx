@@ -18,15 +18,19 @@ const Index = () => (
           <Heading m="auto">The world’s largest car sharing marketplace</Heading>
         </Flex>
       </Box>
-      <Box m={10}>
+      <Box mt={10} mb={10}>
         <ExperienceBannerSection></ExperienceBannerSection>
       </Box>
       <Box mt={20}>
-        <Heading size="md">Browse by Make</Heading>
+        <Heading size="md" mb={10}>
+          Browse by Make
+        </Heading>
         <BrowseCarouselSection itemsToFetch="cars" />
       </Box>
       <Box mt={20}>
-        <Heading size="md">Browse by Destination</Heading>
+        <Heading size="md" mb={10}>
+          Browse by Destination
+        </Heading>
         <BrowseCarouselSection itemsToFetch="destination" />
       </Box>
       <TravelogueSection />

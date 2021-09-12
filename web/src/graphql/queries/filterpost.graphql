@@ -1,0 +1,15 @@
+query filterPost($filterCategory: String!, $filterCriteria: String!) {
+  filterPost(filterCategory: $filterCategory, filterCriteria: $filterCriteria) {
+    id
+    carMake
+    carModel
+    imageUrl
+    carYear
+    trips
+    points
+    destination {
+      id
+      destinationName
+    }
+  }
+}

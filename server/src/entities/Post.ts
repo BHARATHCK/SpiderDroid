@@ -12,10 +12,10 @@ import { Destination } from "./Destination";
 import { User } from "./User";
 
 @ObjectType()
-@Entity()
+@Entity({ name: "post" })
 export class Post extends BaseEntity {
   @Field(() => Int)
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("increment")
   id!: number;
 
   @Field(() => String, { nullable: true })
@@ -50,17 +50,11 @@ export class Post extends BaseEntity {
   @Column({ default: 0, type: "int" })
   trips: number;
 
-  @Field({ nullable: true })
-  @Column()
-  creatorId: number;
-
+  @Field(() => User, { nullable: true })
   @ManyToOne(() => User, (user) => user.posts)
   creator: User;
 
-  @Field({ nullable: true })
-  @Column()
-  destinationId: number;
-
+  @Field(() => Destination, { nullable: true })
   @ManyToOne(() => Destination, (destination) => destination.posts)
   destination: Destination;
 
@@ -71,4 +65,8 @@ export class Post extends BaseEntity {
   @Field({ nullable: true })
   @Column({ nullable: true })
   carVin: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true, default: 0 })
+  carCostPerDay: number;
 }

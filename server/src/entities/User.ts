@@ -12,7 +12,7 @@ import { Post } from "./Post";
 export type UserRoleType = "browse" | "host";
 
 @ObjectType()
-@Entity()
+@Entity({ name: "user" })
 export class User extends BaseEntity {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
@@ -45,6 +45,7 @@ export class User extends BaseEntity {
   @CreateDateColumn()
   updatedAt: Date;
 
+  @Field(() => [Post])
   @OneToMany(() => Post, (post) => post.creator)
   posts: Post[];
 }

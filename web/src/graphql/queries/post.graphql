@@ -1,5 +1,5 @@
-query Posts {
-  browseByCarMake {
+query Post($postId: Float!) {
+  post(id: $postId) {
     id
     carMake
     carModel
@@ -8,8 +8,11 @@ query Posts {
     trips
     points
     destination {
-      id
       destinationName
     }
+    creator {
+      username
+    }
+    carCostPerDay
   }
 }
