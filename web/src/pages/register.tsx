@@ -7,6 +7,7 @@ import Layout from "../components/Layout";
 import NavBar from "../components/NavBar";
 import { Wrapper } from "../components/Wrapper";
 import { useRegisterMutation } from "../generated/graphql";
+import { withApolloClient } from "../utils/apollo-client";
 import { toErrorMap } from "../utils/toErrorMap";
 
 interface registerProps {}
@@ -63,4 +64,4 @@ const Register: React.FC<registerProps> = ({}) => {
   );
 };
 
-export default Register;
+export default withApolloClient()(Register);

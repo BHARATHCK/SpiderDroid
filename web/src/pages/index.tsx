@@ -7,6 +7,7 @@ import ExperienceBannerSection from "../components/ExperienceBannerSection";
 import Layout from "../components/Layout";
 import NavBar from "../components/NavBar";
 import TravelogueSection from "../components/TravelogueSection";
+import { withApolloClient } from "../utils/apollo-client";
 
 const Index = () => (
   <>
@@ -40,4 +41,4 @@ const Index = () => (
   </>
 );
 
-export default Index;
+export default withApolloClient({ ssr: true })(Index);

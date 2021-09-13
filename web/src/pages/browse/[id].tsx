@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import NavBar from "../../components/NavBar";
 import { FilterPostQuery, useFilterPostQuery } from "../../generated/graphql";
+import { withApolloClient } from "../../utils/apollo-client";
 
 const BrowseCars = ({}) => {
   const [isMobile] = useMediaQuery("(max-width: 500px)");
@@ -116,4 +117,4 @@ const BrowseCars = ({}) => {
   );
 };
 
-export default BrowseCars;
+export default withApolloClient()(BrowseCars);

@@ -12,6 +12,7 @@ import Layout from "../../components/Layout";
 import NavBar from "../../components/NavBar";
 import PaymentButton from "../../components/Payment";
 import { usePostQuery } from "../../generated/graphql";
+import { withApolloClient } from "../../utils/apollo-client";
 
 const RentCar = () => {
   const [userDateFrom, setUserDateFrom] = useState(new Date());
@@ -130,4 +131,4 @@ const RentCar = () => {
   );
 };
 
-export default RentCar;
+export default withApolloClient()(RentCar);

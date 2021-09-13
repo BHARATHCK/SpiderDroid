@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Layout from "../../components/Layout";
 import { usePaymentStatusQuery } from "../../generated/graphql";
+import { withApolloClient } from "../../utils/apollo-client";
 
 const PaymentCompleted = () => {
   const router = useRouter();
@@ -41,4 +42,4 @@ const PaymentCompleted = () => {
   );
 };
 
-export default PaymentCompleted;
+export default withApolloClient()(PaymentCompleted);
