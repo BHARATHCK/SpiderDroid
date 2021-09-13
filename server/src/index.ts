@@ -17,6 +17,7 @@ import { Destination } from "./entities/Destination";
 import Razorpay from "razorpay";
 import { Payment } from "./entities/Payment";
 import bodyParser from "body-parser";
+import cors from "cors";
 
 const main = async () => {
   createConnection({
@@ -38,10 +39,19 @@ const main = async () => {
   const jsonParser = bodyParser.json();
 
   // Redis Client
-  const redis = new Redis();
+  const redis = new Redis({});
 
   // Redis store
   const redisStore = connectRedis(session);
+
+  // cors
+  // set cors
+  app.use(
+    cors({
+      origin: [typeof process.env.WEB_APP_URL === "string" ? process.env.WEB_APP_URL : ""],
+      credentials: true,
+    }),
+  );
 
   // Redis session
   app.use(
