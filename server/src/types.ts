@@ -5,6 +5,7 @@ export type MyContext = {
   req: Request;
   redis: Redis;
   res: Response;
+  razorpay: any;
 };
 
 declare module "express-session" {

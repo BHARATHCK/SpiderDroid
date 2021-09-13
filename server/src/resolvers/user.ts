@@ -1,5 +1,7 @@
 import argon2 from "argon2";
-import { MyContext } from "src/types";
+import { randomUUID } from "crypto";
+import { Post } from "../entities/Post";
+import { MyContext } from "../types";
 import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { User } from "../entities/User";
 import { validateRegister } from "../utils/validateRegister";
@@ -100,5 +102,29 @@ export class UserResolver {
     req.session.userId = user.id;
 
     return user;
+  }
+
+  @Mutation(() => String)
+  async razorpay(@Arg("id") carId: number, @Ctx() { razorpay }: MyContext): Promise<string> {
+    const car = await Post.findOne(carId);
+
+    if (!car) {
+      return JSON.stringify({ error: "Car not found with the ID , please retry afer sometime !" });
+    }
+
+    const options = {
+      amount: car.carCostPerDay * 100,
+      currency: "INR",
+      receipt: randomUUID(),
+      payment_capture: 1,
+    };
+
+    let response;
+    try {
+      response = await razorpay.orders.create(options);
+    } catch (err) {
+      return JSON.stringify({ error: err });
+    }
+    return JSON.stringify(response);
   }
 }
