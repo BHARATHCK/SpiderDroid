@@ -1,5 +1,4 @@
 /* eslint-disable quotes */
-import { DomainDump } from "../entities/DomainDump";
 import { Arg, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
 import { Destination } from "../entities/Destination";
 import { Post } from "../entities/Post";
@@ -69,7 +68,7 @@ export class PostResolver {
   @Mutation(() => Boolean)
   async createPost(
     @Arg("options") options: CreatePostType,
-    @Arg("imageurl", (type) => [String]) imageurl: string[],
+    @Arg("imageurl", () => [String]) imageurl: string[],
   ): Promise<boolean> {
     const post = Post.create({
       ...options,

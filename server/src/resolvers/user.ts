@@ -17,12 +17,64 @@ class FieldError {
 }
 
 @ObjectType()
+class RazorpayFields {
+  @Field({ nullable: true })
+  id: string;
+
+  @Field({ nullable: true })
+  entity: string;
+
+  @Field({ nullable: true })
+  amount: number;
+
+  @Field({ nullable: true })
+  // eslint-disable-next-line camelcase
+  amount_paid: number;
+
+  @Field({ nullable: true })
+  // eslint-disable-next-line camelcase
+  amount_due: number;
+
+  @Field({ nullable: true })
+  currency: string;
+
+  @Field({ nullable: true })
+  receipt: string;
+
+  @Field({ nullable: true })
+  // eslint-disable-next-line camelcase
+  offer_id: string;
+
+  @Field({ nullable: true })
+  status: string;
+
+  @Field({ nullable: true })
+  attempts: number;
+
+  // @Field({ nullable: true })
+  // notes: string[];
+
+  @Field({ nullable: true })
+  // eslint-disable-next-line camelcase
+  created_at: number;
+}
+
+@ObjectType()
 class UserResponse {
   @Field(() => [FieldError], { nullable: true })
   errors?: FieldError[];
 
   @Field(() => User, { nullable: true })
   user?: User;
+}
+
+@ObjectType()
+class RazorpayResponse {
+  @Field(() => String, { nullable: true })
+  errors?: string;
+
+  @Field(() => RazorpayFields, { nullable: true })
+  paymentResponse?: RazorpayFields;
 }
 
 @Resolver(User)
@@ -104,12 +156,15 @@ export class UserResolver {
     return user;
   }
 
-  @Mutation(() => String)
-  async razorpay(@Arg("id") carId: number, @Ctx() { razorpay }: MyContext): Promise<string> {
+  @Mutation(() => RazorpayResponse)
+  async razorpaypayment(
+    @Arg("id") carId: number,
+    @Ctx() { razorpay }: MyContext,
+  ): Promise<RazorpayResponse> {
     const car = await Post.findOne(carId);
 
     if (!car) {
-      return JSON.stringify({ error: "Car not found with the ID , please retry afer sometime !" });
+      return { errors: "Car not found with the ID , please retry afer sometime !" };
     }
 
     const options = {
@@ -123,8 +178,9 @@ export class UserResolver {
     try {
       response = await razorpay.orders.create(options);
     } catch (err) {
-      return JSON.stringify({ error: err });
+      return { errors: err };
     }
-    return JSON.stringify(response);
+    console.log(response);
+    return { paymentResponse: response };
   }
 }
