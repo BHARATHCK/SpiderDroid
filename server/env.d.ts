@@ -9,5 +9,6 @@ declare namespace NodeJS {
     REDIS_SESSION_SECRET: string;
     RAZORPAY_KEY: string;
     RAZORPAY_SECRET: string;
+    RAZORPAY_WEBHOOK_SECRET: string;
   }
 }

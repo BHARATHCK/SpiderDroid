@@ -17,6 +17,7 @@
         "@types/ioredis": "^4.27.2",
         "apollo-server-express": "^3.3.0",
         "argon2": "^0.28.2",
+        "body-parser": "^1.19.0",
         "connect-redis": "^6.0.0",
         "cross-fetch": "^3.1.4",
         "dotenv-safe": "^8.2.0",

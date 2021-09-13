@@ -15,6 +15,7 @@ import session from "express-session";
 import connectRedis from "connect-redis";
 import { Destination } from "./entities/Destination";
 import Razorpay from "razorpay";
+const bodyParser = require("body-parser");
 
 const main = async () => {
   createConnection({
@@ -31,6 +32,9 @@ const main = async () => {
 
   // Setup expres server
   const app = express();
+
+  // create application/json parser
+  const jsonParser = bodyParser.json();
 
   // Redis Client
   const redis = new Redis();
@@ -77,6 +81,33 @@ const main = async () => {
 
   // Apply to express middleware
   apolloServer.applyMiddleware({ app });
+
+  console.log("Starting verification *********************");
+  // Rarzorpy WebHook API - Rest
+  app.post("/payment-verification", jsonParser, (req, res) => {
+    // do a validation
+    const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
+
+    console.log("Verify ******* body ", req.body);
+    console.log("Verify ******* Secret ", secret);
+
+    const crypto = require("crypto");
+
+    const shasum = crypto.createHmac("sha256", secret);
+    shasum.update(JSON.stringify(req.body));
+    const digest = shasum.digest("hex");
+
+    console.log(digest, req.headers["x-razorpay-signature"]);
+
+    if (digest === req.headers["x-razorpay-signature"]) {
+      console.log("request is legit");
+      // process it
+      //require("fs").writeFileSync("payment1.json", JSON.stringify(req.body, null, 4));
+    } else {
+      // pass it
+    }
+    res.json({ status: "ok" });
+  });
 
   app.listen(parseInt(process.env.SERVER_PORT || ""), () => {
     console.log("Server is up !!");
