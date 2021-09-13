@@ -1,3 +1,4 @@
+import { Button } from "@chakra-ui/button";
 import { StarIcon } from "@chakra-ui/icons";
 import { Img } from "@chakra-ui/image";
 import { Box, Divider, Flex, Heading, Spacer, Stack, Text } from "@chakra-ui/layout";
@@ -32,13 +33,15 @@ const RentCar = () => {
     <>
       <NavBar />
       {data ? (
-        <Carouselize
-          children={data.post.imageUrl.map((image, index) => (
-            <div className={styles.embla__slide} key={index}>
-              <Img src={image} />
-            </div>
-          ))}
-        />
+        <Box>
+          <Carouselize
+            children={data.post.imageUrl.map((image, index) => (
+              <div className={styles.embla__slide} key={index}>
+                <Img src={image} />
+              </div>
+            ))}
+          />
+        </Box>
       ) : (
         ""
       )}
@@ -114,6 +117,9 @@ const RentCar = () => {
                       {data.post.destination.destinationName}
                     </option>
                   </Select>
+                </Box>
+                <Box mt={10} minW="70%">
+                  <Button colorScheme="red">Continue &bull; {data.post.carCostPerDay}</Button>
                 </Box>
               </Flex>
             </Box>

@@ -40,7 +40,14 @@ const Carouselize: React.FC<Props> = ({ children }) => {
         ""
       ) : (
         <Box>
-          <ChevronRightIcon w={8} h={8} color="black.500" onClick={scrollNext} cursor="pointer" />
+          <ChevronRightIcon
+            w={8}
+            h={8}
+            color="black.500"
+            onClick={scrollNext}
+            cursor="pointer"
+            zIndex={1000}
+          />
         </Box>
       )}
     </Flex>
