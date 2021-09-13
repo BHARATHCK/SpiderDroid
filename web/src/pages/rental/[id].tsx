@@ -1,4 +1,3 @@
-import { Button } from "@chakra-ui/button";
 import { StarIcon } from "@chakra-ui/icons";
 import { Img } from "@chakra-ui/image";
 import { Box, Divider, Flex, Heading, Spacer, Stack, Text } from "@chakra-ui/layout";
@@ -12,7 +11,6 @@ import Carouselize from "../../components/Carouselize";
 import Layout from "../../components/Layout";
 import NavBar from "../../components/NavBar";
 import PaymentButton from "../../components/Payment";
-import MakePayment from "../../components/Payment";
 import { usePostQuery } from "../../generated/graphql";
 
 const RentCar = () => {
