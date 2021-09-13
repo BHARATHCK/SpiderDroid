@@ -46,12 +46,6 @@ const main = async () => {
 
   // cors
   // set cors
-  app.use(
-    cors({
-      origin: [typeof process.env.WEB_APP_URL === "string" ? process.env.WEB_APP_URL : ""],
-      credentials: true,
-    }),
-  );
 
   // Redis session
   app.use(
