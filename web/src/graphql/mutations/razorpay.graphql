@@ -1,0 +1,17 @@
+mutation RazorpayPayment($carId: Float!) {
+  razorpaypayment(id: $carId) {
+    errors
+    paymentResponse {
+      id
+      amount_paid
+      amount
+      status
+      receipt
+      currency
+      created_at
+      attempts
+      amount_due
+      entity
+    }
+  }
+}

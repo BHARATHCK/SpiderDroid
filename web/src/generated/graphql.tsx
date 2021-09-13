@@ -42,6 +42,7 @@ export type FieldError = {
 export type Mutation = {
   __typename?: 'Mutation';
   createPost: Scalars['Boolean'];
+  razorpaypayment: RazorpayResponse;
   register?: Maybe<UserResponse>;
 };
 
@@ -49,6 +50,11 @@ export type Mutation = {
 export type MutationCreatePostArgs = {
   imageurl: Array<Scalars['String']>;
   options: CreatePostType;
+};
+
+
+export type MutationRazorpaypaymentArgs = {
+  id: Scalars['Float'];
 };
 
 
@@ -103,6 +109,27 @@ export type QueryPostArgs = {
   id: Scalars['Float'];
 };
 
+export type RazorpayFields = {
+  __typename?: 'RazorpayFields';
+  amount?: Maybe<Scalars['Float']>;
+  amount_due?: Maybe<Scalars['Float']>;
+  amount_paid?: Maybe<Scalars['Float']>;
+  attempts?: Maybe<Scalars['Float']>;
+  created_at?: Maybe<Scalars['Float']>;
+  currency?: Maybe<Scalars['String']>;
+  entity?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  offer_id?: Maybe<Scalars['String']>;
+  receipt?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+};
+
+export type RazorpayResponse = {
+  __typename?: 'RazorpayResponse';
+  errors?: Maybe<Scalars['String']>;
+  paymentResponse?: Maybe<RazorpayFields>;
+};
+
 export type User = {
   __typename?: 'User';
   createdAt: Scalars['DateTime'];
@@ -126,6 +153,13 @@ export type UsernamePasswordRegistrationInput = {
   role: Scalars['String'];
   username: Scalars['String'];
 };
+
+export type RazorpayPaymentMutationVariables = Exact<{
+  carId: Scalars['Float'];
+}>;
+
+
+export type RazorpayPaymentMutation = { __typename?: 'Mutation', razorpaypayment: { __typename?: 'RazorpayResponse', errors?: Maybe<string>, paymentResponse?: Maybe<{ __typename?: 'RazorpayFields', id?: Maybe<string>, amount_paid?: Maybe<number>, amount?: Maybe<number>, status?: Maybe<string>, receipt?: Maybe<string>, currency?: Maybe<string>, created_at?: Maybe<number>, attempts?: Maybe<number>, amount_due?: Maybe<number>, entity?: Maybe<string> }> } };
 
 export type RegisterMutationVariables = Exact<{
   registerOptions: UsernamePasswordRegistrationInput;
@@ -160,6 +194,51 @@ export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
 export type PostsQuery = { __typename?: 'Query', browseByCarMake: Array<{ __typename?: 'Post', id: number, carMake: string, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', id: number, destinationName: string }> }> };
 
 
+export const RazorpayPaymentDocument = gql`
+    mutation RazorpayPayment($carId: Float!) {
+  razorpaypayment(id: $carId) {
+    errors
+    paymentResponse {
+      id
+      amount_paid
+      amount
+      status
+      receipt
+      currency
+      created_at
+      attempts
+      amount_due
+      entity
+    }
+  }
+}
+    `;
+export type RazorpayPaymentMutationFn = Apollo.MutationFunction<RazorpayPaymentMutation, RazorpayPaymentMutationVariables>;
+
+/**
+ * __useRazorpayPaymentMutation__
+ *
+ * To run a mutation, you first call `useRazorpayPaymentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRazorpayPaymentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [razorpayPaymentMutation, { data, loading, error }] = useRazorpayPaymentMutation({
+ *   variables: {
+ *      carId: // value for 'carId'
+ *   },
+ * });
+ */
+export function useRazorpayPaymentMutation(baseOptions?: Apollo.MutationHookOptions<RazorpayPaymentMutation, RazorpayPaymentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RazorpayPaymentMutation, RazorpayPaymentMutationVariables>(RazorpayPaymentDocument, options);
+      }
+export type RazorpayPaymentMutationHookResult = ReturnType<typeof useRazorpayPaymentMutation>;
+export type RazorpayPaymentMutationResult = Apollo.MutationResult<RazorpayPaymentMutation>;
+export type RazorpayPaymentMutationOptions = Apollo.BaseMutationOptions<RazorpayPaymentMutation, RazorpayPaymentMutationVariables>;
 export const RegisterDocument = gql`
     mutation Register($registerOptions: UsernamePasswordRegistrationInput!) {
   register(options: $registerOptions) {
