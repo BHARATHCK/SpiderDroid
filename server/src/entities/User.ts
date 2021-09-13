@@ -7,6 +7,7 @@ import {
   BaseEntity,
   OneToMany,
 } from "typeorm";
+import { Payment } from "./Payment";
 import { Post } from "./Post";
 
 export type UserRoleType = "browse" | "host";
@@ -48,4 +49,7 @@ export class User extends BaseEntity {
   @Field(() => [Post])
   @OneToMany(() => Post, (post) => post.creator)
   posts: Post[];
+
+  @OneToMany(() => Payment, (payment) => payment.orderBy)
+  payments: Payment[];
 }
