@@ -11,6 +11,8 @@ import styles from "../../components/Carousel.module.css";
 import Carouselize from "../../components/Carouselize";
 import Layout from "../../components/Layout";
 import NavBar from "../../components/NavBar";
+import PaymentButton from "../../components/Payment";
+import MakePayment from "../../components/Payment";
 import { usePostQuery } from "../../generated/graphql";
 
 const RentCar = () => {
@@ -119,7 +121,7 @@ const RentCar = () => {
                   </Select>
                 </Box>
                 <Box mt={10} minW="70%">
-                  <Button colorScheme="red">Continue &bull; {data.post.carCostPerDay}</Button>
+                  <PaymentButton postData={data} />
                 </Box>
               </Flex>
             </Box>
