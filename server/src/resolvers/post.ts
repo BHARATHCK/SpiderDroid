@@ -54,8 +54,6 @@ export class PostResolver {
     @Arg("filterCategory") filterCategory: string,
     @Arg("filterCriteria") filterCriteria: string,
   ): Promise<Post[] | undefined> {
-    console.log("FILTER POST INVOKED *************");
-    console.log("ARGS -----------> ", filterCategory, "   --  ", filterCriteria);
     if (filterCategory.includes("carMake")) {
       return await Post.find({ where: { carMake: filterCriteria } });
     } else if (filterCategory.includes("destination")) {

@@ -88,16 +88,11 @@ const main = async () => {
     // do a validation
     const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
 
-    console.log("Verify ******* body ", JSON.stringify(req.body));
-    console.log("Verify ******* Secret ", secret);
-
     const crypto = require("crypto");
 
     const shasum = crypto.createHmac("sha256", secret);
     shasum.update(JSON.stringify(req.body));
     const digest = shasum.digest("hex");
-
-    console.log(digest, req.headers["x-razorpay-signature"]);
 
     if (digest === req.headers["x-razorpay-signature"]) {
       // process - update it in DB.

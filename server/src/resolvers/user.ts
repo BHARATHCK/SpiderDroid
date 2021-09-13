@@ -18,6 +18,12 @@ class FieldError {
 }
 
 @ObjectType()
+class PaymentStatus {
+  @Field()
+  status: boolean;
+}
+
+@ObjectType()
 class RazorpayFields {
   @Field({ nullable: true })
   id: string;
@@ -197,5 +203,15 @@ export class UserResolver {
     }).save();
 
     return { paymentResponse: response };
+  }
+
+  @Query(() => PaymentStatus)
+  async paymentstatus(@Arg("orderId") orderId: string): Promise<PaymentStatus> {
+    let paymentVerified = false;
+    const payment = await Payment.findOne({ where: { orderId: orderId } });
+    if (payment?.verificationStatus) {
+      paymentVerified = true;
+    }
+    return { status: paymentVerified };
   }
 }

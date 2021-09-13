@@ -62,6 +62,11 @@ export type MutationRegisterArgs = {
   options: UsernamePasswordRegistrationInput;
 };
 
+export type PaymentStatus = {
+  __typename?: 'PaymentStatus';
+  status: Scalars['Boolean'];
+};
+
 export type Post = {
   __typename?: 'Post';
   carCostPerDay?: Maybe<Scalars['Float']>;
@@ -88,6 +93,7 @@ export type Query = {
   hello: Scalars['String'];
   login?: Maybe<User>;
   me?: Maybe<User>;
+  paymentstatus: PaymentStatus;
   post?: Maybe<Post>;
   posts?: Maybe<Array<Post>>;
 };
@@ -102,6 +108,11 @@ export type QueryFilterPostArgs = {
 export type QueryLoginArgs = {
   password: Scalars['String'];
   usernameoremail: Scalars['String'];
+};
+
+
+export type QueryPaymentstatusArgs = {
+  orderId: Scalars['String'];
 };
 
 
@@ -180,6 +191,13 @@ export type FilterPostQueryVariables = Exact<{
 
 
 export type FilterPostQuery = { __typename?: 'Query', filterPost: Array<{ __typename?: 'Post', id: number, carMake: string, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', id: number, destinationName: string }> }> };
+
+export type PaymentStatusQueryVariables = Exact<{
+  orderId: Scalars['String'];
+}>;
+
+
+export type PaymentStatusQuery = { __typename?: 'Query', paymentstatus: { __typename?: 'PaymentStatus', status: boolean } };
 
 export type PostQueryVariables = Exact<{
   postId: Scalars['Float'];
@@ -362,6 +380,41 @@ export function useFilterPostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type FilterPostQueryHookResult = ReturnType<typeof useFilterPostQuery>;
 export type FilterPostLazyQueryHookResult = ReturnType<typeof useFilterPostLazyQuery>;
 export type FilterPostQueryResult = Apollo.QueryResult<FilterPostQuery, FilterPostQueryVariables>;
+export const PaymentStatusDocument = gql`
+    query PaymentStatus($orderId: String!) {
+  paymentstatus(orderId: $orderId) {
+    status
+  }
+}
+    `;
+
+/**
+ * __usePaymentStatusQuery__
+ *
+ * To run a query within a React component, call `usePaymentStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePaymentStatusQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePaymentStatusQuery({
+ *   variables: {
+ *      orderId: // value for 'orderId'
+ *   },
+ * });
+ */
+export function usePaymentStatusQuery(baseOptions: Apollo.QueryHookOptions<PaymentStatusQuery, PaymentStatusQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PaymentStatusQuery, PaymentStatusQueryVariables>(PaymentStatusDocument, options);
+      }
+export function usePaymentStatusLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PaymentStatusQuery, PaymentStatusQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PaymentStatusQuery, PaymentStatusQueryVariables>(PaymentStatusDocument, options);
+        }
+export type PaymentStatusQueryHookResult = ReturnType<typeof usePaymentStatusQuery>;
+export type PaymentStatusLazyQueryHookResult = ReturnType<typeof usePaymentStatusLazyQuery>;
+export type PaymentStatusQueryResult = Apollo.QueryResult<PaymentStatusQuery, PaymentStatusQueryVariables>;
 export const PostDocument = gql`
     query Post($postId: Float!) {
   post(id: $postId) {

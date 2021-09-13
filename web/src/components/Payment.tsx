@@ -3,6 +3,7 @@ import { Button } from "@chakra-ui/button";
 import { CloseButton } from "@chakra-ui/close-button";
 import { Box } from "@chakra-ui/layout";
 import { Form, Formik } from "formik";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { PostQuery, RazorpayFields, useRazorpayPaymentMutation } from "../generated/graphql";
 
@@ -25,7 +26,6 @@ const loadScript = () => {
 
 const MakePayment = async (serverPaymentOptions: RazorpayFields) => {
   const res = await loadScript();
-
   if (!res) {
     return <Box>Razorpay script failed to load !!</Box>;
   }
@@ -59,6 +59,7 @@ interface PaymentProps {
 
 const PaymentButton: React.FC<PaymentProps> = ({ postData }) => {
   const [renderError, setRenderError] = useState(null);
+  const router = useRouter();
 
   const closePopUp = () => {
     setRenderError(false);
@@ -74,7 +75,6 @@ const PaymentButton: React.FC<PaymentProps> = ({ postData }) => {
       <Formik
         initialValues={{ username: "", email: "", password: "", role: "" }}
         onSubmit={async () => {
-          console.log("MAKING PAYMENTS !!! ");
           const response = await startPayment({
             variables: { carId: postData.post.id },
           });
@@ -85,7 +85,7 @@ const PaymentButton: React.FC<PaymentProps> = ({ postData }) => {
           } else if (response.data.razorpaypayment.paymentResponse) {
             // Start making payment
             const res = await MakePayment(response.data.razorpaypayment.paymentResponse);
-            //router.push("/");
+            router.push(`/verify-payment/${response.data.razorpaypayment.paymentResponse.id}`);
           }
         }}
       >
