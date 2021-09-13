@@ -15,7 +15,8 @@ import session from "express-session";
 import connectRedis from "connect-redis";
 import { Destination } from "./entities/Destination";
 import Razorpay from "razorpay";
-const bodyParser = require("body-parser");
+import { Payment } from "./entities/Payment";
+import bodyParser from "body-parser";
 
 const main = async () => {
   createConnection({
@@ -27,7 +28,7 @@ const main = async () => {
     database: process.env.POSTGRES_DB,
     logging: !__PROD__, // False in production
     synchronize: !__PROD__, // False in production environment
-    entities: [User, Post, Destination],
+    entities: [User, Post, Destination, Payment],
   });
 
   // Setup expres server
@@ -82,13 +83,12 @@ const main = async () => {
   // Apply to express middleware
   apolloServer.applyMiddleware({ app });
 
-  console.log("Starting verification *********************");
   // Rarzorpy WebHook API - Rest
   app.post("/payment-verification", jsonParser, (req, res) => {
     // do a validation
     const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
 
-    console.log("Verify ******* body ", req.body);
+    console.log("Verify ******* body ", JSON.stringify(req.body));
     console.log("Verify ******* Secret ", secret);
 
     const crypto = require("crypto");
@@ -100,9 +100,13 @@ const main = async () => {
     console.log(digest, req.headers["x-razorpay-signature"]);
 
     if (digest === req.headers["x-razorpay-signature"]) {
-      console.log("request is legit");
-      // process it
-      //require("fs").writeFileSync("payment1.json", JSON.stringify(req.body, null, 4));
+      // process - update it in DB.
+      Payment.createQueryBuilder()
+        .update("payment")
+        .set({ verificationStatus: true })
+        // eslint-disable-next-line quotes
+        .where('"orderId" = :id', { id: req.body.payload.payment.entity.order_id })
+        .execute();
     } else {
       // pass it
     }

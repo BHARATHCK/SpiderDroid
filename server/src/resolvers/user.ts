@@ -6,6 +6,7 @@ import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver } from "type-gra
 import { User } from "../entities/User";
 import { validateRegister } from "../utils/validateRegister";
 import { UsernamePasswordRegistrationInput } from "./usernamePasswordRegistrationInput";
+import { Payment } from "../entities/Payment";
 
 @ObjectType()
 class FieldError {
@@ -159,7 +160,7 @@ export class UserResolver {
   @Mutation(() => RazorpayResponse)
   async razorpaypayment(
     @Arg("id") carId: number,
-    @Ctx() { razorpay }: MyContext,
+    @Ctx() { razorpay, req }: MyContext,
   ): Promise<RazorpayResponse> {
     const car = await Post.findOne(carId);
 
@@ -174,13 +175,27 @@ export class UserResolver {
       payment_capture: 1,
     };
 
-    let response;
+    let response: RazorpayFields;
     try {
       response = await razorpay.orders.create(options);
     } catch (err) {
       return { errors: err };
     }
+
     console.log(response);
+    // Since response is returned , store it in DB [But not yet verified]
+    Payment.create({
+      amount: response.amount,
+      amountDue: response.amount_due,
+      amountPaid: response.amount_paid,
+      attempts: response.attempts,
+      offerId: response.offer_id,
+      orderId: response.id,
+      receipt: response.receipt,
+      orderBy: await User.findOne(req.session.userId),
+      status: response.status,
+    }).save();
+
     return { paymentResponse: response };
   }
 }
