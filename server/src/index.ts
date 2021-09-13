@@ -14,6 +14,7 @@ import Redis from "ioredis";
 import session from "express-session";
 import connectRedis from "connect-redis";
 import { Destination } from "./entities/Destination";
+import Razorpay from "razorpay";
 
 const main = async () => {
   createConnection({
@@ -57,12 +58,18 @@ const main = async () => {
     }),
   );
 
+  // initialize Razorpay
+  const razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY,
+    key_secret: process.env.RAZORPAY_SECRET,
+  });
+
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [HelloResolver, UserResolver, PostResolver],
       validate: false,
     }),
-    context: ({ req, res }) => ({ req, res, redis }),
+    context: ({ req, res }) => ({ req, res, redis, razorpay }),
   });
 
   // Start apolloServer

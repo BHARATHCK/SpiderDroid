@@ -7,5 +7,7 @@ declare namespace NodeJS {
     POSTGRES_PORT: string;
     SERVER_PORT: string;
     REDIS_SESSION_SECRET: string;
+    RAZORPAY_KEY: string;
+    RAZORPAY_SECRET: string;
   }
 }
