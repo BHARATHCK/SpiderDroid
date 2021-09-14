@@ -126,7 +126,7 @@ const AllStarHostsSection = () => {
 
   return (
     <Carouselize
-      children={person.map((p) => {
+      children={person.map((p, index) => {
         return (
           <div
             className={
@@ -135,6 +135,7 @@ const AllStarHostsSection = () => {
             key={p.id}
           >
             <Box
+              key={p.id + index}
               mt={20}
               boxShadow="lg"
               p="6"
@@ -165,8 +166,8 @@ const AllStarHostsSection = () => {
               </Flex>
               <Flex direction="column">
                 <Flex direction="row">
-                  {starsRated.map(() => {
-                    return <StarIcon w={4} h={4} color="blue.500" />;
+                  {starsRated.map((starIcn, index) => {
+                    return <StarIcon w={4} h={4} color="blue.500" key={index} />;
                   })}
                 </Flex>
                 <Text

@@ -42,13 +42,14 @@ const BrowseCarouselSection: React.FC<Props> = ({ itemsToFetch }) => {
       ) : (
         <Box maxW="100vw">
           <Carouselize
-            key="browseByCustomQuery"
+            key="browseByCars"
             children={
               carData
-                ? carData.browseByCarMake.map((car) => (
+                ? carData.browseByCarMake.map((car, index) => (
                     <div className={styles.embla__slide_cars} key={car.id}>
                       <div className={styles.embla__slide__inner}>
                         <Box
+                          key={car.id + index}
                           onClick={() => router.push(`/browse/${car.carMake}?category=carMake`)}
                           cursor="pointer"
                           mr={2}

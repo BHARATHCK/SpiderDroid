@@ -43,4 +43,4 @@ const Index = () => (
   </>
 );
 
-export default withApolloClient()(Index);
+export default withApolloClient({ ssr: true })(Index);
