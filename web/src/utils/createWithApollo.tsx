@@ -78,7 +78,7 @@ const initApolloClient = (
   initialState: NormalizedCacheObject,
   ctx: NextPageContext | undefined,
 ) => {
-  const apolloClient = (ctx) =>
+  const apolloClient = (ctx: NextPageContext) =>
     typeof acp === "function" ? acp(ctx) : (acp as ApolloClient<NormalizedCacheObject>);
 
   // Make sure to create a new client for every server-side request so that data
@@ -103,7 +103,7 @@ const initApolloClient = (
  * @param  {Boolean} [withApolloOptions.ssr=false]
  * @returns {(PageComponent: NextPage<P>) => ComponentClass<P> | FunctionComponent<P>}
  */
-export function createWithApollo<P, IP>(ac: ApolloClientParam) {
+export function withApollo<P, IP>(ac: ApolloClientParam) {
   return ({ ssr = false } = {}) =>
     (PageComponent: NextPage<P, IP>) => {
       const WithApollo = (pageProps: P & WithApolloOptions) => {

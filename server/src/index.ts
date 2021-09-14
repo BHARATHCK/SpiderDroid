@@ -39,25 +39,28 @@ const main = async () => {
   const jsonParser = bodyParser.json();
 
   // Redis Client
-  const redis = new Redis({});
+  const redis = new Redis({
+    host: process.env.REDIS_DB_HOST,
+    password: process.env.REDIS_DB_PASSWORD,
+    port: parseInt(process.env.REDIS_DB_PORT ? process.env.REDIS_DB_PORT : ""),
+  });
 
   // Redis store
   const redisStore = connectRedis(session);
 
   // cors
+  const corsOptions = {
+    origin: process.env.WEB_APP_URL,
+    credentials: true, // <-- REQUIRED backend setting
+  };
+
   // set cors
-  // set cors
-  app.use(
-    cors({
-      origin: [process.env.WEB_APP_URL === "string" ? process.env.WEB_APP_URL : ""],
-      credentials: true,
-    }),
-  );
+  app.use(cors(corsOptions));
 
   // Redis session
   app.use(
     session({
-      name: "qid",
+      name: process.env.COOKIE_NAME,
       // eslint-disable-next-line new-cap
       store: new redisStore({
         client: redis,
