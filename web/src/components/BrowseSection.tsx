@@ -33,7 +33,6 @@ const BrowseCarouselSection: React.FC<Props> = ({ itemsToFetch }) => {
   }
 
   if (customError) {
-    console.log(customError);
     return <Box>Something Went wrong with the query !!</Box>;
   }
   return (

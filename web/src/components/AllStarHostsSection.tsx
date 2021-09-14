@@ -1,14 +1,15 @@
-import { ChevronLeftIcon, ChevronRightIcon, StarIcon } from "@chakra-ui/icons";
-import { Avatar, Box, Flex, IconButton, Text, useMediaQuery, WrapItem } from "@chakra-ui/react";
-import { useEmblaCarousel } from "embla-carousel/react";
+import { StarIcon } from "@chakra-ui/icons";
+import { Avatar, Box, Flex, Text, WrapItem } from "@chakra-ui/react";
 import Image from "next/image";
-import React, { useCallback } from "react";
+import React from "react";
 import medal from "../../assets/ribbon.png";
 import styles from "./Carousel.module.css";
 import Carouselize from "./Carouselize";
+import { useViewport } from "./ViewPortHook";
 
 const AllStarHostsSection = () => {
-  const [isMobile] = useMediaQuery("(max-width: 500px)");
+  const { width } = useViewport();
+  const breakpoint = 700;
   let starsRated = [1, 2, 3, 4, 5];
 
   const person = [
@@ -128,7 +129,9 @@ const AllStarHostsSection = () => {
       children={person.map((p) => {
         return (
           <div
-            className={isMobile ? styles.embla__slide_cars_mobile : styles.embla__slide_cars}
+            className={
+              width < breakpoint ? styles.embla__slide_cars_mobile : styles.embla__slide_cars
+            }
             key={p.id}
           >
             <Box

@@ -1,7 +1,9 @@
-import { Box, Flex, Link, useMediaQuery } from "@chakra-ui/react";
+import { Box, Flex, Link } from "@chakra-ui/react";
+import { useViewport } from "./ViewPortHook";
 
 const ConcludeSection = () => {
-  const [isMobile] = useMediaQuery("(max-width: 500px)");
+  const { width } = useViewport();
+  const breakpoint = 700;
 
   return (
     <Box>
@@ -9,7 +11,7 @@ const ConcludeSection = () => {
         ml="15%"
         position="absolute"
         mt="10%"
-        fontSize={isMobile ? 20 : 30}
+        fontSize={width < breakpoint ? 20 : 30}
         textDecoration="underline"
         color="red"
       >
@@ -150,7 +152,7 @@ const ConcludeSection = () => {
         ml="40%"
         position="absolute"
         mt="-10%"
-        fontSize={isMobile ? 20 : 30}
+        fontSize={width < breakpoint ? 20 : 30}
         textDecoration="underline"
         color="red"
       >

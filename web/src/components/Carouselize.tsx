@@ -1,12 +1,14 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import { Box, Flex, IconButton, useMediaQuery } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { useEmblaCarousel } from "embla-carousel/react";
 import { Props } from "framer-motion/types/types";
 import React, { useCallback } from "react";
 import styles from "./Carousel.module.css";
+import { useViewport } from "./ViewPortHook";
 
 const Carouselize: React.FC<Props> = ({ children }) => {
-  const [isMobile] = useMediaQuery("(max-width: 700px)");
+  const { width } = useViewport();
+  const breakpoint = 700;
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     draggable: true,
@@ -21,11 +23,10 @@ const Carouselize: React.FC<Props> = ({ children }) => {
       emblaApi.scrollNext();
     }
   }, [emblaApi]);
-  console.log("EMBLA CAROUSEL ********** ", isMobile);
 
   return (
     <Flex alignItems="center">
-      {isMobile ? (
+      {width < breakpoint ? (
         ""
       ) : (
         <Box>
@@ -39,7 +40,7 @@ const Carouselize: React.FC<Props> = ({ children }) => {
           </Box>
         </div>
       </div>
-      {isMobile ? (
+      {width < breakpoint ? (
         ""
       ) : (
         <Box>

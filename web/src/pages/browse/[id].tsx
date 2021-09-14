@@ -1,19 +1,19 @@
 import { StarIcon } from "@chakra-ui/icons";
 import { Image } from "@chakra-ui/image";
-import { Badge, Box, Flex, Grid } from "@chakra-ui/layout";
-import { useMediaQuery } from "@chakra-ui/media-query";
-import { Skeleton } from "@chakra-ui/skeleton";
+import { Badge, Box, Grid } from "@chakra-ui/layout";
 import { Spinner } from "@chakra-ui/spinner";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import NavBar from "../../components/NavBar";
-import { FilterPostQuery, useFilterPostQuery } from "../../generated/graphql";
+import { useViewport } from "../../components/ViewPortHook";
+import { useFilterPostQuery } from "../../generated/graphql";
 import { withApolloClient } from "../../utils/apollo-client";
 
 const BrowseCars = ({}) => {
-  const [isMobile] = useMediaQuery("(max-width: 500px)");
-  const [isTablet] = useMediaQuery("(max-width: 800px)");
+  const { width } = useViewport();
+  const breakpoint = 700;
+  const breakPointTablet = 900;
+
   const router = useRouter();
 
   // If while rehydrating , the router is undefined then do not
@@ -30,10 +30,6 @@ const BrowseCars = ({}) => {
     },
     notifyOnNetworkStatusChange: true,
   });
-
-  console.log(router.query);
-  console.log("category : ", category, "   -    pid : ", id);
-  console.log(category);
 
   return (
     <>
@@ -53,9 +49,9 @@ const BrowseCars = ({}) => {
             </Box>
           ) : (
             <Grid
-              templateColumns={`repeat( ${isMobile ? 2 : 3}, 1fr)`}
+              templateColumns={`repeat( ${width < breakpoint ? 2 : 3}, 1fr)`}
               gap={6}
-              m={isMobile ? 2 : isTablet ? 4 : 0}
+              m={width < breakpoint ? 2 : width < breakPointTablet ? 4 : 0}
             >
               {data.filterPost.map((post) => (
                 <Box

@@ -1,12 +1,14 @@
-import { Box, Button, Flex, Heading, Link, Text, useMediaQuery } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Link, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import React from "react";
 import travelogueGif from "../../assets/featuredTravelogue.gif";
+import { useViewport } from "./ViewPortHook";
 
 const TravelogueSection = () => {
-  const [isMobile] = useMediaQuery("(max-width: 500px)");
+  const { width } = useViewport();
+  const breakpoint = 700;
 
-  const transformCard = isMobile ? "translate(27%,-30%);" : "translate(-62%,-71%)";
+  const transformCard = width < breakpoint ? "translate(27%,-30%);" : "translate(-62%,-71%)";
 
   return (
     <Box mt={20}>
@@ -19,14 +21,14 @@ const TravelogueSection = () => {
         <Button mt={20} colorScheme="red">
           Explore Travelogues
         </Button>
-        <Box mt={20} mr={isMobile ? 20 : 40}>
+        <Box mt={20} mr={width < breakpoint ? 20 : 40}>
           <Image src={travelogueGif}></Image>
         </Box>
         <Box
           backgroundColor="black"
           color="white"
           transform={transformCard}
-          maxW={isMobile ? "280px" : ""}
+          maxW={width < breakpoint ? "280px" : ""}
         >
           <Flex
             justifyContent="left"
