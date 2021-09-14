@@ -4,8 +4,8 @@ import { Box, Divider, Flex, Heading, Spacer, Stack, Text } from "@chakra-ui/lay
 import { Select } from "@chakra-ui/select";
 import { Spinner } from "@chakra-ui/spinner";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import DateTimePicker from "react-datetime-picker/dist/entry.nostyle";
+import { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
 import styles from "../../components/Carousel.module.css";
 import Carouselize from "../../components/Carouselize";
 import Layout from "../../components/Layout";
@@ -15,9 +15,35 @@ import { usePostQuery } from "../../generated/graphql";
 import { withApolloClient } from "../../utils/apollo-client";
 
 const RentCar = () => {
-  const [userDateFrom, setUserDateFrom] = useState(new Date());
-  const [userDateTo, setUserDateTo] = useState(new Date());
+  // From Date
+  let minFromDay = new Date();
+  minFromDay.setDate(minFromDay.getDate() + 1);
+  let maxFromDay = new Date();
+  maxFromDay.setDate(maxFromDay.getDate() + 7);
+
+  // Set state for fromDate
+  const [fromDate, setFromDate] = useState(minFromDay);
+
+  // To Date
+  let minToDay = new Date();
+  minToDay.setDate(fromDate.getDate() + 1);
+  let maxToDay = new Date();
+  maxToDay.setDate(fromDate.getDate() + 7);
+
+  // Set State for toDate
+  const [toDate, setToDate] = useState(minToDay);
+
+  const handleFromDateChange = (fromDate) => setFromDate(fromDate);
+  const handleToDateChange = (toDate) => setToDate(toDate);
+
+  useEffect(() => {
+    setToDate(minToDay);
+  }, [fromDate]);
+
   const router = useRouter();
+
+  console.log("FROM DATE : " + fromDate);
+  console.log("To DATE : " + toDate);
 
   const { id } = router.query;
 
@@ -101,12 +127,24 @@ const RentCar = () => {
                 <Divider m={5} />
                 <Box>
                   <Text mb={2}>Trip Start</Text>
-                  <DateTimePicker onChange={setUserDateFrom} value={userDateFrom} />
+                  <DatePicker
+                    minDate={minFromDay}
+                    maxDate={maxFromDay}
+                    selected={fromDate}
+                    onChange={handleFromDateChange}
+                    showTimeSelect
+                  />
                 </Box>
                 <Spacer />
                 <Box mt={10}>
                   <Text mb={2}>Trip End</Text>
-                  <DateTimePicker onChange={setUserDateTo} value={userDateTo} />
+                  <DatePicker
+                    minDate={minToDay}
+                    maxDate={maxToDay}
+                    selected={toDate}
+                    onChange={handleToDateChange}
+                    showTimeSelect
+                  />
                 </Box>
                 <Box mt={10}>
                   <Text>PickUp &amp; Return Location</Text>

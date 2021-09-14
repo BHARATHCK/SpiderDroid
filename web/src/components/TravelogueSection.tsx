@@ -28,7 +28,7 @@ const TravelogueSection = () => {
           backgroundColor="black"
           color="white"
           transform={transformCard}
-          maxW={width < breakpoint ? "280px" : ""}
+          maxW={width < breakpoint ? "250px" : ""}
         >
           <Flex
             justifyContent="left"

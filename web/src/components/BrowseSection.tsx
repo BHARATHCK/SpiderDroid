@@ -81,6 +81,7 @@ const BrowseCarouselSection: React.FC<Props> = ({ itemsToFetch }) => {
                     <div className={styles.embla__slide_cars} key={destination.id}>
                       <div className={styles.embla__slide__inner}>
                         <Box
+                          key={destination.id}
                           onClick={() =>
                             router.push(`/browse/${destination.id}?category=destination`)
                           }
