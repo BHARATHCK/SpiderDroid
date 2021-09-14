@@ -55,9 +55,11 @@ const MakePayment = async (serverPaymentOptions: RazorpayFields) => {
 
 interface PaymentProps {
   postData?: PostQuery;
+  fromDate?: Date;
+  toDate?: Date;
 }
 
-const PaymentButton: React.FC<PaymentProps> = ({ postData }) => {
+const PaymentButton: React.FC<PaymentProps> = ({ postData, fromDate, toDate }) => {
   const [renderError, setRenderError] = useState(null);
   const router = useRouter();
 
@@ -76,7 +78,11 @@ const PaymentButton: React.FC<PaymentProps> = ({ postData }) => {
         initialValues={{ username: "", email: "", password: "", role: "" }}
         onSubmit={async () => {
           const response = await startPayment({
-            variables: { carId: postData.post.id },
+            variables: {
+              carId: postData.post.id,
+              razorpaypaymentUserFromDate: fromDate,
+              razorpaypaymentUserToDate: toDate,
+            },
           });
 
           if (response.data.razorpaypayment.errors) {

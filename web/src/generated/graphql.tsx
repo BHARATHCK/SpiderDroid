@@ -55,6 +55,8 @@ export type MutationCreatePostArgs = {
 
 export type MutationRazorpaypaymentArgs = {
   id: Scalars['Float'];
+  userFromDate: Scalars['DateTime'];
+  userToDate: Scalars['DateTime'];
 };
 
 
@@ -166,6 +168,8 @@ export type UsernamePasswordRegistrationInput = {
 };
 
 export type RazorpayPaymentMutationVariables = Exact<{
+  razorpaypaymentUserToDate: Scalars['DateTime'];
+  razorpaypaymentUserFromDate: Scalars['DateTime'];
   carId: Scalars['Float'];
 }>;
 
@@ -213,8 +217,12 @@ export type PostsQuery = { __typename?: 'Query', browseByCarMake: Array<{ __type
 
 
 export const RazorpayPaymentDocument = gql`
-    mutation RazorpayPayment($carId: Float!) {
-  razorpaypayment(id: $carId) {
+    mutation RazorpayPayment($razorpaypaymentUserToDate: DateTime!, $razorpaypaymentUserFromDate: DateTime!, $carId: Float!) {
+  razorpaypayment(
+    userToDate: $razorpaypaymentUserToDate
+    userFromDate: $razorpaypaymentUserFromDate
+    id: $carId
+  ) {
     errors
     paymentResponse {
       id
@@ -246,6 +254,8 @@ export type RazorpayPaymentMutationFn = Apollo.MutationFunction<RazorpayPaymentM
  * @example
  * const [razorpayPaymentMutation, { data, loading, error }] = useRazorpayPaymentMutation({
  *   variables: {
+ *      razorpaypaymentUserToDate: // value for 'razorpaypaymentUserToDate'
+ *      razorpaypaymentUserFromDate: // value for 'razorpaypaymentUserFromDate'
  *      carId: // value for 'carId'
  *   },
  * });

@@ -127,24 +127,28 @@ const RentCar = () => {
                 <Divider m={5} />
                 <Box>
                   <Text mb={2}>Trip Start</Text>
-                  <DatePicker
-                    minDate={minFromDay}
-                    maxDate={maxFromDay}
-                    selected={fromDate}
-                    onChange={handleFromDateChange}
-                    showTimeSelect
-                  />
+                  <Box border="1px">
+                    <DatePicker
+                      minDate={minFromDay}
+                      maxDate={maxFromDay}
+                      selected={fromDate}
+                      onChange={handleFromDateChange}
+                      showTimeSelect
+                    />
+                  </Box>
                 </Box>
                 <Spacer />
                 <Box mt={10}>
                   <Text mb={2}>Trip End</Text>
-                  <DatePicker
-                    minDate={minToDay}
-                    maxDate={maxToDay}
-                    selected={toDate}
-                    onChange={handleToDateChange}
-                    showTimeSelect
-                  />
+                  <Box border="1px">
+                    <DatePicker
+                      minDate={minToDay}
+                      maxDate={maxToDay}
+                      selected={toDate}
+                      onChange={handleToDateChange}
+                      showTimeSelect
+                    />
+                  </Box>
                 </Box>
                 <Box mt={10}>
                   <Text>PickUp &amp; Return Location</Text>
@@ -158,7 +162,7 @@ const RentCar = () => {
                   </Select>
                 </Box>
                 <Box mt={10} minW="70%">
-                  <PaymentButton postData={data} />
+                  <PaymentButton postData={data} fromDate={fromDate} toDate={toDate} />
                 </Box>
               </Flex>
             </Box>

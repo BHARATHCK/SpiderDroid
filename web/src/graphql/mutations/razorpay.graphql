@@ -1,5 +1,13 @@
-mutation RazorpayPayment($carId: Float!) {
-  razorpaypayment(id: $carId) {
+mutation RazorpayPayment(
+  $razorpaypaymentUserToDate: DateTime!
+  $razorpaypaymentUserFromDate: DateTime!
+  $carId: Float!
+) {
+  razorpaypayment(
+    userToDate: $razorpaypaymentUserToDate
+    userFromDate: $razorpaypaymentUserFromDate
+    id: $carId
+  ) {
     errors
     paymentResponse {
       id
