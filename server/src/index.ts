@@ -27,8 +27,8 @@ const main = async () => {
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASS,
     database: process.env.POSTGRES_DB,
-    logging: !__PROD__, // False in production
-    synchronize: !__PROD__, // False in production environment
+    logging: true, // False in production
+    synchronize: true, // False in production environment
     entities: [User, Post, Destination, Payment],
   });
 
@@ -46,6 +46,13 @@ const main = async () => {
 
   // cors
   // set cors
+  // set cors
+  app.use(
+    cors({
+      origin: ["http://localhost:3000"],
+      credentials: true,
+    }),
+  );
 
   // Redis session
   app.use(
@@ -59,7 +66,9 @@ const main = async () => {
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
         httpOnly: true,
-        secure: !!__PROD__, // Only in prod while https is available
+        secure: __PROD__, //cookie only in https
+        sameSite: "lax",
+        domain: __PROD__ ? ".qovery.io" : undefined, // inproduction
       },
       saveUninitialized: false,
       secret: process.env.REDIS_SESSION_SECRET || "",
@@ -74,6 +83,7 @@ const main = async () => {
   });
 
   const apolloServer = new ApolloServer({
+    introspection: true,
     schema: await buildSchema({
       resolvers: [HelloResolver, UserResolver, PostResolver],
       validate: false,
@@ -85,7 +95,7 @@ const main = async () => {
   await apolloServer.start();
 
   // Apply to express middleware
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({ app, cors: false });
 
   // Rarzorpy WebHook API - Rest
   app.post("/payment-verification", jsonParser, (req, res) => {
