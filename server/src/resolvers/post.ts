@@ -57,7 +57,7 @@ export class PostResolver {
     if (filterCategory.includes("carMake")) {
       return await Post.find({ where: { carMake: filterCriteria } });
     } else if (filterCategory.includes("destination")) {
-      return await Post.find({ where: { destinationId: parseInt(filterCriteria) } });
+      return await Post.find({ where: { id: parseInt(filterCriteria) } });
     } else {
       return undefined;
     }
