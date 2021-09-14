@@ -6,7 +6,7 @@ import React, { useCallback } from "react";
 import styles from "./Carousel.module.css";
 
 const Carouselize: React.FC<Props> = ({ children }) => {
-  const [isMobile] = useMediaQuery("(max-width: 500px)");
+  const [isMobile] = useMediaQuery("(max-width: 700px)");
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     draggable: true,
@@ -21,6 +21,7 @@ const Carouselize: React.FC<Props> = ({ children }) => {
       emblaApi.scrollNext();
     }
   }, [emblaApi]);
+  console.log("EMBLA CAROUSEL ********** ", isMobile);
 
   return (
     <Flex alignItems="center">
@@ -33,7 +34,9 @@ const Carouselize: React.FC<Props> = ({ children }) => {
       )}
       <div className={styles.embla}>
         <div className={styles.embla__viewport} ref={emblaRef}>
-          <div className={styles.embla__container}>{children}</div>
+          <Box maxW="100vw" className={styles.embla__container}>
+            {children}
+          </Box>
         </div>
       </div>
       {isMobile ? (

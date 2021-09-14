@@ -30,6 +30,4 @@
     /* Make sure the slide takes up the space it needs */
     width: 70%;
     /* Choose desired width */
-    /* Choose desired spacing between slides and match it with the subtracted space from container */
-    padding-left: 14px;
 }
