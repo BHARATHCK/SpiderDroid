@@ -49,7 +49,7 @@ const main = async () => {
   // set cors
   app.use(
     cors({
-      origin: ["http://localhost:3000"],
+      origin: [process.env.WEB_APP_URL === "string" ? process.env.WEB_APP_URL : ""],
       credentials: true,
     }),
   );
