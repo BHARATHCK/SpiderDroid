@@ -18,6 +18,7 @@ import Razorpay from "razorpay";
 import { Payment } from "./entities/Payment";
 import bodyParser from "body-parser";
 import cors from "cors";
+import { Bookings } from "./entities/Bookings";
 
 const main = async () => {
   createConnection({
@@ -29,7 +30,7 @@ const main = async () => {
     database: process.env.POSTGRES_DB,
     logging: true, // False in production
     synchronize: true, // False in production environment
-    entities: [User, Post, Destination, Payment],
+    entities: [User, Post, Destination, Payment, Bookings],
   });
 
   // Setup expres server

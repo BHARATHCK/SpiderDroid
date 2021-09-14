@@ -7,6 +7,7 @@ import {
   BaseEntity,
   OneToMany,
 } from "typeorm";
+import { Bookings } from "./Bookings";
 import { Payment } from "./Payment";
 import { Post } from "./Post";
 
@@ -52,4 +53,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Payment, (payment) => payment.orderBy)
   payments: Payment[];
+
+  @OneToMany(() => Bookings, (bookings) => bookings.user)
+  bookings: Bookings[];
 }

@@ -7,6 +7,7 @@ import { User } from "../entities/User";
 import { validateRegister } from "../utils/validateRegister";
 import { UsernamePasswordRegistrationInput } from "./usernamePasswordRegistrationInput";
 import { Payment } from "../entities/Payment";
+import { Bookings } from "../entities/Bookings";
 
 @ObjectType()
 class FieldError {
@@ -166,6 +167,8 @@ export class UserResolver {
   @Mutation(() => RazorpayResponse)
   async razorpaypayment(
     @Arg("id") carId: number,
+    @Arg("userFromDate") userFromDate: Date,
+    @Arg("userToDate") userToDate: Date,
     @Ctx() { razorpay, req }: MyContext,
   ): Promise<RazorpayResponse> {
     const car = await Post.findOne(carId);
@@ -189,6 +192,7 @@ export class UserResolver {
     }
 
     console.log(response);
+    const currentUser = await User.findOne(req.session.userId);
     // Since response is returned , store it in DB [But not yet verified]
     Payment.create({
       amount: response.amount,
@@ -198,8 +202,19 @@ export class UserResolver {
       offerId: response.offer_id,
       orderId: response.id,
       receipt: response.receipt,
-      orderBy: await User.findOne(req.session.userId),
+      orderBy: currentUser,
       status: response.status,
+    }).save();
+
+    // Since payment started , add it to booking
+    Bookings.create({
+      carId: carId,
+      bookingStatus: "InProgress",
+      orderId: response.id,
+      ratingStatus: false,
+      user: currentUser,
+      fromDate: userFromDate,
+      toDate: userToDate,
     }).save();
 
     return { paymentResponse: response };
