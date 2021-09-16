@@ -17,11 +17,24 @@ export type Scalars = {
 };
 
 export type CreatePostType = {
+  Doors: Scalars['Float'];
+  Mileage: Scalars['Float'];
+  Miles: Scalars['Float'];
+  Seats: Scalars['Float'];
+  Transmission: Scalars['String'];
+  carCondition: Scalars['String'];
   carMake: Scalars['String'];
   carModel: Scalars['String'];
   carVin: Scalars['String'];
   carYear: Scalars['String'];
   category: Scalars['String'];
+  conditionDescription: Scalars['String'];
+  description: Scalars['String'];
+  destination: Scalars['String'];
+  fuelType: Scalars['String'];
+  imageUrl: Array<Scalars['String']>;
+  mediaSystem: Array<Scalars['String']>;
+  petSituation: Array<Scalars['String']>;
 };
 
 export type Destination = {
@@ -42,13 +55,13 @@ export type FieldError = {
 export type Mutation = {
   __typename?: 'Mutation';
   createPost: Scalars['Boolean'];
+  createpost: Scalars['Boolean'];
   razorpaypayment: RazorpayResponse;
   register?: Maybe<UserResponse>;
 };
 
 
 export type MutationCreatePostArgs = {
-  imageurl: Array<Scalars['String']>;
   options: CreatePostType;
 };
 
@@ -167,6 +180,13 @@ export type UsernamePasswordRegistrationInput = {
   username: Scalars['String'];
 };
 
+export type HostCarMutationVariables = Exact<{
+  options: CreatePostType;
+}>;
+
+
+export type HostCarMutation = { __typename?: 'Mutation', createPost: boolean };
+
 export type RazorpayPaymentMutationVariables = Exact<{
   razorpaypaymentUserToDate: Scalars['DateTime'];
   razorpaypaymentUserFromDate: Scalars['DateTime'];
@@ -216,6 +236,37 @@ export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
 export type PostsQuery = { __typename?: 'Query', browseByCarMake: Array<{ __typename?: 'Post', id: number, carMake: string, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', id: number, destinationName: string }> }> };
 
 
+export const HostCarDocument = gql`
+    mutation HostCar($options: CreatePostType!) {
+  createPost(options: $options)
+}
+    `;
+export type HostCarMutationFn = Apollo.MutationFunction<HostCarMutation, HostCarMutationVariables>;
+
+/**
+ * __useHostCarMutation__
+ *
+ * To run a mutation, you first call `useHostCarMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useHostCarMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [hostCarMutation, { data, loading, error }] = useHostCarMutation({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useHostCarMutation(baseOptions?: Apollo.MutationHookOptions<HostCarMutation, HostCarMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<HostCarMutation, HostCarMutationVariables>(HostCarDocument, options);
+      }
+export type HostCarMutationHookResult = ReturnType<typeof useHostCarMutation>;
+export type HostCarMutationResult = Apollo.MutationResult<HostCarMutation>;
+export type HostCarMutationOptions = Apollo.BaseMutationOptions<HostCarMutation, HostCarMutationVariables>;
 export const RazorpayPaymentDocument = gql`
     mutation RazorpayPayment($razorpaypaymentUserToDate: DateTime!, $razorpaypaymentUserFromDate: DateTime!, $carId: Float!) {
   razorpaypayment(

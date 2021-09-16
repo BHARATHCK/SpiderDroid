@@ -47,6 +47,8 @@ const RentCar = () => {
 
   const { id } = router.query;
 
+  console.log("ID::::::::: ", id);
+
   const { data, loading, error } = usePostQuery({
     variables: { postId: parseInt(typeof id === "string" ? id : "") },
     notifyOnNetworkStatusChange: true,
