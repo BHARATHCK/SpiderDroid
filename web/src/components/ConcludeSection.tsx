@@ -1,5 +1,6 @@
 import { Box, Flex, Link } from "@chakra-ui/react";
 import { useViewport } from "./ViewPortHook";
+import NextLink from "next/link";
 
 const ConcludeSection = () => {
   const { width } = useViewport();
@@ -148,16 +149,18 @@ const ConcludeSection = () => {
           ></path>
         </svg>
       </Flex>
-      <Link
-        ml="40%"
-        position="absolute"
-        mt="-10%"
-        fontSize={width < breakpoint ? 20 : 30}
-        textDecoration="underline"
-        color="red"
-      >
-        Become a Host
-      </Link>
+      <NextLink href="/hostcar">
+        <Link
+          ml="40%"
+          position="absolute"
+          mt="-10%"
+          fontSize={width < breakpoint ? 20 : 30}
+          textDecoration="underline"
+          color="red"
+        >
+          Become a Host
+        </Link>
+      </NextLink>
     </Box>
   );
 };
