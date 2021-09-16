@@ -1,5 +1,6 @@
 import { ChakraProvider, ColorModeProvider } from "@chakra-ui/react";
 import "../components/DateTimePicker.css";
+import "../components/DropZoneUploader.css";
 import ViewportProvider from "../components/ViewPortHook";
 import theme from "../theme";
 
