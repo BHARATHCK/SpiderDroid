@@ -19,6 +19,7 @@ import { Payment } from "./entities/Payment";
 import bodyParser from "body-parser";
 import cors from "cors";
 import { Bookings } from "./entities/Bookings";
+import { CarDetails } from "./entities/CarDetails";
 
 const main = async () => {
   createConnection({
@@ -30,7 +31,7 @@ const main = async () => {
     database: process.env.POSTGRES_DB,
     logging: true, // False in production
     synchronize: true, // False in production environment
-    entities: [User, Post, Destination, Payment, Bookings],
+    entities: [User, Post, Destination, Payment, Bookings, CarDetails],
   });
 
   // Setup expres server
@@ -51,7 +52,7 @@ const main = async () => {
 
   // cors
   const corsOptions = {
-    origin: process.env.WEB_APP_URL,
+    origin: process.env.WEB_APP_URL, //"https://studio.apollographql.com",
     credentials: true, // <-- REQUIRED backend setting
   };
 
@@ -120,8 +121,30 @@ const main = async () => {
         // eslint-disable-next-line quotes
         .where('"orderId" = :id', { id: req.body.payload.payment.entity.order_id })
         .execute();
+
+      // Update booking table
+      Bookings.createQueryBuilder()
+        .update("bookings")
+        .set({ bookingStatus: "Success" })
+        // eslint-disable-next-line quotes
+        .where('"orderId" = :id', { id: req.body.payload.payment.entity.order_id })
+        .execute();
     } else {
-      // pass it
+      // order specific signature verification failed update payment and booking table
+      Payment.createQueryBuilder()
+        .update("payment")
+        .set({ verificationStatus: false })
+        // eslint-disable-next-line quotes
+        .where('"orderId" = :id', { id: req.body.payload.payment.entity.order_id })
+        .execute();
+
+      // Update booking table
+      Bookings.createQueryBuilder()
+        .update("bookings")
+        .set({ bookingStatus: "Failed" })
+        // eslint-disable-next-line quotes
+        .where('"orderId" = :id', { id: req.body.payload.payment.entity.order_id })
+        .execute();
     }
     res.json({ status: "ok" });
   });

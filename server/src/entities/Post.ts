@@ -5,9 +5,11 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { CarDetails } from "./CarDetails";
 import { Destination } from "./Destination";
 import { User } from "./User";
 
@@ -50,14 +52,6 @@ export class Post extends BaseEntity {
   @Column({ default: 0, type: "int" })
   trips: number;
 
-  @Field(() => User, { nullable: true })
-  @ManyToOne(() => User, (user) => user.posts)
-  creator: User;
-
-  @Field(() => Destination, { nullable: true })
-  @ManyToOne(() => Destination, (destination) => destination.posts)
-  destination: Destination;
-
   @Field({ nullable: true })
   @Column({ nullable: true })
   category: string;
@@ -69,4 +63,16 @@ export class Post extends BaseEntity {
   @Field({ nullable: true })
   @Column({ nullable: true, default: 0 })
   carCostPerDay: number;
+
+  // Relations
+  @Field(() => User, { nullable: true })
+  @ManyToOne(() => User, (user) => user.posts)
+  creator: User;
+
+  @Field(() => Destination, { nullable: true })
+  @ManyToOne(() => Destination, (destination) => destination.posts)
+  destination: Destination;
+
+  @OneToOne(() => CarDetails, (carDetails) => carDetails.car)
+  carDetails: CarDetails;
 }

@@ -1,7 +1,9 @@
 /* eslint-disable quotes */
-import { Arg, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
+import { CarDetails } from "../entities/CarDetails";
+import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
 import { Destination } from "../entities/Destination";
 import { Post } from "../entities/Post";
+import { MyContext } from "src/types";
 import { User } from "../entities/User";
 
 @InputType()
@@ -20,6 +22,45 @@ class CreatePostType {
 
   @Field()
   carVin: string;
+
+  @Field(() => String)
+  description: string;
+
+  @Field(() => String)
+  Transmission: string;
+
+  @Field()
+  Miles: number;
+
+  @Field()
+  Mileage: number;
+
+  @Field()
+  Doors: number;
+
+  @Field()
+  Seats: number;
+
+  @Field(() => [String])
+  mediaSystem: string[];
+
+  @Field(() => String)
+  carCondition: string;
+
+  @Field(() => String)
+  conditionDescription: string;
+
+  @Field(() => [String])
+  petSituation: string[];
+
+  @Field(() => String)
+  fuelType: string;
+
+  @Field(() => [String])
+  imageUrl?: string[];
+
+  @Field(() => String)
+  destination: string;
 }
 
 @Resolver(Post)
@@ -66,18 +107,55 @@ export class PostResolver {
   @Mutation(() => Boolean)
   async createPost(
     @Arg("options") options: CreatePostType,
-    @Arg("imageurl", () => [String]) imageurl: string[],
+    @Ctx() { req }: MyContext,
   ): Promise<boolean> {
-    const post = Post.create({
-      ...options,
-      creator: await User.findOne({ where: { id: 3 } }),
-      imageUrl: imageurl,
-    }).save();
+    console.log("OPTIONS RECEIVED ****************** : ");
+    console.log(options);
 
-    post.then((p) => {
-      console.log(p.id);
-    });
+    let creationStatus = true;
 
-    return true;
+    try {
+      const post = await Post.create({
+        carCostPerDay: 0,
+        carMake: options.carMake,
+        carModel: options.carModel,
+        carVin: options.carVin,
+        carYear: options.carYear,
+        category: options.category,
+        destination: await Destination.findOne(parseInt(options.destination)),
+        imageUrl: options.imageUrl,
+        points: 0,
+        creator: await User.findOne(req.session.userId),
+      }).save();
+
+      await CarDetails.create({
+        additionalFAQ: [""],
+        availableTo: new Date(),
+        availableFrom: new Date(),
+        condition: options.carCondition,
+        description: options.description,
+        doors: options.Doors,
+        mediaSystem: options.mediaSystem,
+        mileage: options.Mileage,
+        fuelType: options.fuelType,
+        petSituation: options.petSituation,
+        seats: options.Seats,
+        carId: post.id,
+        car: post,
+        transmission: options.Transmission,
+      }).save();
+    } catch (error) {
+      creationStatus = false;
+      console.log(error);
+    }
+
+    return creationStatus;
+  }
+
+  @Mutation(() => Boolean)
+  async createpost(): Promise<boolean> {
+    const creationStatus = false;
+
+    return creationStatus;
   }
 }
