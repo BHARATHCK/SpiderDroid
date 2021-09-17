@@ -1,5 +1,5 @@
 import { StarIcon } from "@chakra-ui/icons";
-import { Img } from "@chakra-ui/image";
+import Image from "next/image";
 import { Box, Divider, Flex, Heading, Spacer, Stack, Text } from "@chakra-ui/layout";
 import { Select } from "@chakra-ui/select";
 import { Spinner } from "@chakra-ui/spinner";
@@ -63,19 +63,21 @@ const RentCar = () => {
       <NavBar />
       {data ? (
         <Box>
-          <Carouselize
-            children={data.post.imageUrl.map((image, index) => (
-              <div className={styles.embla__slide} key={index}>
-                <Img src={image} />
-              </div>
-            ))}
-          />
+          <Layout variantType="regular">
+            <Carouselize
+              children={data.post.imageUrl.map((image, index) => (
+                <div className={styles.embla__slide} key={index}>
+                  <Image src={image} width={1500} height={900} />
+                </div>
+              ))}
+            />
+          </Layout>
         </Box>
       ) : (
         ""
       )}
       <Layout variantType="regular">
-        {!data && loading ? (
+        {!data || loading ? (
           <Box textAlign="center">
             <Spinner
               m="auto"
@@ -87,7 +89,7 @@ const RentCar = () => {
             />
           </Box>
         ) : (
-          <Stack direction={["column", "row"]} spacing="24px" mt={10}>
+          <Stack direction={["column", "row"]} spacing="24px" mt={10} ml={4} mr={4}>
             <Box minW="60%">
               <Heading>
                 {data.post.carMake} &bull; {data.post.carModel} &bull; {data.post.carYear}

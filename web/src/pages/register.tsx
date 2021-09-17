@@ -1,5 +1,15 @@
-import { Box, Button } from "@chakra-ui/react";
-import { Form, Formik } from "formik";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  HStack,
+  Input,
+  Radio,
+  RadioGroup,
+} from "@chakra-ui/react";
+import { Field, Form, Formik } from "formik";
 import { useRouter } from "next/dist/client/router";
 import React from "react";
 import { InputField } from "../components/InputField";
@@ -36,21 +46,64 @@ const Register: React.FC<registerProps> = ({}) => {
           >
             {({ isSubmitting }) => (
               <Form>
-                <InputField name="username" label="username" placeholder="Enter the username" />
+                <Field
+                  name="username"
+                  render={({ field }) => (
+                    <FormControl as="fieldset" isRequired={true}>
+                      <FormLabel as="legend">Username</FormLabel>
+                      <Input type="username" name="username" placeholder="username" {...field} />
+                      <FormHelperText>Username</FormHelperText>
+                    </FormControl>
+                  )}
+                />
                 <Box mt={4}>
-                  <InputField name="email" label="email" placeholder="Enter the Email" />
+                  <Field
+                    name="email"
+                    render={({ field }) => (
+                      <FormControl as="fieldset" isRequired={true}>
+                        <FormLabel as="legend">Email Id</FormLabel>
+                        <Input type="email" name="email" placeholder="email" {...field} />
+                        <FormHelperText>Email Id</FormHelperText>
+                      </FormControl>
+                    )}
+                  />
                 </Box>
 
                 <Box mt="4">
-                  <InputField
+                  <Field
                     name="password"
-                    label="Password"
-                    placeholder="password"
-                    type="password"
+                    render={({ field }) => (
+                      <FormControl as="fieldset" isRequired={true}>
+                        <FormLabel as="legend">Password</FormLabel>
+                        <Input type="password" name="password" placeholder="password" {...field} />
+                        <FormHelperText>Password</FormHelperText>
+                      </FormControl>
+                    )}
                   />
                 </Box>
                 <Box mt={4}>
-                  <InputField name="role" label="role" placeholder="Enter the Role" />
+                  <Field
+                    name="role"
+                    render={({ field }) => (
+                      <FormControl as="fieldset" isRequired={true}>
+                        <FormLabel as="legend">Role</FormLabel>
+                        <RadioGroup defaultValue="browse" {...field}>
+                          <HStack spacing="24px">
+                            <Radio {...field} name="role" value="browse">
+                              Browse
+                            </Radio>
+                            <Radio {...field} name="role" value="host">
+                              Host
+                            </Radio>
+                          </HStack>
+                        </RadioGroup>
+                        <FormHelperText>
+                          Choose the appropriate role [browse for renting the car and host for
+                          hosting the car]
+                        </FormHelperText>
+                      </FormControl>
+                    )}
+                  />
                 </Box>
                 <Button mt="4" colorScheme="teal" isLoading={isSubmitting} type="submit">
                   Register

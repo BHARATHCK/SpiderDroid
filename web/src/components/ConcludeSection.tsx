@@ -7,7 +7,7 @@ const ConcludeSection = () => {
   const breakpoint = 700;
 
   return (
-    <Box>
+    <Box mb={200}>
       <Link
         ml="15%"
         position="absolute"

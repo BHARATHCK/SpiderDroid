@@ -1,4 +1,5 @@
-import { Box, Image } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
+import Image from "next/image";
 import React from "react";
 import { useRouter } from "next/dist/client/router";
 import {
@@ -61,7 +62,7 @@ const BrowseCarouselSection: React.FC<Props> = ({ itemsToFetch }) => {
                           transition="all .3s ease-in-out"
                           _hover={{ transform: "translate3d(0px, -4px, 0px)" }}
                         >
-                          <Image src={car.imageUrl[0]} alt={"alt"} />
+                          <Image src={car.imageUrl[0]} alt={"alt"} width={200} height={150} />
                           <Box p="4">
                             <Box
                               mt="1"
@@ -94,7 +95,12 @@ const BrowseCarouselSection: React.FC<Props> = ({ itemsToFetch }) => {
                           transition="all .3s ease-in-out"
                           _hover={{ transform: "translate3d(0px, -4px, 0px)" }}
                         >
-                          <Image src={destination.destinationImage} alt={"alt"} />
+                          <Image
+                            src={destination.destinationImage}
+                            width={200}
+                            height={150}
+                            alt={"alt"}
+                          />
                           <Box p="4">
                             <Box
                               mt="1"
