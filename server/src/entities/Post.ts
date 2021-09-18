@@ -64,6 +64,14 @@ export class Post extends BaseEntity {
   @Column({ nullable: true, default: 0 })
   carCostPerDay: number;
 
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  rentedFrom: Date;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  rentedUntil: Date;
+
   // Relations
   @Field(() => User, { nullable: true })
   @ManyToOne(() => User, (user) => user.posts)

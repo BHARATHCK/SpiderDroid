@@ -5,6 +5,7 @@ import { Destination } from "../entities/Destination";
 import { Post } from "../entities/Post";
 import { MyContext } from "src/types";
 import { User } from "../entities/User";
+import { getConnection, LessThan, LessThanOrEqual, Not } from "typeorm";
 
 @InputType()
 class CreatePostType {
@@ -78,6 +79,34 @@ export class PostResolver {
   @Query(() => [Destination])
   async browseByDestination(): Promise<Destination[]> {
     return await Destination.find();
+  }
+
+  @Query(() => [Post])
+  async search(
+    @Arg("destinationId") destinationId: number,
+    @Arg("fromDate") fromDate: Date,
+    @Arg("toDate") toDate: Date,
+  ): Promise<Post[]> {
+    // fromDate -> toDate and rentedFrom -> rentedUntil
+    // fromDate <= rentedUntil AND rentedFrom <= toDate
+    //
+    const posts = await getConnection().query(`
+      select * from post where "destinationId"=${destinationId}
+      AND 
+      ("rentedUntil" IS NULL
+      AND
+      "rentedFrom" IS NULL
+      OR
+      id NOT IN (Select id from post where '${fromDate
+        .toISOString()
+        .slice(0, 19)
+        .replace("T", " ")}' <= "rentedUntil" AND "rentedFrom" <= '${toDate
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " ")}'))
+    `);
+
+    return posts;
   }
 
   @Query(() => [Post])
