@@ -6,12 +6,16 @@ import ConcludeSection from "../components/ConcludeSection";
 import ExperienceBannerSection from "../components/ExperienceBannerSection";
 import Layout from "../components/Layout";
 import NavBar from "../components/NavBar";
+import SearchFilterMenu from "../components/SearchFilterMenu";
 import TravelogueSection from "../components/TravelogueSection";
 import { withApolloClient } from "../utils/apollo-client";
 
 const Index = () => (
   <>
     <NavBar />
+    <Flex justifyContent="center">
+      <SearchFilterMenu />
+    </Flex>
     <BackGroundImage />
     <Layout variantType="regular">
       <Box m={10} backgroundColor="gray.200">
