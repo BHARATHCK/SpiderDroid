@@ -98,7 +98,7 @@ const PaymentButton: React.FC<PaymentProps> = ({ postData, fromDate, toDate }) =
         {({ isSubmitting }) => (
           <Form>
             <Button isLoading={isSubmitting} type="submit" colorScheme="red">
-              Continue &bull; {postData.post.carCostPerDay}
+              Pay &bull; &#8377; {postData.post.carCostPerDay}
             </Button>
           </Form>
         )}

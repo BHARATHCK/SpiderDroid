@@ -93,7 +93,7 @@ const RentCar = () => {
             />
           </Box>
         ) : (
-          <Stack direction={["column", "row"]} spacing="24px" mt={10} ml={4} mr={4}>
+          <Stack direction={["column", "row"]} spacing="24px" mt={10} ml={4} mr={4} mb={20}>
             <Box minW="60%">
               <Heading>
                 {data.post.carMake} &bull; {data.post.carModel} &bull; {data.post.carYear}

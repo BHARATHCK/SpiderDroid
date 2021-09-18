@@ -89,21 +89,18 @@ export class PostResolver {
   ): Promise<Post[]> {
     // fromDate -> toDate and rentedFrom -> rentedUntil
     // fromDate <= rentedUntil AND rentedFrom <= toDate
-    //
     const posts = await getConnection().query(`
-      select * from post where "destinationId"=${destinationId}
-      AND 
-      ("rentedUntil" IS NULL
-      AND
-      "rentedFrom" IS NULL
-      OR
-      id NOT IN (Select id from post where '${fromDate
-        .toISOString()
-        .slice(0, 19)
-        .replace("T", " ")}' <= "rentedUntil" AND "rentedFrom" <= '${toDate
+        SELECT post."createdAt", post."updatedAt", post.points, post."creatorId", post."carMake", post."carModel", post."carYear", post.trips, post.category, post."carVin", post."imageUrl", post."destinationId", post.id, post."carCostPerDay", post."rentedFrom", post."rentedUntil" FROM public.post INNER JOIN public.bookings on post.id = bookings."carId" where 
+        (('${fromDate
+          .toISOString()
+          .slice(0, 19)
+          .replace("T", " ")}' NOT BETWEEN bookings."fromDate" AND bookings."toDate") AND ('${toDate
       .toISOString()
       .slice(0, 19)
-      .replace("T", " ")}'))
+      .replace("T", " ")}' NOT BETWEEN bookings."fromDate" AND bookings."toDate"))
+        AND post."destinationId" = ${destinationId} 
+        UNION
+        select post."createdAt", post."updatedAt", post.points, post."creatorId", post."carMake", post."carModel", post."carYear", post.trips, post.category, post."carVin", post."imageUrl", post."destinationId", post.id, post."carCostPerDay", post."rentedFrom", post."rentedUntil" from public.post where post."destinationId" = ${destinationId} AND post.id NOT IN (select bookings."carId" from public.bookings)
     `);
 
     return posts;

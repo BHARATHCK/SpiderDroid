@@ -270,8 +270,8 @@ const NAV_ITEMS: Array<NavItem> = [
     ],
   },
   {
-    label: "Learn Design",
-    href: "#",
+    label: "Become a Host",
+    href: "/hostcar",
   },
 ];
 

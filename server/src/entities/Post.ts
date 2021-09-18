@@ -5,10 +5,12 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Bookings } from "./Bookings";
 import { CarDetails } from "./CarDetails";
 import { Destination } from "./Destination";
 import { User } from "./User";
@@ -64,14 +66,6 @@ export class Post extends BaseEntity {
   @Column({ nullable: true, default: 0 })
   carCostPerDay: number;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  rentedFrom: Date;
-
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  rentedUntil: Date;
-
   // Relations
   @Field(() => User, { nullable: true })
   @ManyToOne(() => User, (user) => user.posts)
@@ -83,4 +77,7 @@ export class Post extends BaseEntity {
 
   @OneToOne(() => CarDetails, (carDetails) => carDetails.car)
   carDetails: CarDetails;
+
+  @OneToMany(() => Bookings, (booking) => booking.car)
+  bookings: Bookings[];
 }

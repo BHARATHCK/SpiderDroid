@@ -16,6 +16,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
+import router from "next/router";
 import React from "react";
 import Upload from "../components/fileuploadzone";
 import Layout from "../components/Layout";
@@ -96,6 +97,10 @@ const HostCar = () => {
                     },
                   },
                 });
+
+                if (response.data.createPost) {
+                  router.push("/");
+                }
               }}
             >
               {({ isSubmitting }) => (

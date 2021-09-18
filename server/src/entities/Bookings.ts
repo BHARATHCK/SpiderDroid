@@ -5,9 +5,11 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Post } from "./Post";
 import { User } from "./User";
 
 @ObjectType()
@@ -52,4 +54,7 @@ export class Bookings extends BaseEntity {
   // Relations
   @ManyToOne(() => User, (user) => user.bookings)
   user: User;
+
+  @OneToMany(() => Post, (post) => post.bookings)
+  car: Post;
 }
