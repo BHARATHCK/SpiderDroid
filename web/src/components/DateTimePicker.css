@@ -640,6 +640,8 @@
     position: relative;
     display: inline-block;
     width: 100%;
+    padding: 8px;
+    background-color: white;
 }
 
 .react-datepicker__year-read-view,
