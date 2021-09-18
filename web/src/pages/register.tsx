@@ -12,7 +12,6 @@ import {
 import { Field, Form, Formik } from "formik";
 import { useRouter } from "next/dist/client/router";
 import React from "react";
-import { InputField } from "../components/InputField";
 import Layout from "../components/Layout";
 import NavBar from "../components/NavBar";
 import { Wrapper } from "../components/Wrapper";

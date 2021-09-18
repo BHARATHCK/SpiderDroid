@@ -14,7 +14,7 @@ import { Post } from "./Post";
 export type UserRoleType = "browse" | "host";
 
 @ObjectType()
-@Entity({ name: "user" })
+@Entity()
 export class User extends BaseEntity {
   @Field(() => Int)
   @PrimaryGeneratedColumn()

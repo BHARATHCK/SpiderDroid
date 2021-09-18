@@ -15,12 +15,18 @@ import {
   useBreakpointValue,
   useDisclosure,
   Img,
+  Spinner,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import NextLink from "next/link";
+import { useMeQuery } from "../generated/graphql";
 
 const NavBar = () => {
   const { isOpen, onToggle } = useDisclosure();
+
+  const { data, loading } = useMeQuery({
+    skip: typeof window === "undefined",
+  });
 
   return (
     <Box>
@@ -69,24 +75,47 @@ const NavBar = () => {
         </Flex>
 
         <Stack flex={{ base: 1, md: 0 }} justify={"flex-end"} direction={"row"} spacing={6}>
-          <NextLink href="/register">
-            <Button
-              display={{ base: "none", md: "inline-flex" }}
-              fontSize={"sm"}
-              fontWeight={600}
-              color={"white"}
-              bg={"red.400"}
-              href={"/register"}
-              _hover={{
-                bg: "tomato.300",
-              }}
-            >
-              Sign Up
-            </Button>
-          </NextLink>
-          <Button as={"a"} fontSize={"sm"} fontWeight={400} variant={"link"} href={"#"}>
-            Sign In
-          </Button>
+          {loading ? (
+            <Spinner
+              m="auto"
+              thickness="6px"
+              speed="0.65s"
+              emptyColor="gray.200"
+              color="blue.500"
+              size="xl"
+            />
+          ) : !data.me ? (
+            <NextLink href="/login">
+              <Button
+                display={{ base: "none", md: "inline-flex" }}
+                fontSize={"sm"}
+                fontWeight={600}
+                color={"white"}
+                bg={"red.400"}
+                href={"/register"}
+                _hover={{
+                  bg: "tomato.300",
+                }}
+              >
+                Sign Up
+              </Button>
+            </NextLink>
+          ) : (
+            <NextLink href="/profile">
+              <Button
+                display={{ base: "none", md: "inline-flex" }}
+                fontSize={"sm"}
+                fontWeight={600}
+                color={"white"}
+                bg={"red.400"}
+                _hover={{
+                  bg: "tomato.300",
+                }}
+              >
+                Hi! 👋 {data.me.username}
+              </Button>
+            </NextLink>
+          )}
         </Stack>
       </Flex>
 

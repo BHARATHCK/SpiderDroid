@@ -133,12 +133,12 @@ export class UserResolver {
     return { user };
   }
 
-  @Query(() => User, { nullable: true })
+  @Mutation(() => UserResponse)
   async login(
     @Arg("usernameoremail") userNameOrEmail: string,
     @Arg("password") password: string,
     @Ctx() { req }: MyContext,
-  ): Promise<User | null> {
+  ): Promise<UserResponse> {
     // Find if user is present in DB
     const user = await User.findOne(
       userNameOrEmail.includes("@")
@@ -147,21 +147,35 @@ export class UserResolver {
     );
 
     if (!user) {
-      // throw error
-      return null;
+      return {
+        errors: [
+          {
+            field: "userNameOrEmail",
+            message: "user doesn't exist",
+          },
+        ],
+      };
     }
 
     const verifiedPassword = await argon2.verify(user?.password, password);
 
     if (!verifiedPassword) {
-      console.log("Incorrect password");
-      return null;
+      return {
+        errors: [
+          {
+            field: "password",
+            message: "password is incorrect.",
+          },
+        ],
+      };
     }
 
     //Set the session
     req.session.userId = user.id;
 
-    return user;
+    return {
+      user,
+    };
   }
 
   @Mutation(() => RazorpayResponse)

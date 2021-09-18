@@ -56,6 +56,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   createPost: Scalars['Boolean'];
   createpost: Scalars['Boolean'];
+  login: UserResponse;
   razorpaypayment: RazorpayResponse;
   register?: Maybe<UserResponse>;
 };
@@ -63,6 +64,12 @@ export type Mutation = {
 
 export type MutationCreatePostArgs = {
   options: CreatePostType;
+};
+
+
+export type MutationLoginArgs = {
+  password: Scalars['String'];
+  usernameoremail: Scalars['String'];
 };
 
 
@@ -106,7 +113,6 @@ export type Query = {
   browseByDestination: Array<Destination>;
   filterPost: Array<Post>;
   hello: Scalars['String'];
-  login?: Maybe<User>;
   me?: Maybe<User>;
   paymentstatus: PaymentStatus;
   post?: Maybe<Post>;
@@ -117,12 +123,6 @@ export type Query = {
 export type QueryFilterPostArgs = {
   filterCategory: Scalars['String'];
   filterCriteria: Scalars['String'];
-};
-
-
-export type QueryLoginArgs = {
-  password: Scalars['String'];
-  usernameoremail: Scalars['String'];
 };
 
 
@@ -187,6 +187,14 @@ export type HostCarMutationVariables = Exact<{
 
 export type HostCarMutation = { __typename?: 'Mutation', createPost: boolean };
 
+export type LoginMutationVariables = Exact<{
+  loginPassword: Scalars['String'];
+  loginUsernameoremail: Scalars['String'];
+}>;
+
+
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>>, user?: Maybe<{ __typename?: 'User', id: number, username: string }> } };
+
 export type RazorpayPaymentMutationVariables = Exact<{
   razorpaypaymentUserToDate: Scalars['DateTime'];
   razorpaypaymentUserFromDate: Scalars['DateTime'];
@@ -215,6 +223,11 @@ export type FilterPostQueryVariables = Exact<{
 
 
 export type FilterPostQuery = { __typename?: 'Query', filterPost: Array<{ __typename?: 'Post', id: number, carMake: string, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', id: number, destinationName: string }> }> };
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', id: number, username: string, email: string, role: string }> };
 
 export type PaymentStatusQueryVariables = Exact<{
   orderId: Scalars['String'];
@@ -267,6 +280,47 @@ export function useHostCarMutation(baseOptions?: Apollo.MutationHookOptions<Host
 export type HostCarMutationHookResult = ReturnType<typeof useHostCarMutation>;
 export type HostCarMutationResult = Apollo.MutationResult<HostCarMutation>;
 export type HostCarMutationOptions = Apollo.BaseMutationOptions<HostCarMutation, HostCarMutationVariables>;
+export const LoginDocument = gql`
+    mutation Login($loginPassword: String!, $loginUsernameoremail: String!) {
+  login(password: $loginPassword, usernameoremail: $loginUsernameoremail) {
+    errors {
+      field
+      message
+    }
+    user {
+      id
+      username
+    }
+  }
+}
+    `;
+export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
+
+/**
+ * __useLoginMutation__
+ *
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ *   variables: {
+ *      loginPassword: // value for 'loginPassword'
+ *      loginUsernameoremail: // value for 'loginUsernameoremail'
+ *   },
+ * });
+ */
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
+      }
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const RazorpayPaymentDocument = gql`
     mutation RazorpayPayment($razorpaypaymentUserToDate: DateTime!, $razorpaypaymentUserFromDate: DateTime!, $carId: Float!) {
   razorpaypayment(
@@ -441,6 +495,43 @@ export function useFilterPostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type FilterPostQueryHookResult = ReturnType<typeof useFilterPostQuery>;
 export type FilterPostLazyQueryHookResult = ReturnType<typeof useFilterPostLazyQuery>;
 export type FilterPostQueryResult = Apollo.QueryResult<FilterPostQuery, FilterPostQueryVariables>;
+export const MeDocument = gql`
+    query Me {
+  me {
+    id
+    username
+    email
+    role
+  }
+}
+    `;
+
+/**
+ * __useMeQuery__
+ *
+ * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+      }
+export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+        }
+export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
+export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
+export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const PaymentStatusDocument = gql`
     query PaymentStatus($orderId: String!) {
   paymentstatus(orderId: $orderId) {

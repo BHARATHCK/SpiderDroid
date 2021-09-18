@@ -13,8 +13,14 @@ import NavBar from "../../components/NavBar";
 import PaymentButton from "../../components/Payment";
 import { usePostQuery } from "../../generated/graphql";
 import { withApolloClient } from "../../utils/apollo-client";
+import isAuth from "../../utils/isAuth";
 
 const RentCar = () => {
+  const router = useRouter();
+
+  // Check for authentication
+  isAuth("?next=" + router.pathname);
+
   // From Date
   let minFromDay = new Date();
   minFromDay.setDate(minFromDay.getDate() + 1);
@@ -39,8 +45,6 @@ const RentCar = () => {
   useEffect(() => {
     setToDate(minToDay);
   }, [fromDate]);
-
-  const router = useRouter();
 
   console.log("FROM DATE : " + fromDate);
   console.log("To DATE : " + toDate);
