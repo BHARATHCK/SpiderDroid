@@ -23,10 +23,7 @@ import { useMeQuery } from "../generated/graphql";
 
 const NavBar = () => {
   const { isOpen, onToggle } = useDisclosure();
-
-  const { data, loading } = useMeQuery({
-    skip: typeof window === "undefined",
-  });
+  const { data, loading } = useMeQuery();
 
   return (
     <Box>
@@ -86,32 +83,13 @@ const NavBar = () => {
             />
           ) : !data.me ? (
             <NextLink href="/login">
-              <Button
-                display={{ base: "none", md: "inline-flex" }}
-                fontSize={"sm"}
-                fontWeight={600}
-                color={"white"}
-                bg={"red.400"}
-                href={"/register"}
-                _hover={{
-                  bg: "tomato.300",
-                }}
-              >
+              <Button as={"a"} fontSize={"sm"} fontWeight={400} variant={"link"} href={"#"}>
                 Sign Up
               </Button>
             </NextLink>
           ) : (
             <NextLink href="/profile">
-              <Button
-                display={{ base: "none", md: "inline-flex" }}
-                fontSize={"sm"}
-                fontWeight={600}
-                color={"white"}
-                bg={"red.400"}
-                _hover={{
-                  bg: "tomato.300",
-                }}
-              >
+              <Button as={"a"} fontSize={"sm"} fontWeight={400} variant={"link"} href={"#"}>
                 Hi! 👋 {data.me.username}
               </Button>
             </NextLink>

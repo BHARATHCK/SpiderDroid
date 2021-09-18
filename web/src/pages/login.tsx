@@ -8,7 +8,7 @@ import React from "react";
 import Layout from "../components/Layout";
 import NavBar from "../components/NavBar";
 import { Wrapper } from "../components/Wrapper";
-import { useLoginMutation } from "../generated/graphql";
+import { MeDocument, MeQuery, useLoginMutation } from "../generated/graphql";
 import { withApolloClient } from "../utils/apollo-client";
 import { toErrorMap } from "../utils/toErrorMap";
 import NextLink from "next/link";
@@ -22,12 +22,19 @@ const Login = () => {
       <Layout variantType="regular">
         <Wrapper variant="small">
           <Formik
-            initialValues={{ userNameOrEmail: "", password: "" }}
+            initialValues={{ loginUsernameoremail: "", loginPassword: "" }}
             onSubmit={async (values, { setErrors }) => {
               const response = await login({
-                variables: {
-                  loginUsernameoremail: values.userNameOrEmail,
-                  loginPassword: values.password,
+                variables: values,
+                update: (cache, { data }) => {
+                  cache.evict({ fieldName: "posts:{}" });
+                  cache.writeQuery<MeQuery>({
+                    query: MeDocument,
+                    data: {
+                      __typename: "Query",
+                      me: data.login.user,
+                    },
+                  });
                 },
               });
 
@@ -45,7 +52,7 @@ const Login = () => {
             {({ isSubmitting }) => (
               <Form>
                 <Field
-                  name="username"
+                  name="loginUsernameoremail"
                   render={({ field }) => (
                     <FormControl as="fieldset" isRequired={true}>
                       <FormLabel as="legend">Username</FormLabel>
@@ -65,7 +72,7 @@ const Login = () => {
 
                 <Box mt="4">
                   <Field
-                    name="password"
+                    name="loginPassword"
                     render={({ field }) => (
                       <FormControl as="fieldset" isRequired={true}>
                         <FormLabel as="legend">Password</FormLabel>

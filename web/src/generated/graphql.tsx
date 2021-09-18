@@ -193,7 +193,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>>, user?: Maybe<{ __typename?: 'User', id: number, username: string }> } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>>, user?: Maybe<{ __typename?: 'User', id: number, username: string, email: string, role: string }> } };
 
 export type RazorpayPaymentMutationVariables = Exact<{
   razorpaypaymentUserToDate: Scalars['DateTime'];
@@ -290,6 +290,8 @@ export const LoginDocument = gql`
     user {
       id
       username
+      email
+      role
     }
   }
 }
