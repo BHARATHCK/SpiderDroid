@@ -4,13 +4,26 @@ import { Box, Divider, Flex, Stack } from "@chakra-ui/layout";
 import { Select } from "@chakra-ui/select";
 import { Spinner } from "@chakra-ui/spinner";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { useDestinationsQuery } from "../generated/graphql";
 import { useViewport } from "./ViewPortHook";
 
 const SearchFilterMenu = () => {
+  const router = useRouter();
   const { data, loading } = useDestinationsQuery();
+  const [dest, setDest] = useState("");
+  const [selectError, setSelectError] = useState(false);
+  const [search, setSearch] = useState(false);
+
+  useEffect(() => {
+    if (dest === "" && search) {
+      setSelectError(true);
+    } else {
+      setSelectError(false);
+    }
+  }, [dest, search]);
 
   const { width } = useViewport();
   const breakpoint = 700;
@@ -35,10 +48,19 @@ const SearchFilterMenu = () => {
 
   const handleFromDateChange = (fromDate) => setFromDate(fromDate);
   const handleToDateChange = (toDate) => setToDate(toDate);
+  console.log(selectError);
 
   useEffect(() => {
     setToDate(minToDay);
   }, [fromDate]);
+
+  const routeToProfile = () => {
+    setSearch(true);
+    if (dest === "") {
+      return null;
+    }
+    router.push(`/search?destination=${dest}&fromDate=${fromDate}&toDate=${toDate}`);
+  };
 
   return (
     <Box
@@ -65,6 +87,9 @@ const SearchFilterMenu = () => {
             backgroundColor="white"
             borderRadius={width < breakpoint ? 8 : 0}
             borderLeftRadius={8}
+            onChange={(event) => setDest(event.currentTarget.value)}
+            isRequired={true}
+            borderColor={selectError ? "red" : "white"}
           >
             {data.browseByDestination.map((destination) => (
               <option value={destination.id}>{destination.destinationName}</option>
@@ -72,7 +97,7 @@ const SearchFilterMenu = () => {
           </Select>
         )}
 
-        <Box>
+        <Box maxW={width < breakpoint ? "200px" : ""}>
           <DatePicker
             minDate={minFromDay}
             maxDate={maxFromDay}
@@ -91,7 +116,7 @@ const SearchFilterMenu = () => {
           </Box>
         )}
 
-        <Box>
+        <Box maxW={width < breakpoint ? "200px" : ""}>
           <DatePicker
             minDate={minToDay}
             maxDate={maxToDay}
@@ -100,14 +125,13 @@ const SearchFilterMenu = () => {
             showTimeSelect
           />
         </Box>
-        <NextLink href="/search">
-          <IconButton
-            borderRadius={width < breakpoint ? 8 : 0}
-            borderRightRadius={8}
-            aria-label="Search database"
-            icon={<SearchIcon />}
-          />
-        </NextLink>
+        <IconButton
+          onClick={routeToProfile}
+          borderRadius={width < breakpoint ? 8 : 0}
+          borderRightRadius={8}
+          aria-label="Search database"
+          icon={<SearchIcon />}
+        />
       </Flex>
     </Box>
   );
