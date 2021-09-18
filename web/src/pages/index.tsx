@@ -38,9 +38,11 @@ const Index = () => (
         </Heading>
         <BrowseCarouselSection itemsToFetch="destination" />
       </Box>
-      <Box maxW="80vw">
-        <TravelogueSection />
-      </Box>
+      <Flex alignItems="center" textAlign="center">
+        <Box>
+          <TravelogueSection />
+        </Box>
+      </Flex>
       <AllStarHostsSection />
       <ConcludeSection />
     </Layout>

@@ -1,0 +1,11 @@
+query Search($searchToDate: DateTime!, $searchFromDate: DateTime!, $searchDestinationId: Float!) {
+  search(toDate: $searchToDate, fromDate: $searchFromDate, destinationId: $searchDestinationId) {
+    carMake
+    carModel
+    id
+    carYear
+    imageUrl
+    trips
+    points
+  }
+}

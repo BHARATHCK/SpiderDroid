@@ -103,6 +103,8 @@ export type Post = {
   id: Scalars['Int'];
   imageUrl?: Maybe<Array<Scalars['String']>>;
   points?: Maybe<Scalars['Float']>;
+  rentedFrom?: Maybe<Scalars['DateTime']>;
+  rentedUntil?: Maybe<Scalars['DateTime']>;
   trips?: Maybe<Scalars['Float']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
@@ -117,6 +119,7 @@ export type Query = {
   paymentstatus: PaymentStatus;
   post?: Maybe<Post>;
   posts?: Maybe<Array<Post>>;
+  search: Array<Post>;
 };
 
 
@@ -133,6 +136,13 @@ export type QueryPaymentstatusArgs = {
 
 export type QueryPostArgs = {
   id: Scalars['Float'];
+};
+
+
+export type QuerySearchArgs = {
+  destinationId: Scalars['Float'];
+  fromDate: Scalars['DateTime'];
+  toDate: Scalars['DateTime'];
 };
 
 export type RazorpayFields = {
@@ -247,6 +257,15 @@ export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type PostsQuery = { __typename?: 'Query', browseByCarMake: Array<{ __typename?: 'Post', id: number, carMake: string, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', id: number, destinationName: string }> }> };
+
+export type SearchQueryVariables = Exact<{
+  searchToDate: Scalars['DateTime'];
+  searchFromDate: Scalars['DateTime'];
+  searchDestinationId: Scalars['Float'];
+}>;
+
+
+export type SearchQuery = { __typename?: 'Query', search: Array<{ __typename?: 'Post', carMake: string, carModel?: Maybe<string>, id: number, carYear?: Maybe<string>, imageUrl?: Maybe<Array<string>>, trips?: Maybe<number>, points?: Maybe<number> }> };
 
 
 export const HostCarDocument = gql`
@@ -661,3 +680,50 @@ export function usePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Post
 export type PostsQueryHookResult = ReturnType<typeof usePostsQuery>;
 export type PostsLazyQueryHookResult = ReturnType<typeof usePostsLazyQuery>;
 export type PostsQueryResult = Apollo.QueryResult<PostsQuery, PostsQueryVariables>;
+export const SearchDocument = gql`
+    query Search($searchToDate: DateTime!, $searchFromDate: DateTime!, $searchDestinationId: Float!) {
+  search(
+    toDate: $searchToDate
+    fromDate: $searchFromDate
+    destinationId: $searchDestinationId
+  ) {
+    carMake
+    carModel
+    id
+    carYear
+    imageUrl
+    trips
+    points
+  }
+}
+    `;
+
+/**
+ * __useSearchQuery__
+ *
+ * To run a query within a React component, call `useSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchQuery({
+ *   variables: {
+ *      searchToDate: // value for 'searchToDate'
+ *      searchFromDate: // value for 'searchFromDate'
+ *      searchDestinationId: // value for 'searchDestinationId'
+ *   },
+ * });
+ */
+export function useSearchQuery(baseOptions: Apollo.QueryHookOptions<SearchQuery, SearchQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchQuery, SearchQueryVariables>(SearchDocument, options);
+      }
+export function useSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchQuery, SearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchQuery, SearchQueryVariables>(SearchDocument, options);
+        }
+export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
+export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
+export type SearchQueryResult = Apollo.QueryResult<SearchQuery, SearchQueryVariables>;
