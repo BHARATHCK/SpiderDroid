@@ -1,11 +1,11 @@
 /* eslint-disable quotes */
-import { CarDetails } from "../entities/CarDetails";
+import { MyContext } from "src/types";
 import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
+import { getConnection } from "typeorm";
+import { CarDetails } from "../entities/CarDetails";
 import { Destination } from "../entities/Destination";
 import { Post } from "../entities/Post";
-import { MyContext } from "src/types";
 import { User } from "../entities/User";
-import { getConnection, LessThan, LessThanOrEqual, Not } from "typeorm";
 
 @InputType()
 class CreatePostType {
