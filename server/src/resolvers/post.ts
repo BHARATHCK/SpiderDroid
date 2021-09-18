@@ -67,9 +67,7 @@ class CreatePostType {
 export class PostResolver {
   @Query(() => [Post], { nullable: true })
   async posts(): Promise<Post[]> {
-    const posts = await Post.find({ relations: ["destination"] });
-
-    return posts;
+    return await Post.find({ relations: ["destination"] });
   }
 
   @Query(() => Post, { nullable: true })
@@ -96,9 +94,12 @@ export class PostResolver {
     @Arg("filterCriteria") filterCriteria: string,
   ): Promise<Post[] | undefined> {
     if (filterCategory.includes("carMake")) {
-      return await Post.find({ where: { carMake: filterCriteria } });
+      return await Post.find({ where: { carMake: filterCriteria }, order: { id: "DESC" } });
     } else if (filterCategory.includes("destination")) {
-      return await Post.find({ where: { id: parseInt(filterCriteria) } });
+      return await Post.find({
+        where: { destination: parseInt(filterCriteria) },
+        order: { id: "DESC" },
+      });
     } else {
       return undefined;
     }
