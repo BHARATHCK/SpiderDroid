@@ -52,7 +52,7 @@ const main = async () => {
 
   // cors
   const corsOptions = {
-    origin: process.env.WEB_APP_URL, //"https://studio.apollographql.com",
+    origin: [process.env.WEB_APP_URL || "", "https://studio.apollographql.com"],
     credentials: true, // <-- REQUIRED backend setting
   };
 
@@ -73,7 +73,7 @@ const main = async () => {
         httpOnly: true,
         secure: __PROD__, //cookie only in https
         sameSite: "lax",
-        domain: __PROD__ ? ".qovery.io" : undefined, // inproduction
+        domain: __PROD__ ? ".vercel.app" : undefined, // inproduction
       },
       saveUninitialized: false,
       secret: process.env.REDIS_SESSION_SECRET || "",
