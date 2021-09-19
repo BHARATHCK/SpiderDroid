@@ -8,7 +8,7 @@ import { validateRegister } from "../utils/validateRegister";
 import { UsernamePasswordRegistrationInput } from "./usernamePasswordRegistrationInput";
 import { Payment } from "../entities/Payment";
 import { Bookings } from "../entities/Bookings";
-import { _FORGOT_PASSWORD_PREFIX } from "../constants";
+import { _COOKIE_NAME, _FORGOT_PASSWORD_PREFIX } from "../constants";
 import { v4 } from "uuid";
 import { sendEmail } from "../utils/sendEmail";
 
@@ -248,7 +248,7 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  async forgotPassword(@Arg("email") email: string, @Ctx() { redis }: MyContext) {
+  async forgotPassword(@Arg("email") email: string, @Ctx() { redis }: MyContext): Promise<boolean> {
     const user = await User.findOne({ where: { email: email } });
     if (!user) {
       console.log("User not found !!!");
@@ -276,7 +276,7 @@ export class UserResolver {
     @Arg("token") token: string,
     @Arg("newPassword") password: string,
     @Ctx() { redis, req }: MyContext,
-  ) {
+  ): Promise<UserResponse> {
     console.log("Started*********");
     // validate new Password
     if (password.length <= 5) {
@@ -330,5 +330,21 @@ export class UserResolver {
     await redis.del(userToken);
 
     return { user };
+  }
+
+  @Mutation(() => Boolean)
+  async logout(@Ctx() { req, res }: MyContext): Promise<boolean> {
+    return new Promise((resolve) =>
+      req.session.destroy((err) => {
+        if (err) {
+          console.log(err);
+          resolve(false);
+          return false;
+        }
+        res.clearCookie(_COOKIE_NAME);
+        resolve(true);
+        return true;
+      }),
+    );
   }
 }
