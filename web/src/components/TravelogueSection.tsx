@@ -8,21 +8,17 @@ const TravelogueSection = () => {
   const { width } = useViewport();
   const breakpoint = 700;
 
-  const transformCard = width < breakpoint ? "translate(27%,-30%);" : "translate(-62%,-71%)";
+  const transformCard = width < breakpoint ? "translate(25%,-70%);" : "translate(-102%,-160%)";
 
   return (
     <Box mt={20}>
-      <Flex alignItems="center" direction="column" textAlign="center">
-        <Box backgroundColor="gray.200" minW={200} minH={8} zIndex={-100} position="absolute"></Box>
-        <Heading>Fuel your daydreams</Heading>
-        <Text>
-          Stoke your wanderlust with some dreamy photo chronicles of road trip adventures.
-        </Text>
-        <Button mt={20} colorScheme="red">
-          Explore Travelogues
-        </Button>
-        <Box mt={20} mr={width < breakpoint ? 20 : 40}>
-          <Image src={travelogueGif}></Image>
+      <Flex alignItems="end" direction="column" textAlign="center">
+        <Box maxW={width < breakpoint ? 300 : 700} minH={250}>
+          <Image
+            src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632045215/travelogue_pg33rl.jpg"
+            width={1920}
+            height={1080}
+          ></Image>
         </Box>
         <Box
           backgroundColor="black"
@@ -31,19 +27,21 @@ const TravelogueSection = () => {
           maxW={width < breakpoint ? "250px" : ""}
         >
           <Flex
+            alignItems="center"
             justifyContent="left"
             padding={2}
             direction="column"
             maxW={400}
-            margin="0 0 0 24px"
             zIndex={1000}
           >
-            <Heading>FEATURED TRAVELOGUE</Heading>
-            <Text>An Amazing travel experience</Text>
-            <Text>
+            <Heading fontSize={18}>FEATURED TRAVELOGUE</Heading>
+            <Text fontSize={12}>An Amazing travel experience</Text>
+            <Text fontSize={12}>
               Discover the epic waterfalls, moody weather, and lush forests of coastal Washington.
             </Text>
-            <Link mt="10">Read more...</Link>
+            <Link fontSize={12} mt="10">
+              Read more...
+            </Link>
           </Flex>
         </Box>
       </Flex>

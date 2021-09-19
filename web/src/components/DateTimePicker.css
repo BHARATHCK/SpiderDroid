@@ -14,6 +14,10 @@
     width: 9px;
 }
 
+input {
+    max-width: 200px !important;
+}
+
 .react-datepicker-popper[data-placement^=top] .react-datepicker__triangle,
 .react-datepicker-popper[data-placement^=bottom] .react-datepicker__triangle {
     margin-left: -4px;

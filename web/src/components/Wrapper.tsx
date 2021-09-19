@@ -1,5 +1,4 @@
 import { Box } from "@chakra-ui/react";
-import { useViewport } from "./ViewPortHook";
 
 export type WrapperVariant = "small" | "regular";
 
