@@ -15,7 +15,7 @@
 }
 
 input {
-    max-width: 200px !important;
+    max-width: 120px !important;
 }
 
 .react-datepicker-popper[data-placement^=top] .react-datepicker__triangle,
