@@ -14,5 +14,17 @@ query Post($postId: Float!) {
       username
     }
     carCostPerDay
+    carDetails {
+      condition
+      description
+      doors
+      fuelType
+      mediaSystem
+      mileage
+      petSituation
+      seats
+      transmission
+      commentId
+    }
   }
 }

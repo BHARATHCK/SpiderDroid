@@ -73,7 +73,7 @@ export class PostResolver {
 
   @Query(() => Post, { nullable: true })
   async post(@Arg("id") id: number): Promise<Post | undefined> {
-    return await Post.findOne(id, { relations: ["creator", "destination"] });
+    return await Post.findOne(id, { relations: ["creator", "destination", "carDetails"] });
   }
 
   @Query(() => [Destination])
@@ -142,20 +142,7 @@ export class PostResolver {
     let creationStatus = true;
 
     try {
-      const post = await Post.create({
-        carCostPerDay: 0,
-        carMake: options.carMake,
-        carModel: options.carModel,
-        carVin: options.carVin,
-        carYear: options.carYear,
-        category: options.category,
-        destination: await Destination.findOne(parseInt(options.destination)),
-        imageUrl: options.imageUrl,
-        points: 0,
-        creator: await User.findOne(req.session.userId),
-      }).save();
-
-      await CarDetails.create({
+      const carDetails = await CarDetails.create({
         additionalFAQ: [""],
         availableTo: new Date(),
         availableFrom: new Date(),
@@ -167,9 +154,21 @@ export class PostResolver {
         fuelType: options.fuelType,
         petSituation: options.petSituation,
         seats: options.Seats,
-        carId: post.id,
-        car: post,
         transmission: options.Transmission,
+      }).save();
+
+      await Post.create({
+        carCostPerDay: 0,
+        carMake: options.carMake,
+        carModel: options.carModel,
+        carVin: options.carVin,
+        carYear: options.carYear,
+        category: options.category,
+        destination: await Destination.findOne(parseInt(options.destination)),
+        imageUrl: options.imageUrl,
+        points: 0,
+        creator: await User.findOne(req.session.userId),
+        carDetails: carDetails,
       }).save();
     } catch (error) {
       creationStatus = false;

@@ -5,6 +5,7 @@ query filterPost($filterCategory: String!, $filterCriteria: String!) {
     carModel
     imageUrl
     carYear
+    carCostPerDay
     trips
     points
     destination {

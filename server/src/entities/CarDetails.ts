@@ -25,10 +25,6 @@ export class CarDetails extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Field(() => Int, { nullable: true })
-  @Column({ nullable: true })
-  carId: number;
-
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   description: string;
@@ -80,8 +76,4 @@ export class CarDetails extends BaseEntity {
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   availableTo: Date;
-
-  //Relations
-  @OneToOne(() => Post, (post) => post.carDetails)
-  car: Post;
 }

@@ -66,9 +66,13 @@ const BrowseCars = ({}) => {
 
                   <Box p="6">
                     <Box d="flex" alignItems="baseline">
-                      <Badge borderRadius="full" px="2" colorScheme="teal">
-                        New
-                      </Badge>
+                      {post.trips < 5 ? (
+                        <Badge borderRadius="full" px="2" colorScheme="teal">
+                          New
+                        </Badge>
+                      ) : (
+                        ""
+                      )}
                       <Box
                         color="gray.500"
                         fontWeight="semibold"
@@ -77,18 +81,16 @@ const BrowseCars = ({}) => {
                         textTransform="uppercase"
                         ml="2"
                       >
-                        {post.trips} trips &bull;
+                        {post.trips} trips
                       </Box>
                     </Box>
 
                     <Box mt="1" fontWeight="semibold" as="h4" lineHeight="tight" isTruncated>
                       {post.carMake} &bull; {post.carModel} &bull; {post.carYear}
                     </Box>
-
                     <Box>
-                      {"$1,900.00"}
                       <Box as="span" color="gray.600" fontSize="sm">
-                        / wk
+                        &#8377; {post.carCostPerDay}/ Day
                       </Box>
                     </Box>
 
@@ -96,10 +98,10 @@ const BrowseCars = ({}) => {
                       {Array(5)
                         .fill("")
                         .map((_, i) => (
-                          <StarIcon key={i} color={i < 5 ? "teal.500" : "gray.300"} />
+                          <StarIcon key={i} color={i < post.points ? "teal.500" : "gray.300"} />
                         ))}
                       <Box as="span" ml="2" color="gray.600" fontSize="sm">
-                        {34} reviews
+                        {0} reviews
                       </Box>
                     </Box>
                   </Box>

@@ -56,6 +56,7 @@ const ChangePassword: NextPage<{ token: string }> = () => {
             ) : null}
             <Box mt="4">
               <InputField
+                helperText="Enter the new password"
                 name="password"
                 label="Password"
                 placeholder="New Password"

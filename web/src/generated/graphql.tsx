@@ -16,6 +16,27 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type CarDetails = {
+  __typename?: 'CarDetails';
+  additionalFAQ?: Maybe<Array<Scalars['String']>>;
+  availableFrom?: Maybe<Scalars['String']>;
+  availableTo?: Maybe<Scalars['String']>;
+  carId?: Maybe<Scalars['Int']>;
+  commentId?: Maybe<Scalars['Int']>;
+  condition?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  doors?: Maybe<Scalars['Int']>;
+  fuelType?: Maybe<Scalars['String']>;
+  id: Scalars['Int'];
+  mediaSystem?: Maybe<Array<Scalars['String']>>;
+  mileage?: Maybe<Scalars['Int']>;
+  petSituation?: Maybe<Array<Scalars['String']>>;
+  seats?: Maybe<Scalars['Int']>;
+  transmission?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 export type CreatePostType = {
   Doors: Scalars['Float'];
   Mileage: Scalars['Float'];
@@ -106,6 +127,7 @@ export type PaymentStatus = {
 export type Post = {
   __typename?: 'Post';
   carCostPerDay?: Maybe<Scalars['Float']>;
+  carDetails?: Maybe<CarDetails>;
   carMake: Scalars['String'];
   carModel?: Maybe<Scalars['String']>;
   carVin?: Maybe<Scalars['String']>;
@@ -268,7 +290,7 @@ export type FilterPostQueryVariables = Exact<{
 }>;
 
 
-export type FilterPostQuery = { __typename?: 'Query', filterPost: Array<{ __typename?: 'Post', id: number, carMake: string, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', id: number, destinationName: string }> }> };
+export type FilterPostQuery = { __typename?: 'Query', filterPost: Array<{ __typename?: 'Post', id: number, carMake: string, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, carCostPerDay?: Maybe<number>, trips?: Maybe<number>, points?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', id: number, destinationName: string }> }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -287,7 +309,7 @@ export type PostQueryVariables = Exact<{
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', post?: Maybe<{ __typename?: 'Post', id: number, carMake: string, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, carCostPerDay?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', destinationName: string }>, creator?: Maybe<{ __typename?: 'User', username: string }> }> };
+export type PostQuery = { __typename?: 'Query', post?: Maybe<{ __typename?: 'Post', id: number, carMake: string, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, carCostPerDay?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', destinationName: string }>, creator?: Maybe<{ __typename?: 'User', username: string }>, carDetails?: Maybe<{ __typename?: 'CarDetails', condition?: Maybe<string>, description?: Maybe<string>, doors?: Maybe<number>, fuelType?: Maybe<string>, mediaSystem?: Maybe<Array<string>>, mileage?: Maybe<number>, petSituation?: Maybe<Array<string>>, seats?: Maybe<number>, transmission?: Maybe<string>, commentId?: Maybe<number> }> }> };
 
 export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -626,6 +648,7 @@ export const FilterPostDocument = gql`
     carModel
     imageUrl
     carYear
+    carCostPerDay
     trips
     points
     destination {
@@ -753,6 +776,18 @@ export const PostDocument = gql`
       username
     }
     carCostPerDay
+    carDetails {
+      condition
+      description
+      doors
+      fuelType
+      mediaSystem
+      mileage
+      petSituation
+      seats
+      transmission
+      commentId
+    }
   }
 }
     `;

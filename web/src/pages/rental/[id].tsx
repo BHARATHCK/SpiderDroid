@@ -46,12 +46,7 @@ const RentCar = () => {
     setToDate(minToDay);
   }, [fromDate]);
 
-  console.log("FROM DATE : " + fromDate);
-  console.log("To DATE : " + toDate);
-
   const { id } = router.query;
-
-  console.log("ID::::::::: ", id);
 
   const { data, loading, error } = usePostQuery({
     variables: { postId: parseInt(typeof id === "string" ? id : "") },
@@ -65,7 +60,7 @@ const RentCar = () => {
   return (
     <>
       <NavBar />
-      {data ? (
+      {data && !loading ? (
         <Box>
           <Layout variantType="regular">
             <Carouselize
@@ -106,14 +101,14 @@ const RentCar = () => {
                   </Flex>
                   <Box maxW="80%">
                     <Flex>
-                      <Text>Mileage</Text>
+                      <Text>{data.post.carDetails.mileage}</Text>
                       <Spacer />
-                      <Text>Gas</Text>
+                      <Text>{data.post.carDetails.fuelType}</Text>
                     </Flex>
                     <Flex>
-                      <Text>4 doors</Text>
+                      <Text>{data.post.carDetails.doors} Doors</Text>
                       <Spacer />
-                      <Text>4 seats</Text>
+                      <Text>{data.post.carDetails.seats} Seats</Text>
                     </Flex>
                   </Box>
                   <Box maxW="80%">

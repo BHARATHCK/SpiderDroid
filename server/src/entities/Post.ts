@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -75,7 +76,9 @@ export class Post extends BaseEntity {
   @ManyToOne(() => Destination, (destination) => destination.posts)
   destination: Destination;
 
-  @OneToOne(() => CarDetails, (carDetails) => carDetails.car)
+  @Field(() => CarDetails, { nullable: true })
+  @OneToOne(() => CarDetails)
+  @JoinColumn()
   carDetails: CarDetails;
 
   @OneToMany(() => Bookings, (booking) => booking.car)
