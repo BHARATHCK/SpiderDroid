@@ -51,46 +51,55 @@ const Login = () => {
           >
             {({ isSubmitting }) => (
               <Form>
-                <Field
-                  name="loginUsernameoremail"
-                  render={({ field }) => (
-                    <FormControl as="fieldset" isRequired={true}>
-                      <FormLabel as="legend">Username</FormLabel>
-                      <Input
-                        type="username"
-                        name="userNameOrEmail"
-                        placeholder="UserName or Email Id"
-                        {...field}
-                      />
-                      <Box color="red.500">
-                        <ErrorMessage name="userNameOrEmail" />
-                      </Box>
-                      <FormHelperText>Username or EmailId</FormHelperText>
-                    </FormControl>
-                  )}
-                />
-
-                <Box mt="4">
+                <Box m={4}>
                   <Field
-                    name="loginPassword"
+                    name="loginUsernameoremail"
                     render={({ field }) => (
                       <FormControl as="fieldset" isRequired={true}>
-                        <FormLabel as="legend">Password</FormLabel>
-                        <Input type="password" name="password" placeholder="password" {...field} />
-                        <ErrorMessage name="password" />
-                        <FormHelperText>Password</FormHelperText>
+                        <FormLabel as="legend">Username</FormLabel>
+                        <Input
+                          minW="90vw"
+                          type="username"
+                          name="userNameOrEmail"
+                          placeholder="UserName or Email Id"
+                          {...field}
+                        />
+                        <Box color="red.500">
+                          <ErrorMessage name="userNameOrEmail" />
+                        </Box>
+                        <FormHelperText>Username or EmailId</FormHelperText>
                       </FormControl>
                     )}
                   />
+
+                  <Box mt="4">
+                    <Field
+                      name="loginPassword"
+                      render={({ field }) => (
+                        <FormControl as="fieldset" isRequired={true}>
+                          <FormLabel as="legend">Password</FormLabel>
+                          <Input
+                            minW="90vw"
+                            type="password"
+                            name="password"
+                            placeholder="password"
+                            {...field}
+                          />
+                          <ErrorMessage name="password" />
+                          <FormHelperText>Password</FormHelperText>
+                        </FormControl>
+                      )}
+                    />
+                  </Box>
+                  <Flex mt={2} alignItems="center">
+                    <Button mt="4" colorScheme="red" isLoading={isSubmitting} type="submit">
+                      Login
+                    </Button>
+                    <NextLink href="/forgot-password">
+                      <Link ml="auto">Forgot Password?</Link>
+                    </NextLink>
+                  </Flex>
                 </Box>
-                <Flex mt={2} alignItems="center">
-                  <Button mt="4" colorScheme="red" isLoading={isSubmitting} type="submit">
-                    Login
-                  </Button>
-                  <NextLink href="/forgot-password">
-                    <Link ml="auto">Forgot Password?</Link>
-                  </NextLink>
-                </Flex>
               </Form>
             )}
           </Formik>
@@ -98,7 +107,7 @@ const Login = () => {
             <Divider /> <Text fontWeight={100}>OR</Text> <Divider />
           </Flex>
           <NextLink href="/register">
-            <Button mt="4" colorScheme="red" type="submit">
+            <Button m="4" colorScheme="red" type="submit">
               Register
             </Button>
           </NextLink>

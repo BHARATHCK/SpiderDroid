@@ -84,7 +84,7 @@ const NavBar = () => {
           ) : !data.me ? (
             <NextLink href="/login">
               <Button as={"a"} fontSize={"sm"} fontWeight={400} variant={"link"} href={"#"}>
-                Sign Up
+                Sign In
               </Button>
             </NextLink>
           ) : (
@@ -188,7 +188,7 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
 
 const MobileNav = () => {
   return (
-    <Stack bg={useColorModeValue("white", "gray.800")} p={4} display={{ md: "none" }}>
+    <Stack bg={useColorModeValue("white", "gray.800")} p={4} display={{ md: "none" }} zIndex={9999}>
       {NAV_ITEMS.map((navItem) => (
         <MobileNavItem key={navItem.label} {...navItem} />
       ))}
@@ -255,16 +255,16 @@ interface NavItem {
 
 const NAV_ITEMS: Array<NavItem> = [
   {
-    label: "Find Work",
+    label: "More",
     children: [
       {
-        label: "Job Board",
-        subLabel: "Find your dream design job",
+        label: "How SpiderDroid works",
+        subLabel: "Know our buissiness model",
         href: "#",
       },
       {
-        label: "Freelance Projects",
-        subLabel: "An exclusive list for contract work",
+        label: "Help",
+        subLabel: "Find FAQs and other helpful resources",
         href: "#",
       },
     ],

@@ -1,7 +1,6 @@
-import { Box, Button, Flex, Heading, Link, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, Link, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import React from "react";
-import travelogueGif from "../../assets/featuredTravelogue.gif";
 import { useViewport } from "./ViewPortHook";
 
 const TravelogueSection = () => {
@@ -34,12 +33,12 @@ const TravelogueSection = () => {
             maxW={400}
             zIndex={1000}
           >
-            <Heading fontSize={18}>FEATURED TRAVELOGUE</Heading>
-            <Text fontSize={12}>An Amazing travel experience</Text>
-            <Text fontSize={12}>
+            <Heading fontSize={width < breakpoint ? 18 : ""}>FEATURED TRAVELOGUE</Heading>
+            <Text fontSize={width < breakpoint ? 12 : ""}>An Amazing travel experience</Text>
+            <Text fontSize={width < breakpoint ? 12 : ""}>
               Discover the epic waterfalls, moody weather, and lush forests of coastal Washington.
             </Text>
-            <Link fontSize={12} mt="10">
+            <Link fontSize={width < breakpoint ? 12 : ""} mt="10">
               Read more...
             </Link>
           </Flex>

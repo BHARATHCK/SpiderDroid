@@ -20,20 +20,22 @@ const ForgotPassword: React.FC<{}> = ({}) => {
       >
         {({ isSubmitting }) =>
           complete ? (
-            <Box>
+            <Box m={4}>
               If an account exists with the provided email, we have sent a password reset link.
             </Box>
           ) : (
             <Form>
-              <InputField
-                textarea={false}
-                name="email"
-                label="Email"
-                placeholder="Enter the Email"
-              />
-              <Button mt="4" colorScheme="teal" isLoading={isSubmitting} type="submit">
-                Confirm
-              </Button>
+              <Box m={4}>
+                <InputField
+                  textarea={false}
+                  name="email"
+                  label="Email"
+                  placeholder="Enter the Email"
+                />
+                <Button colorScheme="teal" isLoading={isSubmitting} type="submit">
+                  Confirm
+                </Button>
+              </Box>
             </Form>
           )
         }
