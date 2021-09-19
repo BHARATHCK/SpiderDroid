@@ -1,5 +1,5 @@
 /* eslint-disable quotes */
-import { MyContext } from "src/types";
+import { MyContext } from "../types";
 import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
 import { getConnection } from "typeorm";
 import { CarDetails } from "../entities/CarDetails";
