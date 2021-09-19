@@ -267,7 +267,7 @@ export class UserResolver {
     console.log("REDIS TOKEN SET : ", res);
 
     console.log("Sending Email $$$$$$$$$ ");
-    await sendEmail(email, `http://localhost:3000/change-password/${token}`);
+    await sendEmail(email, `http://${process.env.WEB_APP_URL}/change-password/${token}`);
     return true;
   }
 
