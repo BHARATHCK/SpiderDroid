@@ -8,6 +8,9 @@ import { validateRegister } from "../utils/validateRegister";
 import { UsernamePasswordRegistrationInput } from "./usernamePasswordRegistrationInput";
 import { Payment } from "../entities/Payment";
 import { Bookings } from "../entities/Bookings";
+import { _FORGOT_PASSWORD_PREFIX } from "../constants";
+import { v4 } from "uuid";
+import { sendEmail } from "../utils/sendEmail";
 
 @ObjectType()
 class FieldError {
@@ -242,5 +245,90 @@ export class UserResolver {
       paymentVerified = true;
     }
     return { status: paymentVerified };
+  }
+
+  @Mutation(() => Boolean)
+  async forgotPassword(@Arg("email") email: string, @Ctx() { redis }: MyContext) {
+    const user = await User.findOne({ where: { email: email } });
+    if (!user) {
+      console.log("User not found !!!");
+      return true;
+    }
+    console.log("USER FOUND %%%%%%%%%%% : ", user.id);
+    const token = v4();
+    // set token to redis with 3 days to expiry
+    const res = await redis.set(
+      _FORGOT_PASSWORD_PREFIX + token,
+      user.id,
+      "ex",
+      1000 * 60 * 60 * 60 * 24 * 3,
+    );
+    console.log("REDIS TOKEN  : ", _FORGOT_PASSWORD_PREFIX + token);
+    console.log("REDIS TOKEN SET : ", res);
+
+    console.log("Sending Email $$$$$$$$$ ");
+    await sendEmail(email, `http://localhost:3000/change-password/${token}`);
+    return true;
+  }
+
+  @Mutation(() => UserResponse)
+  async changePassword(
+    @Arg("token") token: string,
+    @Arg("newPassword") password: string,
+    @Ctx() { redis, req }: MyContext,
+  ) {
+    console.log("Started*********");
+    // validate new Password
+    if (password.length <= 5) {
+      console.log("^&&*^*&^*&%*&% : Password error");
+      return {
+        errors: [
+          {
+            field: "password",
+            message: "Length must be atleast 5.",
+          },
+        ],
+      };
+    }
+
+    // validate token
+    const userToken = _FORGOT_PASSWORD_PREFIX + token;
+    console.log("REDIS TOKEN CHECK  : ", userToken);
+    const userId = await redis.get(userToken);
+    console.log("GOT REDIS TOKEN : ", userId);
+    if (!userId) {
+      return {
+        errors: [
+          {
+            field: "token",
+            message: "Oh snap! Looks like the link has expired, Please retry forgot password.",
+          },
+        ],
+      };
+    }
+
+    const userid = parseInt(userId);
+    const user = await User.findOne(userid);
+
+    if (!user) {
+      return {
+        errors: [
+          {
+            field: "token",
+            message: "user no longer exists",
+          },
+        ],
+      };
+    }
+
+    // Change the password
+    await User.update({ id: userid }, { password: await argon2.hash(password) });
+
+    // Login the user
+    req.session.userId = user.id;
+
+    await redis.del(userToken);
+
+    return { user };
   }
 }

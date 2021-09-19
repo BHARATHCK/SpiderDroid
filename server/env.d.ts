@@ -11,5 +11,7 @@ declare namespace NodeJS {
     RAZORPAY_SECRET: string;
     RAZORPAY_WEBHOOK_SECRET: string;
     WEB_APP_URL: string;
+    MAIL_ID: string;
+    MAIL_PASS: string;
   }
 }
