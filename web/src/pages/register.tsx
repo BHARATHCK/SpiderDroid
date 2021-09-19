@@ -1,23 +1,12 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  FormErrorMessage,
-  FormHelperText,
-  FormLabel,
-  HStack,
-  Input,
-  Radio,
-  RadioGroup,
-} from "@chakra-ui/react";
-import { Field, Form, Formik } from "formik";
+import { Box, Button } from "@chakra-ui/react";
+import { Form, Formik } from "formik";
 import { useRouter } from "next/dist/client/router";
 import React from "react";
 import { InputField } from "../components/InputField";
 import Layout from "../components/Layout";
 import NavBar from "../components/NavBar";
 import { Wrapper } from "../components/Wrapper";
-import { useRegisterMutation } from "../generated/graphql";
+import { MeDocument, MeQuery, useRegisterMutation } from "../generated/graphql";
 import { withApolloClient } from "../utils/apollo-client";
 import { toErrorMap } from "../utils/toErrorMap";
 
@@ -32,10 +21,19 @@ const Register: React.FC<registerProps> = ({}) => {
       <Layout variantType="regular">
         <Wrapper variant="small">
           <Formik
-            initialValues={{ username: "", email: "", password: "", role: "" }}
+            initialValues={{ username: "", email: "", password: "" }}
             onSubmit={async (values, { setErrors }) => {
               const response = await register({
                 variables: { registerOptions: values },
+                update: (cache, { data }) => {
+                  cache.writeQuery<MeQuery>({
+                    query: MeDocument,
+                    data: {
+                      __typename: "Query",
+                      me: data.register.user,
+                    },
+                  });
+                },
               });
 
               if (response.data.register.errors) {

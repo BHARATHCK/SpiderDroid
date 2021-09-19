@@ -21,7 +21,6 @@ export type CarDetails = {
   additionalFAQ?: Maybe<Array<Scalars['String']>>;
   availableFrom?: Maybe<Scalars['String']>;
   availableTo?: Maybe<Scalars['String']>;
-  carId?: Maybe<Scalars['Int']>;
   commentId?: Maybe<Scalars['Int']>;
   condition?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
@@ -127,7 +126,7 @@ export type PaymentStatus = {
 export type Post = {
   __typename?: 'Post';
   carCostPerDay?: Maybe<Scalars['Float']>;
-  carDetails?: Maybe<CarDetails>;
+  carDetails: CarDetails;
   carMake: Scalars['String'];
   carModel?: Maybe<Scalars['String']>;
   carVin?: Maybe<Scalars['String']>;
@@ -139,6 +138,8 @@ export type Post = {
   id: Scalars['Int'];
   imageUrl?: Maybe<Array<Scalars['String']>>;
   points?: Maybe<Scalars['Float']>;
+  rentedFrom?: Maybe<Scalars['DateTime']>;
+  rentedUntil?: Maybe<Scalars['DateTime']>;
   trips?: Maybe<Scalars['Float']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
@@ -220,13 +221,12 @@ export type UserResponse = {
 export type UsernamePasswordRegistrationInput = {
   email: Scalars['String'];
   password: Scalars['String'];
-  role: Scalars['String'];
   username: Scalars['String'];
 };
 
 export type RegularErrorsFragment = { __typename?: 'FieldError', field: string, message: string };
 
-export type RegularUserFragment = { __typename?: 'User', id: number, username: string };
+export type RegularUserFragment = { __typename?: 'User', id: number, username: string, email: string };
 
 export type ChangePasswordMutationVariables = Exact<{
   token: Scalars['String'];
@@ -234,7 +234,7 @@ export type ChangePasswordMutationVariables = Exact<{
 }>;
 
 
-export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'UserResponse', errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>>, user?: Maybe<{ __typename?: 'User', id: number, username: string }> } };
+export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'UserResponse', errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>>, user?: Maybe<{ __typename?: 'User', id: number, username: string, email: string }> } };
 
 export type ForgotPasswordMutationVariables = Exact<{
   email: Scalars['String'];
@@ -256,7 +256,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>>, user?: Maybe<{ __typename?: 'User', id: number, username: string, email: string, role: string }> } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>>, user?: Maybe<{ __typename?: 'User', id: number, username: string, email: string }> } };
 
 export type LogOutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -277,7 +277,7 @@ export type RegisterMutationVariables = Exact<{
 }>;
 
 
-export type RegisterMutation = { __typename?: 'Mutation', register?: Maybe<{ __typename?: 'UserResponse', errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>>, user?: Maybe<{ __typename?: 'User', id: number, email: string, username: string }> }> };
+export type RegisterMutation = { __typename?: 'Mutation', register?: Maybe<{ __typename?: 'UserResponse', errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>>, user?: Maybe<{ __typename?: 'User', id: number, username: string, email: string }> }> };
 
 export type DestinationsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -295,7 +295,7 @@ export type FilterPostQuery = { __typename?: 'Query', filterPost: Array<{ __type
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', id: number, username: string, email: string, role: string }> };
+export type MeQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', id: number, username: string, email: string }> };
 
 export type PaymentStatusQueryVariables = Exact<{
   orderId: Scalars['String'];
@@ -309,7 +309,7 @@ export type PostQueryVariables = Exact<{
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', post?: Maybe<{ __typename?: 'Post', id: number, carMake: string, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, carCostPerDay?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', destinationName: string }>, creator?: Maybe<{ __typename?: 'User', username: string }>, carDetails?: Maybe<{ __typename?: 'CarDetails', condition?: Maybe<string>, description?: Maybe<string>, doors?: Maybe<number>, fuelType?: Maybe<string>, mediaSystem?: Maybe<Array<string>>, mileage?: Maybe<number>, petSituation?: Maybe<Array<string>>, seats?: Maybe<number>, transmission?: Maybe<string>, commentId?: Maybe<number> }> }> };
+export type PostQuery = { __typename?: 'Query', post?: Maybe<{ __typename?: 'Post', id: number, carMake: string, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, carCostPerDay?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', destinationName: string }>, creator?: Maybe<{ __typename?: 'User', username: string }>, carDetails: { __typename?: 'CarDetails', condition?: Maybe<string>, description?: Maybe<string>, doors?: Maybe<number>, fuelType?: Maybe<string>, mediaSystem?: Maybe<Array<string>>, mileage?: Maybe<number>, petSituation?: Maybe<Array<string>>, seats?: Maybe<number>, transmission?: Maybe<string>, commentId?: Maybe<number> } }> };
 
 export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -335,6 +335,7 @@ export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
   id
   username
+  email
 }
     `;
 export const ChangePasswordDocument = gql`
@@ -447,14 +448,11 @@ export const LoginDocument = gql`
       message
     }
     user {
-      id
-      username
-      email
-      role
+      ...RegularUser
     }
   }
 }
-    `;
+    ${RegularUserFragmentDoc}`;
 export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
 
 /**
@@ -571,13 +569,11 @@ export const RegisterDocument = gql`
       message
     }
     user {
-      id
-      email
-      username
+      ...RegularUser
     }
   }
 }
-    `;
+    ${RegularUserFragmentDoc}`;
 export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, RegisterMutationVariables>;
 
 /**
@@ -690,13 +686,10 @@ export type FilterPostQueryResult = Apollo.QueryResult<FilterPostQuery, FilterPo
 export const MeDocument = gql`
     query Me {
   me {
-    id
-    username
-    email
-    role
+    ...RegularUser
   }
 }
-    `;
+    ${RegularUserFragmentDoc}`;
 
 /**
  * __useMeQuery__

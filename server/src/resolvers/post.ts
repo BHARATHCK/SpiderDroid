@@ -1,11 +1,11 @@
 /* eslint-disable quotes */
-import { MyContext } from "../types";
 import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
 import { getConnection } from "typeorm";
 import { CarDetails } from "../entities/CarDetails";
 import { Destination } from "../entities/Destination";
 import { Post } from "../entities/Post";
 import { User } from "../entities/User";
+import { MyContext } from "../types";
 
 @InputType()
 class CreatePostType {
@@ -68,7 +68,18 @@ class CreatePostType {
 export class PostResolver {
   @Query(() => [Post], { nullable: true })
   async posts(): Promise<Post[]> {
-    return await Post.find({ relations: ["destination"] });
+    const posts = await Post.find({ relations: ["destination"] });
+    console.log("STARTED *****************");
+    posts.forEach(async (post, index) => {
+      const carDetail = await CarDetails.findOne(index);
+      if (carDetail) {
+        post.carDetails = carDetail;
+        await Post.update(post.id, post);
+        console.log("UPDATED ");
+      }
+    });
+
+    return posts; //await Post.find({ relations: ["destination"] });
   }
 
   @Query(() => Post, { nullable: true })
@@ -119,13 +130,45 @@ export class PostResolver {
     @Arg("filterCategory") filterCategory: string,
     @Arg("filterCriteria") filterCriteria: string,
   ): Promise<Post[] | undefined> {
+    console.log("CAR MAKE TRIGGERRED : ", filterCategory);
     if (filterCategory.includes("carMake")) {
-      return await Post.find({ where: { carMake: filterCriteria }, order: { id: "DESC" } });
+      return await getConnection().query(`
+        SELECT post."createdAt", post."updatedAt", post.points, post."creatorId", post."carMake", post."carModel", post."carYear", post.trips, post.category, post."carVin", post."imageUrl", post."destinationId", post.id, post."carCostPerDay", post."rentedFrom", post."rentedUntil" FROM public.post INNER JOIN public.bookings on post.id = bookings."carId" where 
+        (('${new Date()
+          .toISOString()
+          .slice(0, 19)
+          .replace(
+            "T",
+            " ",
+          )}' NOT BETWEEN bookings."fromDate" AND bookings."toDate") AND ('${new Date(
+        new Date().getDate() + 2,
+      )
+        .toISOString()
+        .slice(0, 19)
+        .replace("T", " ")}' NOT BETWEEN bookings."fromDate" AND bookings."toDate"))
+        AND post."carMake" = '${filterCriteria}'
+        UNION
+        select post."createdAt", post."updatedAt", post.points, post."creatorId", post."carMake", post."carModel", post."carYear", post.trips, post.category, post."carVin", post."imageUrl", post."destinationId", post.id, post."carCostPerDay", post."rentedFrom", post."rentedUntil" from public.post where post."carMake" = '${filterCriteria}' AND  post.id NOT IN (select bookings."carId" from public.bookings)
+    `);
     } else if (filterCategory.includes("destination")) {
-      return await Post.find({
-        where: { destination: parseInt(filterCriteria) },
-        order: { id: "DESC" },
-      });
+      return await getConnection().query(`
+        SELECT post."createdAt", post."updatedAt", post.points, post."creatorId", post."carMake", post."carModel", post."carYear", post.trips, post.category, post."carVin", post."imageUrl", post."destinationId", post.id, post."carCostPerDay", post."rentedFrom", post."rentedUntil" FROM public.post INNER JOIN public.bookings on post.id = bookings."carId" where 
+        (('${new Date()
+          .toISOString()
+          .slice(0, 19)
+          .replace(
+            "T",
+            " ",
+          )}' NOT BETWEEN bookings."fromDate" AND bookings."toDate") AND ('${new Date(
+        new Date().getDate() + 2,
+      )
+        .toISOString()
+        .slice(0, 19)
+        .replace("T", " ")}' NOT BETWEEN bookings."fromDate" AND bookings."toDate"))
+        AND post."destinationId" = '${filterCriteria}' 
+        UNION
+        select post."createdAt", post."updatedAt", post.points, post."creatorId", post."carMake", post."carModel", post."carYear", post.trips, post.category, post."carVin", post."imageUrl", post."destinationId", post.id, post."carCostPerDay", post."rentedFrom", post."rentedUntil" from public.post where post."destinationId" = '${filterCriteria}' AND post.id NOT IN (select bookings."carId" from public.bookings)
+    `);
     } else {
       return undefined;
     }

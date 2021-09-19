@@ -26,7 +26,6 @@ const Login = () => {
               const response = await login({
                 variables: values,
                 update: (cache, { data }) => {
-                  cache.evict({ fieldName: "posts:{}" });
                   cache.writeQuery<MeQuery>({
                     query: MeDocument,
                     data: {
