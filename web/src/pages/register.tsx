@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   FormControl,
+  FormErrorMessage,
   FormHelperText,
   FormLabel,
   HStack,
@@ -12,6 +13,7 @@ import {
 import { Field, Form, Formik } from "formik";
 import { useRouter } from "next/dist/client/router";
 import React from "react";
+import { InputField } from "../components/InputField";
 import Layout from "../components/Layout";
 import NavBar from "../components/NavBar";
 import { Wrapper } from "../components/Wrapper";
@@ -45,66 +47,31 @@ const Register: React.FC<registerProps> = ({}) => {
           >
             {({ isSubmitting }) => (
               <Form>
-                <Field
+                <InputField
+                  helperText="Enter UserName"
                   name="username"
-                  render={({ field }) => (
-                    <FormControl as="fieldset" isRequired={true}>
-                      <FormLabel as="legend">Username</FormLabel>
-                      <Input type="username" name="username" placeholder="username" {...field} />
-                      <FormHelperText>Username</FormHelperText>
-                    </FormControl>
-                  )}
+                  label="username"
+                  placeholder="Enter the username"
                 />
                 <Box mt={4}>
-                  <Field
+                  <InputField
+                    helperText="Enter Email"
                     name="email"
-                    render={({ field }) => (
-                      <FormControl as="fieldset" isRequired={true}>
-                        <FormLabel as="legend">Email Id</FormLabel>
-                        <Input type="email" name="email" placeholder="email" {...field} />
-                        <FormHelperText>Email Id</FormHelperText>
-                      </FormControl>
-                    )}
+                    label="email"
+                    placeholder="Enter the Email"
                   />
                 </Box>
 
                 <Box mt="4">
-                  <Field
+                  <InputField
+                    helperText="Enter password"
                     name="password"
-                    render={({ field }) => (
-                      <FormControl as="fieldset" isRequired={true}>
-                        <FormLabel as="legend">Password</FormLabel>
-                        <Input type="password" name="password" placeholder="password" {...field} />
-                        <FormHelperText>Password</FormHelperText>
-                      </FormControl>
-                    )}
+                    label="Password"
+                    placeholder="password"
+                    type="password"
                   />
                 </Box>
-                <Box mt={4}>
-                  <Field
-                    name="role"
-                    render={({ field }) => (
-                      <FormControl as="fieldset" isRequired={true}>
-                        <FormLabel as="legend">Role</FormLabel>
-                        <RadioGroup defaultValue="browse" {...field}>
-                          <HStack spacing="24px">
-                            <Radio {...field} name="role" value="browse">
-                              Browse
-                            </Radio>
-                            <Radio {...field} name="role" value="host">
-                              Host
-                            </Radio>
-                          </HStack>
-                        </RadioGroup>
-                        <FormHelperText>
-                          Choose the appropriate role [browse for renting the car and host for
-                          hosting the car]
-                        </FormHelperText>
-                      </FormControl>
-                    )}
-                  />
-                </Box>
-                <Button mt="4" colorScheme="teal" isLoading={isSubmitting} type="submit">
+                <Button mt="4" colorScheme="red" isLoading={isSubmitting} type="submit">
                   Register
                 </Button>
               </Form>

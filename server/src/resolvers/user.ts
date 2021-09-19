@@ -114,7 +114,6 @@ export class UserResolver {
         username: options.username,
         password: hashedPassword,
         email: options.email,
-        role: options.role,
       }).save();
     } catch (err) {
       console.log(err);
@@ -138,7 +137,7 @@ export class UserResolver {
 
   @Mutation(() => UserResponse)
   async login(
-    @Arg("usernameoremail") userNameOrEmail: string,
+    @Arg("username") userNameOrEmail: string,
     @Arg("password") password: string,
     @Ctx() { req }: MyContext,
   ): Promise<UserResponse> {
@@ -153,7 +152,7 @@ export class UserResolver {
       return {
         errors: [
           {
-            field: "userNameOrEmail",
+            field: "username",
             message: "user doesn't exist",
           },
         ],

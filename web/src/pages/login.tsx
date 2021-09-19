@@ -1,17 +1,16 @@
 import { Button } from "@chakra-ui/button";
-import { FormControl, FormHelperText, FormLabel } from "@chakra-ui/form-control";
-import { Input } from "@chakra-ui/input";
 import { Box, Divider, Flex, Link, Text } from "@chakra-ui/layout";
-import { ErrorMessage, Field, Form, Formik } from "formik";
+import { Form, Formik } from "formik";
+import NextLink from "next/link";
 import router from "next/router";
 import React from "react";
+import { InputField } from "../components/InputField";
 import Layout from "../components/Layout";
 import NavBar from "../components/NavBar";
 import { Wrapper } from "../components/Wrapper";
 import { MeDocument, MeQuery, useLoginMutation } from "../generated/graphql";
 import { withApolloClient } from "../utils/apollo-client";
 import { toErrorMap } from "../utils/toErrorMap";
-import NextLink from "next/link";
 
 const Login = () => {
   const [login, { data, loading, error }] = useLoginMutation();
@@ -22,7 +21,7 @@ const Login = () => {
       <Layout variantType="regular">
         <Wrapper variant="small">
           <Formik
-            initialValues={{ loginUsernameoremail: "", loginPassword: "" }}
+            initialValues={{ username: "", password: "" }}
             onSubmit={async (values, { setErrors }) => {
               const response = await login({
                 variables: values,
@@ -39,6 +38,7 @@ const Login = () => {
               });
 
               if (response.data.login.errors) {
+                console.log(response.data.login.errors);
                 setErrors(toErrorMap(response.data.login.errors));
               } else if (response.data.login.user) {
                 if (typeof router.query.next === "string") {
@@ -52,45 +52,24 @@ const Login = () => {
             {({ isSubmitting }) => (
               <Form>
                 <Box m={4}>
-                  <Field
-                    name="loginUsernameoremail"
-                    render={({ field }) => (
-                      <FormControl as="fieldset" isRequired={true}>
-                        <FormLabel as="legend">Username</FormLabel>
-                        <Input
-                          minW="90vw"
-                          type="username"
-                          name="userNameOrEmail"
-                          placeholder="UserName or Email Id"
-                          {...field}
-                        />
-                        <Box color="red.500">
-                          <ErrorMessage name="userNameOrEmail" />
-                        </Box>
-                        <FormHelperText>Username or EmailId</FormHelperText>
-                      </FormControl>
-                    )}
-                  />
-
-                  <Box mt="4">
-                    <Field
-                      name="loginPassword"
-                      render={({ field }) => (
-                        <FormControl as="fieldset" isRequired={true}>
-                          <FormLabel as="legend">Password</FormLabel>
-                          <Input
-                            minW="90vw"
-                            type="password"
-                            name="password"
-                            placeholder="password"
-                            {...field}
-                          />
-                          <ErrorMessage name="password" />
-                          <FormHelperText>Password</FormHelperText>
-                        </FormControl>
-                      )}
+                  <Box mt={4} minW={400}>
+                    <InputField
+                      helperText="Enter the user name or Email"
+                      name="username"
+                      label="UserName"
+                      placeholder="Enter UserName or Email"
                     />
                   </Box>
+                  <Box mt="4">
+                    <InputField
+                      helperText="Enter password"
+                      name="password"
+                      label="Password"
+                      placeholder="password"
+                      type="password"
+                    />
+                  </Box>
+
                   <Flex mt={2} alignItems="center">
                     <Button mt="4" colorScheme="red" isLoading={isSubmitting} type="submit">
                       Login

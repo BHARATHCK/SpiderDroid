@@ -2,32 +2,43 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  FormHelperText,
   Input,
   Textarea,
-} from '@chakra-ui/react'
-import { useField } from 'formik'
-import React, { InputHTMLAttributes } from 'react'
+} from "@chakra-ui/react";
+import { useField } from "formik";
+import React, { InputHTMLAttributes } from "react";
+import { useViewport } from "./ViewPortHook";
 
 type InputFieldProps = InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> & {
-  name: string,
-  label: string,
-  placeholder: string,
-  textarea?: Boolean,
-}
+  name: string;
+  helperText: string;
+  label: string;
+  placeholder: string;
+  textarea?: Boolean;
+};
 
 export const InputField: React.FC<InputFieldProps> = ({
+  helperText,
   label,
   size: _,
   textarea,
   ...props
 }) => {
+  const [field, { error }] = useField(props);
+  const { width } = useViewport();
+  const breakpoint = 700;
 
-  const [field, { error }] = useField(props)
   return (
     <FormControl isInvalid={!!error}>
       <FormLabel htmlFor={field.name}>{label}</FormLabel>
-      {textarea ? <Textarea {...field} {...props} id={field.name} /> : <Input {...field} {...props} id={field.name} />}
+      {textarea ? (
+        <Textarea {...field} {...props} id={field.name} />
+      ) : (
+        <Input minW={width < breakpoint ? "90vw" : "400px"} {...field} {...props} id={field.name} />
+      )}
+      <FormHelperText>{helperText}</FormHelperText>
       {error ? <FormErrorMessage>{error}</FormErrorMessage> : null}
     </FormControl>
-  )
-}
+  );
+};

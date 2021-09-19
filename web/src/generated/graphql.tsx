@@ -83,7 +83,7 @@ export type MutationForgotPasswordArgs = {
 
 export type MutationLoginArgs = {
   password: Scalars['String'];
-  usernameoremail: Scalars['String'];
+  username: Scalars['String'];
 };
 
 
@@ -229,8 +229,8 @@ export type HostCarMutationVariables = Exact<{
 export type HostCarMutation = { __typename?: 'Mutation', createPost: boolean };
 
 export type LoginMutationVariables = Exact<{
-  loginPassword: Scalars['String'];
-  loginUsernameoremail: Scalars['String'];
+  password: Scalars['String'];
+  username: Scalars['String'];
 }>;
 
 
@@ -418,8 +418,8 @@ export type HostCarMutationHookResult = ReturnType<typeof useHostCarMutation>;
 export type HostCarMutationResult = Apollo.MutationResult<HostCarMutation>;
 export type HostCarMutationOptions = Apollo.BaseMutationOptions<HostCarMutation, HostCarMutationVariables>;
 export const LoginDocument = gql`
-    mutation Login($loginPassword: String!, $loginUsernameoremail: String!) {
-  login(password: $loginPassword, usernameoremail: $loginUsernameoremail) {
+    mutation Login($password: String!, $username: String!) {
+  login(password: $password, username: $username) {
     errors {
       field
       message
@@ -448,8 +448,8 @@ export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutati
  * @example
  * const [loginMutation, { data, loading, error }] = useLoginMutation({
  *   variables: {
- *      loginPassword: // value for 'loginPassword'
- *      loginUsernameoremail: // value for 'loginUsernameoremail'
+ *      password: // value for 'password'
+ *      username: // value for 'username'
  *   },
  * });
  */
