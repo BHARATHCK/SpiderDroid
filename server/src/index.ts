@@ -50,6 +50,8 @@ const main = async () => {
   // Redis store
   const redisStore = connectRedis(session);
 
+  app.set("trust proxy", 1);
+
   // cors
   const corsOptions = {
     origin: [process.env.WEB_APP_URL || "", "https://studio.apollographql.com"],
@@ -58,6 +60,7 @@ const main = async () => {
 
   // set cors
   app.use(cors(corsOptions));
+  console.log(__PROD__);
 
   // Redis session
   app.use(
@@ -73,7 +76,7 @@ const main = async () => {
         httpOnly: true,
         secure: __PROD__, //cookie only in https
         sameSite: "lax",
-        domain: __PROD__ ? ".qovery.io" : undefined, // inproduction
+        domain: __PROD__ ? ".qovery.com" : undefined,
       },
       saveUninitialized: false,
       secret: process.env.REDIS_SESSION_SECRET || "",
@@ -88,7 +91,6 @@ const main = async () => {
   });
 
   const apolloServer = new ApolloServer({
-    introspection: true,
     schema: await buildSchema({
       resolvers: [HelloResolver, UserResolver, PostResolver],
       validate: false,
