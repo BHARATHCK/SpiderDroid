@@ -75,7 +75,7 @@ const main = async () => {
         httpOnly: false,
         secure: __PROD__, //cookie only in https
         sameSite: "none",
-        domain: __PROD__ ? "vercel.app" : undefined, // inproduction
+        domain: __PROD__ ? "spider-droid.vercel.app" : undefined, // inproduction
       },
       saveUninitialized: false,
       secret: process.env.REDIS_SESSION_SECRET || "",
