@@ -1,5 +1,5 @@
 /* eslint-disable quotes */
-import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Field, InputType, Int, Mutation, Query, Resolver } from "type-graphql";
 import { getConnection } from "typeorm";
 import { CarDetails } from "../entities/CarDetails";
 import { Destination } from "../entities/Destination";
@@ -62,6 +62,9 @@ class CreatePostType {
 
   @Field(() => String)
   destination: string;
+
+  @Field(() => Int)
+  carCostPerDay: number;
 }
 
 @Resolver(Post)
@@ -201,7 +204,7 @@ export class PostResolver {
       }).save();
 
       await Post.create({
-        carCostPerDay: 0,
+        carCostPerDay: options.carCostPerDay,
         carMake: options.carMake,
         carModel: options.carModel,
         carVin: options.carVin,

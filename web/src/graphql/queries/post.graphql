@@ -12,6 +12,7 @@ query Post($postId: Float!) {
     }
     creator {
       username
+      createdAt
     }
     carCostPerDay
     carDetails {

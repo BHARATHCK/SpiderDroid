@@ -1,5 +1,5 @@
 import { FormControl, FormHelperText, FormLabel } from "@chakra-ui/form-control";
-import { Box, Flex, HStack, Text } from "@chakra-ui/layout";
+import { Box, Flex, HStack, Stack, Text } from "@chakra-ui/layout";
 import {
   Button,
   CheckboxGroup,
@@ -21,6 +21,7 @@ import React from "react";
 import Upload from "../components/fileuploadzone";
 import Layout from "../components/Layout";
 import NavBar from "../components/NavBar";
+import { useViewport } from "../components/ViewPortHook";
 import { Wrapper } from "../components/Wrapper";
 import { useDestinationsQuery, useHostCarMutation } from "../generated/graphql";
 import { withApolloClient } from "../utils/apollo-client";
@@ -28,6 +29,8 @@ import { withApolloClient } from "../utils/apollo-client";
 const HostCar = () => {
   let [value, setValue] = React.useState("");
   let [imageURL, setImageURL] = React.useState([]);
+  const { width } = useViewport();
+  const breakpoint = 700;
 
   const { data } = useDestinationsQuery();
 
@@ -66,6 +69,7 @@ const HostCar = () => {
                 carvin: "",
                 destination: "",
                 isSubmitButton: false,
+                carCostPerDay: 0,
               }}
               onSubmit={async (values, { setErrors }) => {
                 if (imageURL.length < 3) {
@@ -94,6 +98,7 @@ const HostCar = () => {
                       mediaSystem: values.mediaSystem,
                       petSituation: values.petSituation,
                       destination: values.destination,
+                      carCostPerDay: values.carCostPerDay,
                     },
                   },
                 });
@@ -107,13 +112,13 @@ const HostCar = () => {
                 <Form>
                   <Box boxShadow="xl" backgroundColor="whiteAlpha.800" borderRadius={10}>
                     <Box m={4} pb={10} pt={10}>
-                      <Flex>
+                      <Flex justifyContent="left">
                         <Field
                           name="carmake"
                           render={({ field }) => (
                             <FormControl as="fieldset" isRequired={true}>
                               <FormLabel as="legend">Car Brand</FormLabel>
-                              <Input name="carmake" placeholder="Car Make" {...field} />
+                              <Input minW="60%" name="carmake" placeholder="Car Make" {...field} />
                               <FormHelperText>Company name</FormHelperText>
                             </FormControl>
                           )}
@@ -124,37 +129,67 @@ const HostCar = () => {
                           render={({ field }) => (
                             <FormControl as="fieldset" isRequired={true}>
                               <FormLabel as="legend">Car Model</FormLabel>
-                              <Input name="carmodel" placeholder="Car Model" {...field} />
+                              <Input
+                                minW="60%"
+                                name="carmodel"
+                                placeholder="Car Model"
+                                {...field}
+                              />
                               <FormHelperText>Model name of the car</FormHelperText>
                             </FormControl>
                           )}
                         />
 
+                        <Box>
+                          <Field
+                            name="caryear"
+                            render={({ field }) => (
+                              <FormControl id="caryear" isRequired={true}>
+                                <FormLabel>Year</FormLabel>
+                                <NumberInput max={new Date().getFullYear()} min={1800}>
+                                  <NumberInputField minW="60%" {...field} />
+                                  <NumberInputStepper>
+                                    <NumberIncrementStepper />
+                                    <NumberDecrementStepper />
+                                  </NumberInputStepper>
+                                </NumberInput>
+                                <FormHelperText>Manufactured year of car</FormHelperText>
+                              </FormControl>
+                            )}
+                          />
+                        </Box>
+                      </Flex>
+                      <Flex alignItems="center">
+                        <Box mt={4}>
+                          <Field
+                            name="carvin"
+                            render={({ field }) => (
+                              <FormControl as="fieldset" {...field} isRequired={true}>
+                                <FormLabel as="legend">Car Vin</FormLabel>
+                                <Input minW="100%" name="carvin" placeholder="Car Vin Number" />
+                                <FormHelperText>VIN Number of the car</FormHelperText>
+                              </FormControl>
+                            )}
+                          />
+                        </Box>
+                      </Flex>
+
+                      <Box mt={4}>
                         <Field
-                          name="caryear"
+                          name="carCostPerDay"
                           render={({ field }) => (
-                            <FormControl id="caryear" isRequired={true}>
-                              <FormLabel>Year</FormLabel>
-                              <NumberInput max={new Date().getFullYear()} min={1800}>
-                                <NumberInputField {...field} />
+                            <FormControl id="carCostPerDay" isRequired={true}>
+                              <FormLabel>Rental Cost / Day</FormLabel>
+                              <NumberInput max={4000} min={800}>
+                                <NumberInputField minW="100%" placeholder="0" {...field} />
                                 <NumberInputStepper>
                                   <NumberIncrementStepper />
                                   <NumberDecrementStepper />
                                 </NumberInputStepper>
                               </NumberInput>
-                              <FormHelperText>Manufactured year of car</FormHelperText>
-                            </FormControl>
-                          )}
-                        />
-                      </Flex>
-                      <Box mt={4}>
-                        <Field
-                          name="carmodel"
-                          render={({ field }) => (
-                            <FormControl as="fieldset" {...field} isRequired={true}>
-                              <FormLabel as="legend">Car Model</FormLabel>
-                              <Input name="carvin" placeholder="Car Vin Number" />
-                              <FormHelperText>VIN Number of the car</FormHelperText>
+                              <FormHelperText>
+                                Set the price for the rental per day [See guidelines for more info.]
+                              </FormHelperText>
                             </FormControl>
                           )}
                         />
@@ -279,44 +314,48 @@ const HostCar = () => {
 
                       {/* Miles */}
                       <Box mt={4}>
-                        <Field
-                          name="miles"
-                          render={({ field }) => (
-                            <FormControl id="carmiles" isRequired={true}>
-                              <FormLabel>Miles</FormLabel>
-                              <NumberInput max={15000} min={0}>
-                                <NumberInputField {...field} />
-                                <NumberInputStepper>
-                                  <NumberIncrementStepper />
-                                  <NumberDecrementStepper />
-                                </NumberInputStepper>
-                              </NumberInput>
-                            </FormControl>
-                          )}
-                        />
+                        <Box>
+                          <Field
+                            name="miles"
+                            render={({ field }) => (
+                              <FormControl id="carmiles" isRequired={true}>
+                                <FormLabel>Miles</FormLabel>
+                                <NumberInput max={15000} min={0}>
+                                  <NumberInputField minW="100%" {...field} />
+                                  <NumberInputStepper>
+                                    <NumberIncrementStepper />
+                                    <NumberDecrementStepper />
+                                  </NumberInputStepper>
+                                </NumberInput>
+                              </FormControl>
+                            )}
+                          />
+                        </Box>
                       </Box>
 
                       {/* Mileage */}
                       <Box mt={4}>
-                        <Field
-                          name="mileage"
-                          render={({ field }) => (
-                            <FormControl id="carmileage" isRequired={true}>
-                              <FormLabel>Approx. Mileage</FormLabel>
-                              <NumberInput max={30} min={6}>
-                                <NumberInputField {...field} />
-                                <NumberInputStepper>
-                                  <NumberIncrementStepper />
-                                  <NumberDecrementStepper />
-                                </NumberInputStepper>
-                              </NumberInput>
-                            </FormControl>
-                          )}
-                        />
+                        <Box>
+                          <Field
+                            name="mileage"
+                            render={({ field }) => (
+                              <FormControl id="carmileage" isRequired={true}>
+                                <FormLabel>Approx. Mileage</FormLabel>
+                                <NumberInput max={30} min={6}>
+                                  <NumberInputField minW="100%" {...field} />
+                                  <NumberInputStepper>
+                                    <NumberIncrementStepper />
+                                    <NumberDecrementStepper />
+                                  </NumberInputStepper>
+                                </NumberInput>
+                              </FormControl>
+                            )}
+                          />
+                        </Box>
                       </Box>
 
                       {/* Doors */}
-                      <Flex justifyContent="space-between">
+                      <Flex justifyContent="left">
                         <Box mt={4}>
                           <Field
                             name="doors"
@@ -337,7 +376,7 @@ const HostCar = () => {
 
                         {/* Seats */}
 
-                        <Box mt={4}>
+                        <Box mt={4} ml={4}>
                           <Field
                             name="seats"
                             render={({ field }) => (
@@ -524,7 +563,7 @@ const HostCar = () => {
                             <FormControl as="fieldset" isRequired={true}>
                               <FormLabel as="legend">Fuel Type</FormLabel>
                               <RadioGroup defaultValue="electric" {...field}>
-                                <HStack spacing="24px">
+                                <Stack direction={["column", "row"]} spacing="24px">
                                   <Radio {...field} name="fuelType" value="gasoline">
                                     Gasoline
                                   </Radio>
@@ -540,7 +579,7 @@ const HostCar = () => {
                                   <Radio {...field} name="fuelType" value="hybrid">
                                     Hybrid
                                   </Radio>
-                                </HStack>
+                                </Stack>
                               </RadioGroup>
                               <FormHelperText>
                                 This will help customer to choose the right car

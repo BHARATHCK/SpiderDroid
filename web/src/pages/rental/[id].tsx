@@ -1,10 +1,21 @@
 import { StarIcon } from "@chakra-ui/icons";
 import Image from "next/image";
-import { Box, Divider, Flex, Heading, Spacer, Stack, Text } from "@chakra-ui/layout";
+import {
+  Badge,
+  Box,
+  Divider,
+  Flex,
+  Grid,
+  Heading,
+  Link,
+  Spacer,
+  Stack,
+  Text,
+} from "@chakra-ui/layout";
 import { Select } from "@chakra-ui/select";
 import { Spinner } from "@chakra-ui/spinner";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import styles from "../../components/Carousel.module.css";
 import Carouselize from "../../components/Carouselize";
@@ -14,9 +25,25 @@ import PaymentButton from "../../components/Payment";
 import { usePostQuery } from "../../generated/graphql";
 import { withApolloClient } from "../../utils/apollo-client";
 import isAuth from "../../utils/isAuth";
+import { Avatar } from "@chakra-ui/avatar";
+import { useViewport } from "../../components/ViewPortHook";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  useDisclosure,
+} from "@chakra-ui/react";
 
 const RentCar = () => {
   const router = useRouter();
+  const { width } = useViewport();
+  const breakpoint = 700;
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   // Check for authentication
   isAuth("?next=" + router.pathname);
@@ -99,25 +126,165 @@ const RentCar = () => {
                     <Box>{data.post.points}</Box>
                     <StarIcon color="blue.600" />
                   </Flex>
-                  <Box maxW="80%">
+                  <Badge mt={2} maxW={100} colorScheme="green">
+                    {data.post.trips} Trips
+                  </Badge>
+                  <Box maxW="80%" mt={4}>
                     <Flex>
-                      <Text>{data.post.carDetails.mileage}</Text>
+                      <Flex alignItems="center">
+                        <Image
+                          width={30}
+                          height={30}
+                          layout="fixed"
+                          src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632150122/icons8-car-door-48_fhq6e5.png"
+                        ></Image>
+                        <Text ml={4}>{data.post.carDetails.doors} Doors</Text>
+                      </Flex>
                       <Spacer />
-                      <Text>{data.post.carDetails.fuelType}</Text>
-                    </Flex>
-                    <Flex>
-                      <Text>{data.post.carDetails.doors} Doors</Text>
-                      <Spacer />
-                      <Text>{data.post.carDetails.seats} Seats</Text>
+                      <Flex alignItems="center">
+                        <Image
+                          width={30}
+                          height={30}
+                          layout="fixed"
+                          src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632150169/icons8-car-seat-100_a6vtaa.png"
+                        ></Image>
+                        <Text ml={4}>{data.post.carDetails.seats} Seats</Text>
+                      </Flex>
                     </Flex>
                   </Box>
-                  <Box maxW="80%">
-                    <Text>Hosted By</Text>
-                    <Flex>
-                      <Text>Profile PIC</Text>
-                      <Spacer />
-                      <Text>{data.post.creator.username}</Text>
+                  <Box maxW="80%" mt={10}>
+                    <Text fontWeight={600}>HOSTED BY</Text>
+                    <Flex direction="row" justifyContent="left" alignItems="center" mt={4}>
+                      <Avatar
+                        name={data.post.creator.username}
+                        width={90}
+                        height={90}
+                        round={true}
+                      />
+                      <Flex direction="column">
+                        <Text ml={4}>{data.post.creator.username}</Text>
+                        <Text ml={4}>{data.post.creator.createdAt}</Text>
+                      </Flex>
                     </Flex>
+                    <Flex mt={4}>
+                      {width < breakpoint ? (
+                        <Image
+                          src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632142634/icons8-cleaning-58_jp4ojf.png"
+                          width={60}
+                          height={60}
+                          layout="fixed"
+                        ></Image>
+                      ) : (
+                        <Image
+                          src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632142634/icons8-cleaning-58_jp4ojf.png"
+                          width={60}
+                          height={60}
+                          layout="fixed"
+                        ></Image>
+                      )}
+
+                      <Text ml={4}>
+                        {data.post.creator.username} has completed training on enhanced cleaning and
+                        disinfection practices.
+                        <br></br>
+                        <Link
+                          onClick={onOpen}
+                          color="blue"
+                          textDecorationLine="underline"
+                          colorScheme="blue"
+                        >
+                          Learn more
+                        </Link>
+                      </Text>
+                    </Flex>
+                  </Box>
+                  {/* Modal */}
+
+                  <Modal isOpen={isOpen} onClose={onClose}>
+                    <ModalOverlay />
+                    <ModalContent>
+                      <ModalHeader>Cleaning &amp; disinfection training</ModalHeader>
+                      <ModalCloseButton />
+                      <ModalBody>
+                        <Image
+                          width={490}
+                          height={200}
+                          src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632151329/disinfectTraining_uqoffc.png"
+                        ></Image>
+                        <Text>
+                          This host has completed training on enhanced cleaning and disinfection
+                          practices that use the latest recommendations compiled from the CDC, EPA,
+                          WHO, and vehicle detailing experts.
+                        </Text>
+                      </ModalBody>
+
+                      <ModalFooter>
+                        <Button colorScheme="blue" mr={3} onClick={onClose}>
+                          Close
+                        </Button>
+                      </ModalFooter>
+                    </ModalContent>
+                  </Modal>
+
+                  <Box mt={10}>
+                    <Flex direction="column">
+                      <Text fontWeight={600}>DESCRIPTION</Text>
+                      <Text>{data.post.carDetails.description}</Text>
+                    </Flex>
+                  </Box>
+                  <Box mt={10}>
+                    <Grid templateColumns="repeat(2, 1fr)" gap={4}>
+                      <Flex alignItems="center">
+                        <Image
+                          width={30}
+                          height={30}
+                          src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632148394/icons8-fuel-60_lr363a.png"
+                        ></Image>
+                        <Box ml={2}>{data.post.carDetails.fuelType}</Box>
+                      </Flex>
+                      <Flex alignItems="center">
+                        <Image
+                          width={30}
+                          height={30}
+                          src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632148699/icons8-aux-cable-64_dw03s9.png"
+                        ></Image>
+                        <Box ml={2}>{data.post.carDetails.mediaSystem}</Box>
+                      </Flex>
+                      <Flex alignItems="center">
+                        <Image
+                          width={30}
+                          height={30}
+                          src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632148750/icons8-gas-bottle-48_l6vzri.png"
+                        ></Image>
+                        <Box ml={2}>{data.post.carDetails.mileage} Mileage</Box>
+                      </Flex>
+                      <Flex alignItems="center">
+                        <Image
+                          width={30}
+                          height={30}
+                          src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632148869/icons8-pet-64_jzexwy.png"
+                        ></Image>
+                        <Box ml={2}>
+                          {data.post.carDetails.petSituation || <Box>No pets Pls!</Box>}
+                        </Box>
+                      </Flex>
+                      <Flex alignItems="center">
+                        <Image
+                          width={30}
+                          height={30}
+                          src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632148893/icons8-gear-64_bjl7xi.png"
+                        ></Image>
+                        <Box ml={2}>{data.post.carDetails.transmission}</Box>
+                      </Flex>
+                      <Flex alignItems="center">
+                        <Image
+                          width={30}
+                          height={30}
+                          src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632148914/icons8-dictionary-48_a8nzex.png"
+                        ></Image>
+                        <Box ml={2}>{data.post.carDetails.condition}</Box>
+                      </Flex>
+                    </Grid>
                   </Box>
                 </Flex>
               </Box>
