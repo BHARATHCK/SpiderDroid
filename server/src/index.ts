@@ -73,7 +73,7 @@ const main = async () => {
         httpOnly: true,
         secure: __PROD__, //cookie only in https
         sameSite: "lax",
-        domain: __PROD__ ? ".vercel.app" : undefined, // inproduction
+        //domain: __PROD__ ? ".vercel.app" : undefined, // inproduction
       },
       saveUninitialized: false,
       secret: process.env.REDIS_SESSION_SECRET || "",
