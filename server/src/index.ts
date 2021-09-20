@@ -151,7 +151,7 @@ const main = async () => {
     res.json({ status: "ok" });
   });
 
-  app.listen(parseInt(process.env.SERVER_PORT || ""), () => {
+  app.listen(parseInt(process.env.PORT || ""), () => {
     console.log("Server is up !!");
   });
 };
