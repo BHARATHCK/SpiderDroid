@@ -76,7 +76,7 @@ const main = async () => {
         httpOnly: true,
         secure: __PROD__, //cookie only in https
         sameSite: "lax",
-        domain: __PROD__ ? ".qovery.io" : undefined,
+        domain: __PROD__ ? process.env.COOKIE_DOMAIN : undefined,
       },
       saveUninitialized: false,
       secret: process.env.REDIS_SESSION_SECRET || "",
