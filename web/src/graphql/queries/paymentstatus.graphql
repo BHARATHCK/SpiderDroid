@@ -1,5 +1,0 @@
-query PaymentStatus($orderId: String!) {
-  paymentstatus(orderId: $orderId) {
-    status
-  }
-}

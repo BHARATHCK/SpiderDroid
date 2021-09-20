@@ -1,3 +1,0 @@
-mutation HostCar($options: CreatePostType!) {
-  createPost(options: $options)
-}
