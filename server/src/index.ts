@@ -56,7 +56,7 @@ const main = async () => {
     credentials: true, // <-- REQUIRED backend setting
   };
 
-  app.enable("trust proxy");
+  app.set("trust proxy", 1);
 
   // set cors
   app.use(cors(corsOptions));
@@ -74,7 +74,7 @@ const main = async () => {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
         httpOnly: true,
         secure: __PROD__, //cookie only in https
-        sameSite: "lax",
+        sameSite: "none",
         domain: __PROD__ ? "vercel.app" : undefined, // inproduction
       },
       saveUninitialized: false,
