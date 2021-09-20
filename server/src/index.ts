@@ -72,7 +72,7 @@ const main = async () => {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
         httpOnly: true,
         secure: __PROD__, //cookie only in https
-        sameSite: "none",
+        sameSite: "lax",
         domain: __PROD__ ? ".qovery.io" : undefined, // inproduction
       },
       saveUninitialized: false,
