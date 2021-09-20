@@ -56,8 +56,6 @@ const main = async () => {
     credentials: true, // <-- REQUIRED backend setting
   };
 
-  app.set("trust proxy", 1);
-
   // set cors
   app.use(cors(corsOptions));
 
@@ -72,10 +70,10 @@ const main = async () => {
       }),
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
-        httpOnly: false,
+        httpOnly: true,
         secure: __PROD__, //cookie only in https
         sameSite: "none",
-        domain: __PROD__ ? "spider-droid.vercel.app" : undefined, // inproduction
+        domain: __PROD__ ? ".qovery.io" : undefined, // inproduction
       },
       saveUninitialized: false,
       secret: process.env.REDIS_SESSION_SECRET || "",
