@@ -1,0 +1,3 @@
+mutation RatePost($userRating: Float!, $postId: Float!, $bookingId: Float!) {
+  ratePost(userpoints: $userRating, id: $postId, bookingId: $bookingId)
+}

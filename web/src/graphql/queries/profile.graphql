@@ -2,6 +2,7 @@ query Profile {
   me {
     ...RegularUser
     bookings {
+      id
       carId
       fromDate
       toDate

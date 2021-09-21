@@ -18,7 +18,7 @@ export type Scalars = {
 
 export type Bookings = {
   __typename?: 'Bookings';
-  bookingStatus?: Maybe<Scalars['Boolean']>;
+  bookingStatus?: Maybe<Scalars['String']>;
   carId?: Maybe<Scalars['Float']>;
   createdAt?: Maybe<Scalars['String']>;
   fromDate?: Maybe<Scalars['String']>;
@@ -95,6 +95,7 @@ export type Mutation = {
   forgotPassword: Scalars['Boolean'];
   login: UserResponse;
   logout: Scalars['Boolean'];
+  ratePost: Scalars['Boolean'];
   razorpaypayment: RazorpayResponse;
   register?: Maybe<UserResponse>;
 };
@@ -119,6 +120,13 @@ export type MutationForgotPasswordArgs = {
 export type MutationLoginArgs = {
   password: Scalars['String'];
   username: Scalars['String'];
+};
+
+
+export type MutationRatePostArgs = {
+  bookingId: Scalars['Float'];
+  id: Scalars['Float'];
+  userpoints: Scalars['Float'];
 };
 
 
@@ -158,6 +166,7 @@ export type Post = {
   rentedUntil?: Maybe<Scalars['DateTime']>;
   trips?: Maybe<Scalars['Float']>;
   updatedAt?: Maybe<Scalars['String']>;
+  usersRated?: Maybe<Scalars['Float']>;
 };
 
 export type Query = {
@@ -219,11 +228,11 @@ export type RazorpayResponse = {
 
 export type User = {
   __typename?: 'User';
-  bookings: Array<Bookings>;
+  bookings?: Maybe<Array<Bookings>>;
   createdAt: Scalars['DateTime'];
   email: Scalars['String'];
   id: Scalars['Int'];
-  posts: Array<Post>;
+  posts?: Maybe<Array<Post>>;
   role: Scalars['String'];
   updatedAt: Scalars['DateTime'];
   username: Scalars['String'];
@@ -279,6 +288,15 @@ export type LogOutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type LogOutMutation = { __typename?: 'Mutation', logout: boolean };
+
+export type RatePostMutationVariables = Exact<{
+  userRating: Scalars['Float'];
+  postId: Scalars['Float'];
+  bookingId: Scalars['Float'];
+}>;
+
+
+export type RatePostMutation = { __typename?: 'Mutation', ratePost: boolean };
 
 export type RazorpayPaymentMutationVariables = Exact<{
   razorpaypaymentUserToDate: Scalars['DateTime'];
@@ -336,7 +354,7 @@ export type PostsQuery = { __typename?: 'Query', browseByCarMake: Array<{ __type
 export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProfileQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', id: number, username: string, email: string, bookings: Array<{ __typename?: 'Bookings', carId?: Maybe<number>, fromDate?: Maybe<string>, toDate?: Maybe<string>, ratingStatus?: Maybe<boolean>, bookingStatus?: Maybe<boolean> }>, posts: Array<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, carYear?: Maybe<string> }> }> };
+export type ProfileQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', id: number, username: string, email: string, bookings?: Maybe<Array<{ __typename?: 'Bookings', id: number, carId?: Maybe<number>, fromDate?: Maybe<string>, toDate?: Maybe<string>, ratingStatus?: Maybe<boolean>, bookingStatus?: Maybe<string> }>>, posts?: Maybe<Array<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, carYear?: Maybe<string> }>> }> };
 
 export type SearchQueryVariables = Exact<{
   searchToDate: Scalars['DateTime'];
@@ -532,6 +550,39 @@ export function useLogOutMutation(baseOptions?: Apollo.MutationHookOptions<LogOu
 export type LogOutMutationHookResult = ReturnType<typeof useLogOutMutation>;
 export type LogOutMutationResult = Apollo.MutationResult<LogOutMutation>;
 export type LogOutMutationOptions = Apollo.BaseMutationOptions<LogOutMutation, LogOutMutationVariables>;
+export const RatePostDocument = gql`
+    mutation RatePost($userRating: Float!, $postId: Float!, $bookingId: Float!) {
+  ratePost(userpoints: $userRating, id: $postId, bookingId: $bookingId)
+}
+    `;
+export type RatePostMutationFn = Apollo.MutationFunction<RatePostMutation, RatePostMutationVariables>;
+
+/**
+ * __useRatePostMutation__
+ *
+ * To run a mutation, you first call `useRatePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRatePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [ratePostMutation, { data, loading, error }] = useRatePostMutation({
+ *   variables: {
+ *      userRating: // value for 'userRating'
+ *      postId: // value for 'postId'
+ *      bookingId: // value for 'bookingId'
+ *   },
+ * });
+ */
+export function useRatePostMutation(baseOptions?: Apollo.MutationHookOptions<RatePostMutation, RatePostMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RatePostMutation, RatePostMutationVariables>(RatePostDocument, options);
+      }
+export type RatePostMutationHookResult = ReturnType<typeof useRatePostMutation>;
+export type RatePostMutationResult = Apollo.MutationResult<RatePostMutation>;
+export type RatePostMutationOptions = Apollo.BaseMutationOptions<RatePostMutation, RatePostMutationVariables>;
 export const RazorpayPaymentDocument = gql`
     mutation RazorpayPayment($razorpaypaymentUserToDate: DateTime!, $razorpaypaymentUserFromDate: DateTime!, $carId: Float!) {
   razorpaypayment(
@@ -888,6 +939,7 @@ export const ProfileDocument = gql`
   me {
     ...RegularUser
     bookings {
+      id
       carId
       fromDate
       toDate

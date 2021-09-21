@@ -11,6 +11,7 @@ import { Bookings } from "../entities/Bookings";
 import { _COOKIE_NAME, _FORGOT_PASSWORD_PREFIX } from "../constants";
 import { v4 } from "uuid";
 import { sendEmail } from "../utils/sendEmail";
+import { MoreThan } from "typeorm";
 
 @ObjectType()
 class FieldError {
@@ -223,6 +224,26 @@ export class UserResolver {
     }).save();
 
     // Since payment started , add it to booking
+    // But check if booking exists with same date and status is success
+
+    const bookings = await Bookings.find({
+      where: {
+        carId: carId,
+        fromDate: MoreThan(new Date().toISOString().slice(0, 19).replace("T", " ")),
+      },
+    });
+
+    bookings.forEach((booking) => {
+      if (
+        booking.fromDate.getDate() === userFromDate.getDate() &&
+        booking.bookingStatus === "Success"
+      ) {
+        return { paymentResponse: null, errors: "Car already booked for this day" };
+      } else {
+        // Do nothing
+      }
+    });
+
     Bookings.create({
       carId: carId,
       bookingStatus: "InProgress",

@@ -1,18 +1,40 @@
 import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/layout";
 import { withApolloClient } from "../utils/apollo-client";
 import Avatar from "react-avatar";
-import { useLogOutMutation, useProfileQuery } from "../generated/graphql";
+import { useLogOutMutation, useProfileQuery, useRatePostMutation } from "../generated/graphql";
 import NavBar from "../components/NavBar";
 import Layout from "../components/Layout";
 import { Button } from "@chakra-ui/button";
 import { useApolloClient } from "@apollo/client";
 import { useRouter } from "next/router";
 import { Spinner } from "@chakra-ui/spinner";
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import {
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  useDisclosure,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+} from "@chakra-ui/react";
 import Image from "next/image";
+import React, { useState } from "react";
+import Rating from "../components/RatingComponent";
 
 const profile = () => {
+  const [bookingObject, setBookingObject] = useState({});
+
   const [logout, { loading: logoutLoading }] = useLogOutMutation({
+    notifyOnNetworkStatusChange: true,
+  });
+
+  const [ratePost, { loading: ratingPostLoading }] = useRatePostMutation({
     notifyOnNetworkStatusChange: true,
   });
   const { data, loading } = useProfileQuery({
@@ -109,7 +131,7 @@ const profile = () => {
                               </Flex>
                             </Box>
                             <Box>
-                              <Flex justifyContent="space-between">
+                              <Flex justifyContent="space-between" alignItems="center">
                                 <Image
                                   width={30}
                                   height={30}
@@ -117,9 +139,15 @@ const profile = () => {
                                 ></Image>
                                 <Text ml={4}>
                                   {booking.ratingStatus || (
-                                    <Text textDecoration="underline" color="blue" cursor="pointer">
-                                      Click to Rate the experience
-                                    </Text>
+                                    <Rating
+                                      postId={booking.carId}
+                                      bookingId={booking.id}
+                                      fillColor="red"
+                                      icon="Star"
+                                      scale={5}
+                                      strokeColor="black"
+                                      size={30}
+                                    />
                                   )}
                                 </Text>
                               </Flex>

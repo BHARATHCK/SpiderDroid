@@ -53,6 +53,10 @@ export class Post extends BaseEntity {
 
   @Field({ nullable: true })
   @Column({ default: 0, type: "int" })
+  usersRated: number;
+
+  @Field({ nullable: true })
+  @Column({ default: 0, type: "int" })
   trips: number;
 
   @Field({ nullable: true })

@@ -234,4 +234,46 @@ export class PostResolver {
 
     return creationStatus;
   }
+
+  @Mutation(() => Boolean)
+  async ratePost(
+    @Arg("id") id: number,
+    @Arg("userpoints") userpoints: number,
+    @Arg("bookingId") bookingId: number,
+  ): Promise<boolean> {
+    let ratingSubmitted = false;
+
+    try {
+      const post = await Post.findOne(id);
+
+      if (post) {
+        const totalPoints = post.points + userpoints;
+        if (post.usersRated === 0) {
+          post.points = totalPoints;
+        } else {
+          post.points = totalPoints / post.usersRated;
+        }
+        post.usersRated += 1;
+        console.log("POST ----------> ", post);
+        await Post.update(post.id, post);
+
+        ratingSubmitted = true;
+      }
+
+      if (ratingSubmitted) {
+        // If rating updated successfully, then update reting status to rated.
+        const booking = await Bookings.findOne(bookingId);
+
+        if (booking) {
+          booking.ratingStatus = true;
+          await Bookings.update(booking.id, booking);
+        }
+      }
+    } catch (error) {
+      ratingSubmitted = false;
+      console.log("Updating user rating : ", error);
+    }
+
+    return ratingSubmitted;
+  }
 }
