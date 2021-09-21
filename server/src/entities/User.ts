@@ -47,13 +47,14 @@ export class User extends BaseEntity {
   @CreateDateColumn()
   updatedAt: Date;
 
-  @Field(() => [Post])
+  @Field(() => [Post], { nullable: true })
   @OneToMany(() => Post, (post) => post.creator)
   posts: Post[];
 
   @OneToMany(() => Payment, (payment) => payment.orderBy)
   payments: Payment[];
 
+  @Field(() => [Bookings], { nullable: true })
   @OneToMany(() => Bookings, (bookings) => bookings.user)
   bookings: Bookings[];
 }

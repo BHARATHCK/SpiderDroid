@@ -80,6 +80,24 @@ const RentCar = () => {
     notifyOnNetworkStatusChange: true,
   });
 
+  // Exclude DateRange
+  let excludeDateRange;
+  if (data) {
+    excludeDateRange = data.post.bookings.reduce(
+      (accumulator, booking) => {
+        return [
+          accumulator[0] < new Date(parseInt(booking.fromDate))
+            ? accumulator
+            : new Date(parseInt(booking.fromDate)),
+          accumulator[1] > new Date(parseInt(booking.toDate))
+            ? accumulator
+            : new Date(parseInt(booking.toDate)),
+        ];
+      },
+      [new Date(), new Date()],
+    );
+  }
+
   if (error) {
     return <div>Loading ...</div>;
   }
@@ -304,6 +322,7 @@ const RentCar = () => {
                       selected={fromDate}
                       onChange={handleFromDateChange}
                       showTimeSelect
+                      excludeDates={excludeDateRange}
                     />
                   </Box>
                 </Box>
@@ -314,6 +333,7 @@ const RentCar = () => {
                     <DatePicker
                       minDate={minToDay}
                       maxDate={maxToDay}
+                      excludeDates={excludeDateRange}
                       selected={toDate}
                       onChange={handleToDateChange}
                       showTimeSelect

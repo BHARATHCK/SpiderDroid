@@ -106,6 +106,7 @@ const main = async () => {
 
   // Rarzorpy WebHook API - Rest
   app.post("/payment-verification", jsonParser, (req, res) => {
+    console.log("VERIFICATION STARTED ****************************** ");
     // do a validation
     const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
 
@@ -116,6 +117,7 @@ const main = async () => {
     const digest = shasum.digest("hex");
 
     if (digest === req.headers["x-razorpay-signature"]) {
+      console.log("VERIFICATION SUCCESSFUL ************************ ");
       // process - update it in DB.
       Payment.createQueryBuilder()
         .update("payment")
@@ -132,10 +134,11 @@ const main = async () => {
         .where('"orderId" = :id', { id: req.body.payload.payment.entity.order_id })
         .execute();
     } else {
+      console.log("VERIFICATION FAILED ^^^^^^^^^^^^^^^^^^^^^^^^^ ");
       // order specific signature verification failed update payment and booking table
       Payment.createQueryBuilder()
         .update("payment")
-        .set({ verificationStatus: false })
+        .set({ verificationStatus: "false" })
         // eslint-disable-next-line quotes
         .where('"orderId" = :id', { id: req.body.payload.payment.entity.order_id })
         .execute();

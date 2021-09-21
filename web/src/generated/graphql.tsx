@@ -16,6 +16,20 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type Bookings = {
+  __typename?: 'Bookings';
+  bookingStatus?: Maybe<Scalars['Boolean']>;
+  carId?: Maybe<Scalars['Float']>;
+  createdAt?: Maybe<Scalars['String']>;
+  fromDate?: Maybe<Scalars['String']>;
+  id: Scalars['Int'];
+  orderId?: Maybe<Scalars['String']>;
+  post: Post;
+  ratingStatus?: Maybe<Scalars['Boolean']>;
+  toDate?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 export type CarDetails = {
   __typename?: 'CarDetails';
   additionalFAQ?: Maybe<Array<Scalars['String']>>;
@@ -126,9 +140,10 @@ export type PaymentStatus = {
 
 export type Post = {
   __typename?: 'Post';
+  bookings?: Maybe<Array<Bookings>>;
   carCostPerDay?: Maybe<Scalars['Float']>;
   carDetails: CarDetails;
-  carMake: Scalars['String'];
+  carMake?: Maybe<Scalars['String']>;
   carModel?: Maybe<Scalars['String']>;
   carVin?: Maybe<Scalars['String']>;
   carYear?: Maybe<Scalars['String']>;
@@ -136,7 +151,7 @@ export type Post = {
   createdAt?: Maybe<Scalars['String']>;
   creator?: Maybe<User>;
   destination?: Maybe<Destination>;
-  id: Scalars['Int'];
+  id?: Maybe<Scalars['Int']>;
   imageUrl?: Maybe<Array<Scalars['String']>>;
   points?: Maybe<Scalars['Float']>;
   rentedFrom?: Maybe<Scalars['DateTime']>;
@@ -204,6 +219,7 @@ export type RazorpayResponse = {
 
 export type User = {
   __typename?: 'User';
+  bookings: Array<Bookings>;
   createdAt: Scalars['DateTime'];
   email: Scalars['String'];
   id: Scalars['Int'];
@@ -291,7 +307,7 @@ export type FilterPostQueryVariables = Exact<{
 }>;
 
 
-export type FilterPostQuery = { __typename?: 'Query', filterPost: Array<{ __typename?: 'Post', id: number, carMake: string, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, carCostPerDay?: Maybe<number>, trips?: Maybe<number>, points?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', id: number, destinationName: string }> }> };
+export type FilterPostQuery = { __typename?: 'Query', filterPost: Array<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, carCostPerDay?: Maybe<number>, trips?: Maybe<number>, points?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', id: number, destinationName: string }> }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -310,12 +326,17 @@ export type PostQueryVariables = Exact<{
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', post?: Maybe<{ __typename?: 'Post', id: number, carMake: string, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, carCostPerDay?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', destinationName: string }>, creator?: Maybe<{ __typename?: 'User', username: string, createdAt: any }>, carDetails: { __typename?: 'CarDetails', condition?: Maybe<string>, description?: Maybe<string>, doors?: Maybe<number>, fuelType?: Maybe<string>, mediaSystem?: Maybe<Array<string>>, mileage?: Maybe<number>, petSituation?: Maybe<Array<string>>, seats?: Maybe<number>, transmission?: Maybe<string>, commentId?: Maybe<number> } }> };
+export type PostQuery = { __typename?: 'Query', post?: Maybe<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, carCostPerDay?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', destinationName: string }>, creator?: Maybe<{ __typename?: 'User', username: string, createdAt: any }>, carDetails: { __typename?: 'CarDetails', condition?: Maybe<string>, description?: Maybe<string>, doors?: Maybe<number>, fuelType?: Maybe<string>, mediaSystem?: Maybe<Array<string>>, mileage?: Maybe<number>, petSituation?: Maybe<Array<string>>, seats?: Maybe<number>, transmission?: Maybe<string>, commentId?: Maybe<number> }, bookings?: Maybe<Array<{ __typename?: 'Bookings', fromDate?: Maybe<string>, toDate?: Maybe<string> }>> }> };
 
 export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type PostsQuery = { __typename?: 'Query', browseByCarMake: Array<{ __typename?: 'Post', id: number, carMake: string, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', id: number, destinationName: string }> }> };
+export type PostsQuery = { __typename?: 'Query', browseByCarMake: Array<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', id: number, destinationName: string }> }> };
+
+export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ProfileQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', id: number, username: string, email: string, bookings: Array<{ __typename?: 'Bookings', carId?: Maybe<number>, fromDate?: Maybe<string>, toDate?: Maybe<string>, ratingStatus?: Maybe<boolean>, bookingStatus?: Maybe<boolean> }>, posts: Array<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, carYear?: Maybe<string> }> }> };
 
 export type SearchQueryVariables = Exact<{
   searchToDate: Scalars['DateTime'];
@@ -324,7 +345,7 @@ export type SearchQueryVariables = Exact<{
 }>;
 
 
-export type SearchQuery = { __typename?: 'Query', search: Array<{ __typename?: 'Post', carMake: string, carModel?: Maybe<string>, id: number, carYear?: Maybe<string>, imageUrl?: Maybe<Array<string>>, trips?: Maybe<number>, points?: Maybe<number> }> };
+export type SearchQuery = { __typename?: 'Query', search: Array<{ __typename?: 'Post', carMake?: Maybe<string>, carModel?: Maybe<string>, id?: Maybe<number>, carYear?: Maybe<string>, imageUrl?: Maybe<Array<string>>, trips?: Maybe<number>, points?: Maybe<number> }> };
 
 export const RegularErrorsFragmentDoc = gql`
     fragment RegularErrors on FieldError {
@@ -783,6 +804,10 @@ export const PostDocument = gql`
       transmission
       commentId
     }
+    bookings {
+      fromDate
+      toDate
+    }
   }
 }
     `;
@@ -858,6 +883,53 @@ export function usePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Post
 export type PostsQueryHookResult = ReturnType<typeof usePostsQuery>;
 export type PostsLazyQueryHookResult = ReturnType<typeof usePostsLazyQuery>;
 export type PostsQueryResult = Apollo.QueryResult<PostsQuery, PostsQueryVariables>;
+export const ProfileDocument = gql`
+    query Profile {
+  me {
+    ...RegularUser
+    bookings {
+      carId
+      fromDate
+      toDate
+      ratingStatus
+      bookingStatus
+    }
+    posts {
+      id
+      carMake
+      carModel
+      carYear
+    }
+  }
+}
+    ${RegularUserFragmentDoc}`;
+
+/**
+ * __useProfileQuery__
+ *
+ * To run a query within a React component, call `useProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProfileQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useProfileQuery(baseOptions?: Apollo.QueryHookOptions<ProfileQuery, ProfileQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProfileQuery, ProfileQueryVariables>(ProfileDocument, options);
+      }
+export function useProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProfileQuery, ProfileQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProfileQuery, ProfileQueryVariables>(ProfileDocument, options);
+        }
+export type ProfileQueryHookResult = ReturnType<typeof useProfileQuery>;
+export type ProfileLazyQueryHookResult = ReturnType<typeof useProfileLazyQuery>;
+export type ProfileQueryResult = Apollo.QueryResult<ProfileQuery, ProfileQueryVariables>;
 export const SearchDocument = gql`
     query Search($searchToDate: DateTime!, $searchFromDate: DateTime!, $searchDestinationId: Float!) {
   search(

@@ -5,7 +5,6 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -27,7 +26,7 @@ export class Bookings extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Field()
+  @Field({ nullable: true })
   @Column()
   carId: number;
 
@@ -47,7 +46,7 @@ export class Bookings extends BaseEntity {
   @Column({ nullable: true })
   ratingStatus: boolean;
 
-  @Field(() => Boolean, { nullable: true })
+  @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   bookingStatus: string;
 
@@ -55,6 +54,7 @@ export class Bookings extends BaseEntity {
   @ManyToOne(() => User, (user) => user.bookings)
   user: User;
 
-  @OneToMany(() => Post, (post) => post.bookings)
-  car: Post;
+  @Field(() => Post)
+  @ManyToOne(() => Post, (post) => post.bookings)
+  post: Post;
 }

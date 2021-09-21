@@ -19,7 +19,7 @@ import { User } from "./User";
 @ObjectType()
 @Entity({ name: "post" })
 export class Post extends BaseEntity {
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   @PrimaryGeneratedColumn("increment")
   id!: number;
 
@@ -31,7 +31,7 @@ export class Post extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Field()
+  @Field({ nullable: true })
   @Column()
   carMake!: string;
 
@@ -89,6 +89,7 @@ export class Post extends BaseEntity {
   @JoinColumn()
   carDetails: CarDetails;
 
-  @OneToMany(() => Bookings, (booking) => booking.car)
+  @Field(() => [Bookings], { nullable: true })
+  @OneToMany(() => Bookings, (booking) => booking.post)
   bookings: Bookings[];
 }

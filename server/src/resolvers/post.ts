@@ -1,6 +1,7 @@
 /* eslint-disable quotes */
+import { Bookings } from "../entities/Bookings";
 import { Arg, Ctx, Field, InputType, Int, Mutation, Query, Resolver } from "type-graphql";
-import { getConnection } from "typeorm";
+import { FindOperator, getConnection, MoreThan } from "typeorm";
 import { CarDetails } from "../entities/CarDetails";
 import { Destination } from "../entities/Destination";
 import { Post } from "../entities/Post";
@@ -87,7 +88,10 @@ export class PostResolver {
 
   @Query(() => Post, { nullable: true })
   async post(@Arg("id") id: number): Promise<Post | undefined> {
-    return await Post.findOne(id, { relations: ["creator", "destination", "carDetails"] });
+    // return post based on id if and only if the car is not booked
+    return await Post.findOne(id, {
+      relations: ["creator", "destination", "carDetails", "bookings"],
+    });
   }
 
   @Query(() => [Destination])
@@ -134,6 +138,10 @@ export class PostResolver {
     @Arg("filterCriteria") filterCriteria: string,
   ): Promise<Post[] | undefined> {
     console.log("CAR MAKE TRIGGERRED : ", filterCategory);
+    const today = new Date();
+    const afterDate = new Date(today);
+    afterDate.setDate(afterDate.getDate() + 2);
+
     if (filterCategory.includes("carMake")) {
       return await getConnection().query(`
         SELECT post."createdAt", post."updatedAt", post.points, post."creatorId", post."carMake", post."carModel", post."carYear", post.trips, post.category, post."carVin", post."imageUrl", post."destinationId", post.id, post."carCostPerDay", post."rentedFrom", post."rentedUntil" FROM public.post INNER JOIN public.bookings on post.id = bookings."carId" where 
@@ -143,9 +151,7 @@ export class PostResolver {
           .replace(
             "T",
             " ",
-          )}' NOT BETWEEN bookings."fromDate" AND bookings."toDate") AND ('${new Date(
-        new Date().getDate() + 2,
-      )
+          )}' NOT BETWEEN bookings."fromDate" AND bookings."toDate") AND ('${afterDate
         .toISOString()
         .slice(0, 19)
         .replace("T", " ")}' NOT BETWEEN bookings."fromDate" AND bookings."toDate"))
@@ -162,9 +168,7 @@ export class PostResolver {
           .replace(
             "T",
             " ",
-          )}' NOT BETWEEN bookings."fromDate" AND bookings."toDate") AND ('${new Date(
-        new Date().getDate() + 2,
-      )
+          )}' NOT BETWEEN bookings."fromDate" AND bookings."toDate") AND ('${afterDate
         .toISOString()
         .slice(0, 19)
         .replace("T", " ")}' NOT BETWEEN bookings."fromDate" AND bookings."toDate"))

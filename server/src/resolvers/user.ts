@@ -92,7 +92,7 @@ class RazorpayResponse {
 export class UserResolver {
   @Query(() => User, { nullable: true })
   async me(@Ctx() { req }: MyContext): Promise<User | undefined> {
-    return await User.findOne({ id: req.session.userId });
+    return await User.findOne(req.session.userId, { relations: ["bookings", "posts"] });
   }
 
   @Mutation(() => UserResponse, { nullable: true })
@@ -239,8 +239,10 @@ export class UserResolver {
   @Query(() => PaymentStatus)
   async paymentstatus(@Arg("orderId") orderId: string): Promise<PaymentStatus> {
     let paymentVerified = false;
+    console.log("ORDER ID POLLING ::: ", orderId);
     const payment = await Payment.findOne({ where: { orderId: orderId } });
     if (payment?.verificationStatus) {
+      console.log("VERIFICATION SUCCESSFUL : ", payment?.verificationStatus);
       paymentVerified = true;
     }
     return { status: paymentVerified };
