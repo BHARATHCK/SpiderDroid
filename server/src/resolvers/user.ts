@@ -233,16 +233,20 @@ export class UserResolver {
       },
     });
 
-    bookings.forEach((booking) => {
+    const bookingFound = bookings.map((booking) => {
       if (
         booking.fromDate.getDate() === userFromDate.getDate() &&
         booking.bookingStatus === "Success"
       ) {
-        return { paymentResponse: null, errors: "Car already booked for this day" };
+        return true;
       } else {
-        // Do nothing
+        return false;
       }
     });
+
+    if (bookingFound) {
+      return { errors: "Cannot rent this car at the moment" };
+    }
 
     Bookings.create({
       carId: carId,

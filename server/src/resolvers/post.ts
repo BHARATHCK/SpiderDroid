@@ -1,7 +1,7 @@
 /* eslint-disable quotes */
-import { Bookings } from "../entities/Bookings";
 import { Arg, Ctx, Field, InputType, Int, Mutation, Query, Resolver } from "type-graphql";
-import { FindOperator, getConnection, MoreThan } from "typeorm";
+import { getConnection } from "typeorm";
+import { Bookings } from "../entities/Bookings";
 import { CarDetails } from "../entities/CarDetails";
 import { Destination } from "../entities/Destination";
 import { Post } from "../entities/Post";
