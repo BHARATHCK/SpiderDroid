@@ -233,7 +233,9 @@ export class UserResolver {
       },
     });
 
-    const bookingFound = bookings.map((booking) => {
+    let bookingFound = [];
+    bookingFound = bookings.map((booking) => {
+      console.log("BOOKING FOUND --> ", booking);
       if (
         booking.fromDate.getDate() === userFromDate.getDate() &&
         booking.bookingStatus === "Success"
@@ -244,7 +246,7 @@ export class UserResolver {
       }
     });
 
-    if (bookingFound) {
+    if (bookingFound.length > 0 && bookingFound.includes(true)) {
       return { errors: "Cannot rent this car at the moment" };
     }
 
