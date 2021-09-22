@@ -132,13 +132,19 @@ const profile = () => {
                             </Box>
                             <Box>
                               <Flex justifyContent="space-between" alignItems="center">
-                                <Image
-                                  width={30}
-                                  height={30}
-                                  src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632258715/rating_l1tu3h.png"
-                                ></Image>
+                                {booking.ratingStatus ? (
+                                  ""
+                                ) : (
+                                  <Image
+                                    width={30}
+                                    height={30}
+                                    src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632258715/rating_l1tu3h.png"
+                                  ></Image>
+                                )}
                                 <Text ml={4}>
-                                  {booking.ratingStatus || (
+                                  {booking.ratingStatus ? (
+                                    ""
+                                  ) : (
                                     <Rating
                                       postId={booking.carId}
                                       bookingId={booking.id}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Icon, Stack, Text } from "@chakra-ui/react";
 import { useRatePostMutation } from "../generated/graphql";
+import { StarIcon } from "@chakra-ui/icons";
 
 interface RatingProps {
   size: number;
@@ -44,7 +45,7 @@ const Rating: React.FC<RatingProps> = ({
 
   const RatingIcon = ({ fill }) => {
     return (
-      <Icon
+      <StarIcon
         name={icon}
         size={`${size}px`}
         color={fillColor}
