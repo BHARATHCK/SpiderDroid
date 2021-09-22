@@ -1,5 +1,15 @@
 /* eslint-disable quotes */
-import { Arg, Ctx, Field, InputType, Int, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  Field,
+  InputType,
+  Int,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+} from "type-graphql";
 import { getConnection } from "typeorm";
 import { Bookings } from "../entities/Bookings";
 import { CarDetails } from "../entities/CarDetails";
@@ -68,6 +78,15 @@ class CreatePostType {
   carCostPerDay: number;
 }
 
+@ObjectType()
+class PaginatedPosts {
+  @Field(() => [Post])
+  posts: Post[];
+
+  @Field()
+  total: number;
+}
+
 @Resolver(Post)
 export class PostResolver {
   @Query(() => [Post], { nullable: true })
@@ -84,6 +103,22 @@ export class PostResolver {
     });
 
     return posts; //await Post.find({ relations: ["destination"] });
+  }
+
+  @Query(() => PaginatedPosts, { nullable: true })
+  async findCars(
+    @Arg("limit", () => Int) limit: number,
+    @Arg("skipVariable", () => Int) skipNumber: number,
+  ): Promise<PaginatedPosts> {
+    const realLimit = Math.min(50, limit);
+
+    const [result, total] = await Post.findAndCount({
+      order: { points: "DESC" },
+      skip: skipNumber,
+      take: realLimit,
+    });
+
+    return { posts: result, total: total };
   }
 
   @Query(() => Post, { nullable: true })

@@ -43,7 +43,7 @@ const main = async () => {
   // Redis Client
   const redis = new Redis({
     host: process.env.REDIS_DB_HOST,
-    password: process.env.REDIS_DB_PASSWORD,
+    password: process.env.REDIS_DB_PASSWORD || "",
     port: parseInt(process.env.REDIS_DB_PORT ? process.env.REDIS_DB_PORT : ""),
   });
 

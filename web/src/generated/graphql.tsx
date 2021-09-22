@@ -141,6 +141,12 @@ export type MutationRegisterArgs = {
   options: UsernamePasswordRegistrationInput;
 };
 
+export type PaginatedPosts = {
+  __typename?: 'PaginatedPosts';
+  posts: Array<Post>;
+  total: Scalars['Float'];
+};
+
 export type PaymentStatus = {
   __typename?: 'PaymentStatus';
   status: Scalars['Boolean'];
@@ -174,6 +180,7 @@ export type Query = {
   browseByCarMake: Array<Post>;
   browseByDestination: Array<Destination>;
   filterPost: Array<Post>;
+  findCars?: Maybe<PaginatedPosts>;
   hello: Scalars['String'];
   me?: Maybe<User>;
   paymentstatus: PaymentStatus;
@@ -186,6 +193,12 @@ export type Query = {
 export type QueryFilterPostArgs = {
   filterCategory: Scalars['String'];
   filterCriteria: Scalars['String'];
+};
+
+
+export type QueryFindCarsArgs = {
+  limit: Scalars['Int'];
+  skipVariable: Scalars['Int'];
 };
 
 
@@ -326,6 +339,14 @@ export type FilterPostQueryVariables = Exact<{
 
 
 export type FilterPostQuery = { __typename?: 'Query', filterPost: Array<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, carCostPerDay?: Maybe<number>, trips?: Maybe<number>, points?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', id: number, destinationName: string }> }> };
+
+export type FindCarsQueryVariables = Exact<{
+  findCarsLimit: Scalars['Int'];
+  findCarsSkipVariable: Scalars['Int'];
+}>;
+
+
+export type FindCarsQuery = { __typename?: 'Query', findCars?: Maybe<{ __typename?: 'PaginatedPosts', total: number, posts: Array<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, carCostPerDay?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', id: number, destinationName: string }> }> }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -756,6 +777,56 @@ export function useFilterPostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type FilterPostQueryHookResult = ReturnType<typeof useFilterPostQuery>;
 export type FilterPostLazyQueryHookResult = ReturnType<typeof useFilterPostLazyQuery>;
 export type FilterPostQueryResult = Apollo.QueryResult<FilterPostQuery, FilterPostQueryVariables>;
+export const FindCarsDocument = gql`
+    query FindCars($findCarsLimit: Int!, $findCarsSkipVariable: Int!) {
+  findCars(limit: $findCarsLimit, skipVariable: $findCarsSkipVariable) {
+    posts {
+      id
+      carMake
+      carModel
+      imageUrl
+      carYear
+      trips
+      points
+      carCostPerDay
+      destination {
+        id
+        destinationName
+      }
+    }
+    total
+  }
+}
+    `;
+
+/**
+ * __useFindCarsQuery__
+ *
+ * To run a query within a React component, call `useFindCarsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindCarsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindCarsQuery({
+ *   variables: {
+ *      findCarsLimit: // value for 'findCarsLimit'
+ *      findCarsSkipVariable: // value for 'findCarsSkipVariable'
+ *   },
+ * });
+ */
+export function useFindCarsQuery(baseOptions: Apollo.QueryHookOptions<FindCarsQuery, FindCarsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindCarsQuery, FindCarsQueryVariables>(FindCarsDocument, options);
+      }
+export function useFindCarsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindCarsQuery, FindCarsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindCarsQuery, FindCarsQueryVariables>(FindCarsDocument, options);
+        }
+export type FindCarsQueryHookResult = ReturnType<typeof useFindCarsQuery>;
+export type FindCarsLazyQueryHookResult = ReturnType<typeof useFindCarsLazyQuery>;
+export type FindCarsQueryResult = Apollo.QueryResult<FindCarsQuery, FindCarsQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {

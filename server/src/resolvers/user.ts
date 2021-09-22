@@ -93,6 +93,10 @@ class RazorpayResponse {
 export class UserResolver {
   @Query(() => User, { nullable: true })
   async me(@Ctx() { req }: MyContext): Promise<User | undefined> {
+    // Not logged in
+    if (!req.session.userId) {
+      return undefined;
+    }
     return await User.findOne(req.session.userId, { relations: ["bookings", "posts"] });
   }
 

@@ -1,0 +1,19 @@
+query FindCars($findCarsLimit: Int!, $findCarsSkipVariable: Int!) {
+  findCars(limit: $findCarsLimit, skipVariable: $findCarsSkipVariable) {
+    posts {
+      id
+      carMake
+      carModel
+      imageUrl
+      carYear
+      trips
+      points
+      carCostPerDay
+      destination {
+        id
+        destinationName
+      }
+    }
+    total
+  }
+}

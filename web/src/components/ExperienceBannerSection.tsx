@@ -3,6 +3,7 @@ import React from "react";
 import styles from "./Carousel.module.css";
 import Carouselize from "./Carouselize";
 import { useViewport } from "./ViewPortHook";
+import NextLink from "next/link";
 
 const ExperienceBannerSection = () => {
   const { width } = useViewport();
@@ -26,9 +27,11 @@ const ExperienceBannerSection = () => {
                   <Text fontSize={textFontSize} margin={10}>
                     Find the perfect car to make errand day easier
                   </Text>
-                  <Button maxW={200} colorScheme="red">
-                    Browse Cars
-                  </Button>
+                  <NextLink href="/findcars">
+                    <Button maxW={200} colorScheme="red">
+                      Browse Cars
+                    </Button>
+                  </NextLink>
                 </Flex>
               </Flex>
             </div>
