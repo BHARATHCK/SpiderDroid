@@ -1,7 +1,12 @@
 import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/layout";
 import { withApolloClient } from "../utils/apollo-client";
 import Avatar from "react-avatar";
-import { useLogOutMutation, useProfileQuery, useRatePostMutation } from "../generated/graphql";
+import {
+  useAddReviewMutation,
+  useLogOutMutation,
+  useProfileQuery,
+  useRatePostMutation,
+} from "../generated/graphql";
 import NavBar from "../components/NavBar";
 import Layout from "../components/Layout";
 import { Button } from "@chakra-ui/button";
@@ -22,13 +27,23 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Textarea,
 } from "@chakra-ui/react";
 import Image from "next/image";
 import React, { useState } from "react";
 import Rating from "../components/RatingComponent";
+import { useViewport } from "../components/ViewPortHook";
 
 const profile = () => {
-  const [bookingObject, setBookingObject] = useState({});
+  const { width } = useViewport();
+  const breakpoint = 700;
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  let [commentText, setCommentText] = React.useState("");
+  let [currBookingId, setCurrBookingId] = React.useState(0);
+
+  const [addReview, { loading: updatingReview }] = useAddReviewMutation({
+    notifyOnNetworkStatusChange: true,
+  });
 
   const [logout, { loading: logoutLoading }] = useLogOutMutation({
     notifyOnNetworkStatusChange: true,
@@ -47,6 +62,22 @@ const profile = () => {
     await logout();
     apolloClient.resetStore();
     router.push("/");
+  };
+
+  let handleInputChange = (e) => {
+    let inputValue = e.target.value;
+    setCommentText(inputValue);
+  };
+
+  const handleClose = async () => {
+    await addReview({
+      variables: {
+        addReviewBookingId: currBookingId,
+        addReviewCommentText: commentText,
+      },
+    });
+
+    onClose();
   };
 
   return (
@@ -158,6 +189,35 @@ const profile = () => {
                                 </Text>
                               </Flex>
                             </Box>
+                            <Box>
+                              <Flex justifyContent="space-between" alignItems="center">
+                                {booking!.comment[0] ? (
+                                  <Flex>
+                                    <Image
+                                      width={30}
+                                      height={30}
+                                      layout="fixed"
+                                      src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632258715/rating_l1tu3h.png"
+                                    ></Image>
+                                    <Text maxW={width < breakpoint ? width - 150 : ""} ml={4}>
+                                      {booking.comment[0].commentText}
+                                    </Text>
+                                  </Flex>
+                                ) : (
+                                  <Text
+                                    color="blue"
+                                    textDecoration="underline"
+                                    cursor="pointer"
+                                    onClick={() => {
+                                      setCurrBookingId(booking.id);
+                                      onOpen();
+                                    }}
+                                  >
+                                    Click here to add a review
+                                  </Text>
+                                )}
+                              </Flex>
+                            </Box>
                           </Flex>
                         </Box>
                       </Stack>
@@ -178,6 +238,30 @@ const profile = () => {
             </Box>
           )}
         </Flex>
+        <>
+          <Button onClick={onOpen}>Open Modal</Button>
+
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Modal Title</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <Textarea
+                  value={commentText}
+                  onChange={handleInputChange}
+                  placeholder="Type in your review.."
+                />
+              </ModalBody>
+
+              <ModalFooter>
+                <Button colorScheme="blue" mr={3} onClick={handleClose} isLoading={updatingReview}>
+                  Close
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+        </>
       </Layout>
     </>
   );

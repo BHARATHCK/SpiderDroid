@@ -9,6 +9,7 @@ const ConcludeSection = () => {
   return (
     <Box mb={200}>
       <Link
+        href="/findcars"
         ml="15%"
         position="absolute"
         mt="10%"

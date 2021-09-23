@@ -30,10 +30,6 @@ const findCars = () => {
     }
   }, [data?.findCars?.posts]);
 
-  if (data.findCars.posts.length < 10) {
-    setDisableLoadMore(true);
-  }
-
   return (
     <>
       <NavBar />

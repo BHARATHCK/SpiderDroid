@@ -8,6 +8,10 @@ query Profile {
       toDate
       ratingStatus
       bookingStatus
+      comment {
+        commentText
+        id
+      }
     }
     posts {
       id

@@ -20,6 +20,7 @@ export type Bookings = {
   __typename?: 'Bookings';
   bookingStatus?: Maybe<Scalars['String']>;
   carId?: Maybe<Scalars['Float']>;
+  comment?: Maybe<Array<Comment>>;
   createdAt?: Maybe<Scalars['String']>;
   fromDate?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
@@ -47,6 +48,15 @@ export type CarDetails = {
   petSituation?: Maybe<Array<Scalars['String']>>;
   seats?: Maybe<Scalars['Int']>;
   transmission?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type Comment = {
+  __typename?: 'Comment';
+  bookings?: Maybe<Bookings>;
+  commentText?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['Int']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -89,6 +99,7 @@ export type FieldError = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addReview: Scalars['Boolean'];
   changePassword: UserResponse;
   createPost: Scalars['Boolean'];
   createpost: Scalars['Boolean'];
@@ -98,6 +109,12 @@ export type Mutation = {
   ratePost: Scalars['Boolean'];
   razorpaypayment: RazorpayResponse;
   register?: Maybe<UserResponse>;
+};
+
+
+export type MutationAddReviewArgs = {
+  bookingId: Scalars['Float'];
+  commentText: Scalars['String'];
 };
 
 
@@ -179,6 +196,7 @@ export type Query = {
   __typename?: 'Query';
   browseByCarMake: Array<Post>;
   browseByDestination: Array<Destination>;
+  experienceReviews: Array<Comment>;
   filterPost: Array<Post>;
   findCars?: Maybe<PaginatedPosts>;
   hello: Scalars['String'];
@@ -187,6 +205,11 @@ export type Query = {
   post?: Maybe<Post>;
   posts?: Maybe<Array<Post>>;
   search: Array<Post>;
+};
+
+
+export type QueryExperienceReviewsArgs = {
+  carId: Scalars['Float'];
 };
 
 
@@ -266,6 +289,14 @@ export type UsernamePasswordRegistrationInput = {
 export type RegularErrorsFragment = { __typename?: 'FieldError', field: string, message: string };
 
 export type RegularUserFragment = { __typename?: 'User', id: number, username: string, email: string };
+
+export type AddReviewMutationVariables = Exact<{
+  addReviewCommentText: Scalars['String'];
+  addReviewBookingId: Scalars['Float'];
+}>;
+
+
+export type AddReviewMutation = { __typename?: 'Mutation', addReview: boolean };
 
 export type ChangePasswordMutationVariables = Exact<{
   token: Scalars['String'];
@@ -348,6 +379,13 @@ export type FindCarsQueryVariables = Exact<{
 
 export type FindCarsQuery = { __typename?: 'Query', findCars?: Maybe<{ __typename?: 'PaginatedPosts', total: number, posts: Array<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, carCostPerDay?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', id: number, destinationName: string }> }> }> };
 
+export type GetReviewsQueryVariables = Exact<{
+  carId: Scalars['Float'];
+}>;
+
+
+export type GetReviewsQuery = { __typename?: 'Query', experienceReviews: Array<{ __typename?: 'Comment', commentText?: Maybe<string>, id?: Maybe<number> }> };
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -375,7 +413,7 @@ export type PostsQuery = { __typename?: 'Query', browseByCarMake: Array<{ __type
 export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProfileQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', id: number, username: string, email: string, bookings?: Maybe<Array<{ __typename?: 'Bookings', id: number, carId?: Maybe<number>, fromDate?: Maybe<string>, toDate?: Maybe<string>, ratingStatus?: Maybe<boolean>, bookingStatus?: Maybe<string> }>>, posts?: Maybe<Array<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, carYear?: Maybe<string> }>> }> };
+export type ProfileQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', id: number, username: string, email: string, bookings?: Maybe<Array<{ __typename?: 'Bookings', id: number, carId?: Maybe<number>, fromDate?: Maybe<string>, toDate?: Maybe<string>, ratingStatus?: Maybe<boolean>, bookingStatus?: Maybe<string>, comment?: Maybe<Array<{ __typename?: 'Comment', commentText?: Maybe<string>, id?: Maybe<number> }>> }>>, posts?: Maybe<Array<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, carYear?: Maybe<string> }>> }> };
 
 export type SearchQueryVariables = Exact<{
   searchToDate: Scalars['DateTime'];
@@ -399,6 +437,38 @@ export const RegularUserFragmentDoc = gql`
   email
 }
     `;
+export const AddReviewDocument = gql`
+    mutation AddReview($addReviewCommentText: String!, $addReviewBookingId: Float!) {
+  addReview(commentText: $addReviewCommentText, bookingId: $addReviewBookingId)
+}
+    `;
+export type AddReviewMutationFn = Apollo.MutationFunction<AddReviewMutation, AddReviewMutationVariables>;
+
+/**
+ * __useAddReviewMutation__
+ *
+ * To run a mutation, you first call `useAddReviewMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddReviewMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addReviewMutation, { data, loading, error }] = useAddReviewMutation({
+ *   variables: {
+ *      addReviewCommentText: // value for 'addReviewCommentText'
+ *      addReviewBookingId: // value for 'addReviewBookingId'
+ *   },
+ * });
+ */
+export function useAddReviewMutation(baseOptions?: Apollo.MutationHookOptions<AddReviewMutation, AddReviewMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddReviewMutation, AddReviewMutationVariables>(AddReviewDocument, options);
+      }
+export type AddReviewMutationHookResult = ReturnType<typeof useAddReviewMutation>;
+export type AddReviewMutationResult = Apollo.MutationResult<AddReviewMutation>;
+export type AddReviewMutationOptions = Apollo.BaseMutationOptions<AddReviewMutation, AddReviewMutationVariables>;
 export const ChangePasswordDocument = gql`
     mutation changePassword($token: String!, $newPassword: String!) {
   changePassword(token: $token, newPassword: $newPassword) {
@@ -827,6 +897,42 @@ export function useFindCarsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<F
 export type FindCarsQueryHookResult = ReturnType<typeof useFindCarsQuery>;
 export type FindCarsLazyQueryHookResult = ReturnType<typeof useFindCarsLazyQuery>;
 export type FindCarsQueryResult = Apollo.QueryResult<FindCarsQuery, FindCarsQueryVariables>;
+export const GetReviewsDocument = gql`
+    query GetReviews($carId: Float!) {
+  experienceReviews(carId: $carId) {
+    commentText
+    id
+  }
+}
+    `;
+
+/**
+ * __useGetReviewsQuery__
+ *
+ * To run a query within a React component, call `useGetReviewsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetReviewsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetReviewsQuery({
+ *   variables: {
+ *      carId: // value for 'carId'
+ *   },
+ * });
+ */
+export function useGetReviewsQuery(baseOptions: Apollo.QueryHookOptions<GetReviewsQuery, GetReviewsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetReviewsQuery, GetReviewsQueryVariables>(GetReviewsDocument, options);
+      }
+export function useGetReviewsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetReviewsQuery, GetReviewsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetReviewsQuery, GetReviewsQueryVariables>(GetReviewsDocument, options);
+        }
+export type GetReviewsQueryHookResult = ReturnType<typeof useGetReviewsQuery>;
+export type GetReviewsLazyQueryHookResult = ReturnType<typeof useGetReviewsLazyQuery>;
+export type GetReviewsQueryResult = Apollo.QueryResult<GetReviewsQuery, GetReviewsQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {
@@ -1016,6 +1122,10 @@ export const ProfileDocument = gql`
       toDate
       ratingStatus
       bookingStatus
+      comment {
+        commentText
+        id
+      }
     }
     posts {
       id

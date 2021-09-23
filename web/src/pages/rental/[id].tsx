@@ -22,7 +22,7 @@ import Carouselize from "../../components/Carouselize";
 import Layout from "../../components/Layout";
 import NavBar from "../../components/NavBar";
 import PaymentButton from "../../components/Payment";
-import { usePostQuery } from "../../generated/graphql";
+import { useGetReviewsQuery, usePostQuery } from "../../generated/graphql";
 import { withApolloClient } from "../../utils/apollo-client";
 import isAuth from "../../utils/isAuth";
 import { Avatar } from "@chakra-ui/avatar";
@@ -78,6 +78,11 @@ const RentCar = () => {
   const { data, loading, error } = usePostQuery({
     variables: { postId: parseInt(typeof id === "string" ? id : "") },
     notifyOnNetworkStatusChange: true,
+  });
+
+  const { data: reviewsData, loading: loadingReviews } = useGetReviewsQuery({
+    notifyOnNetworkStatusChange: true,
+    variables: { carId: parseInt(typeof id === "string" ? id : "") },
   });
 
   // Exclude DateRange
@@ -358,9 +363,34 @@ const RentCar = () => {
             </Box>
           </Stack>
         )}
+        {!reviewsData || loadingReviews ? (
+          <Spinner
+            m="auto"
+            thickness="6px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+            size="xl"
+          />
+        ) : (
+          <Stack spacing={8}>
+            {reviewsData.experienceReviews.map((review) => (
+              <Feature title="Plan Money" desc={review.commentText} />
+            ))}
+          </Stack>
+        )}
       </Layout>
     </>
   );
 };
+
+function Feature({ title, desc, ...rest }) {
+  return (
+    <Box p={5} shadow="md" borderWidth="1px" {...rest}>
+      <Heading fontSize="xl">{title}</Heading>
+      <Text mt={4}>{desc}</Text>
+    </Box>
+  );
+}
 
 export default withApolloClient()(RentCar);
