@@ -20,6 +20,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import { Bookings } from "./entities/Bookings";
 import { CarDetails } from "./entities/CarDetails";
+import { Comment } from "./entities/Comment";
 
 const main = async () => {
   createConnection({
@@ -31,7 +32,7 @@ const main = async () => {
     database: process.env.POSTGRES_DB,
     logging: true, // False in production
     synchronize: true, // False in production environment
-    entities: [User, Post, Destination, Payment, Bookings, CarDetails],
+    entities: [User, Post, Destination, Payment, Bookings, CarDetails, Comment],
   });
 
   // Setup expres server

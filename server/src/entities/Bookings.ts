@@ -5,11 +5,13 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { Post } from "./Post";
 import { User } from "./User";
+import { Comment } from "./Comment";
 
 @ObjectType()
 @Entity()
@@ -57,4 +59,8 @@ export class Bookings extends BaseEntity {
   @Field(() => Post)
   @ManyToOne(() => Post, (post) => post.bookings)
   post: Post;
+
+  @Field(() => [Comment], { nullable: true })
+  @OneToMany(() => Comment, (comment) => comment.bookings)
+  comment: Comment[];
 }

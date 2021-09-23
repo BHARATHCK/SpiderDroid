@@ -1,4 +1,5 @@
 /* eslint-disable quotes */
+import { Comment } from "../entities/Comment";
 import {
   Arg,
   Ctx,
@@ -310,5 +311,39 @@ export class PostResolver {
     }
 
     return ratingSubmitted;
+  }
+
+  @Mutation(() => Boolean)
+  async addReview(
+    @Arg("bookingId") bookingId: number,
+    @Arg("commentText") commentText: string,
+  ): Promise<boolean> {
+    let commentSaved = false;
+    try {
+      await Comment.create({
+        bookings: await Bookings.findOne(bookingId),
+        commentText: commentText,
+      }).save();
+      commentSaved = true;
+    } catch (error) {
+      commentSaved = false;
+    }
+    return commentSaved;
+  }
+
+  @Query(() => [Comment])
+  async experienceReviews(@Arg("carId") carId: number): Promise<Comment[]> {
+    const bookings = await Bookings.find({ where: { carId: carId, bookingStatus: "Success" } });
+
+    const commentsArray: Comment[] = [];
+
+    for (const booking of bookings) {
+      const comment = await Comment.findOne({ where: { bookings: booking.id } });
+      if (comment?.id) {
+        commentsArray.push(comment);
+      }
+    }
+
+    return commentsArray;
   }
 }

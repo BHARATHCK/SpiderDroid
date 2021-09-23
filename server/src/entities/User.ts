@@ -1,11 +1,11 @@
 import { Field, Int, ObjectType } from "type-graphql";
 import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
   BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
   OneToMany,
+  PrimaryGeneratedColumn,
 } from "typeorm";
 import { Bookings } from "./Bookings";
 import { Payment } from "./Payment";
