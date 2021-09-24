@@ -111,17 +111,13 @@ const RentCar = () => {
     <>
       <NavBar />
       {data && !loading ? (
-        <Box>
-          <Layout variantType="regular">
-            <Carouselize
-              children={data.post.imageUrl.map((image, index) => (
-                <div className={styles.embla__slide} key={index}>
-                  <Image src={image} width={1500} height={900} />
-                </div>
-              ))}
-            />
-          </Layout>
-        </Box>
+        <Carouselize
+          children={data.post.imageUrl.map((image, index) => (
+            <div className={styles.embla__slide} key={index}>
+              <Image src={image} width={1500} height={900} />
+            </div>
+          ))}
+        />
       ) : (
         ""
       )}
@@ -373,11 +369,14 @@ const RentCar = () => {
             size="xl"
           />
         ) : (
-          <Stack spacing={8}>
-            {reviewsData.experienceReviews.map((review) => (
-              <Feature title="Plan Money" desc={review.commentText} />
-            ))}
-          </Stack>
+          <>
+            <Heading fontWeight={600}>Reviews</Heading>
+            <Stack spacing={8} mb={200} mt={10}>
+              {reviewsData.experienceReviews.map((review) => (
+                <Feature title="Plan Money" desc={review.commentText} />
+              ))}
+            </Stack>
+          </>
         )}
       </Layout>
     </>

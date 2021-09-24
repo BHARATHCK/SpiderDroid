@@ -1,11 +1,11 @@
-query FindCars(
+mutation FilterCars(
   $findCarsLimit: Int!
   $findCarsSkipVariable: Int!
   $carMake: String
   $carYear: String
   $carModel: String
 ) {
-  findCars(
+  filterCars(
     limit: $findCarsLimit
     skipVariable: $findCarsSkipVariable
     carMake: $carMake

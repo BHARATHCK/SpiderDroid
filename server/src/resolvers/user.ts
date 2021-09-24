@@ -97,7 +97,9 @@ export class UserResolver {
     if (!req.session.userId) {
       return undefined;
     }
-    return await User.findOne(req.session.userId, { relations: ["bookings", "posts"] });
+    return await User.findOne(req.session.userId, {
+      relations: ["bookings", "bookings.comment", "posts"],
+    });
   }
 
   @Mutation(() => UserResponse, { nullable: true })

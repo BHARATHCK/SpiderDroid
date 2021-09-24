@@ -1,12 +1,15 @@
 import { Button } from "@chakra-ui/button";
+import { Image } from "@chakra-ui/image";
 import { Box, Flex, Grid } from "@chakra-ui/layout";
 import { Spinner } from "@chakra-ui/spinner";
+import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import CarDisplayCard from "../components/CarDisplayCard";
+import { InputField } from "../components/InputField";
 import Layout from "../components/Layout";
 import NavBar from "../components/NavBar";
 import { useViewport } from "../components/ViewPortHook";
-import { FindCarsQuery, Post, PostQuery, PostsQuery, useFindCarsQuery } from "../generated/graphql";
+import { useFindCarsLazyQuery, useFindCarsQuery } from "../generated/graphql";
 import { withApolloClient } from "../utils/apollo-client";
 
 const findCars = () => {
@@ -16,8 +19,12 @@ const findCars = () => {
 
   const [disableLoadMore, setDisableLoadMore] = useState(false);
 
-  const { data, loading, fetchMore } = useFindCarsQuery({
+  const { data, loading, fetchMore, refetch } = useFindCarsQuery({
     variables: { findCarsLimit: 10, findCarsSkipVariable: 0 },
+    notifyOnNetworkStatusChange: true,
+  });
+
+  const [filterCars, { data: lazyData, loading: lazyLoading }] = useFindCarsLazyQuery({
     notifyOnNetworkStatusChange: true,
   });
 
@@ -34,6 +41,62 @@ const findCars = () => {
     <>
       <NavBar />
       <Layout variantType="regular">
+        {/* FILTER MENU */}
+
+        <Box minWidth="100%" maxW="700px" boxShadow="lg" mt={10} mb={10}>
+          <Formik
+            initialValues={{ carmake: "", caryear: "", carmodel: "" }}
+            onSubmit={(values, { setErrors }) => {
+              console.log("FORM SUBMITTED ***************** ");
+              refetch({
+                carMake: values.carmake,
+                carYear: values.caryear,
+                carModel: values.carmodel,
+                findCarsLimit: 10,
+                findCarsSkipVariable: 0,
+              });
+            }}
+          >
+            {({ isSubmitting }) => (
+              <Form>
+                <Flex alignItems="center" m={5} direction="row">
+                  <Image
+                    src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632495180/filter_zxl08n.png"
+                    width="30px"
+                    height="30px"
+                    mr={10}
+                  />
+                  <InputField
+                    helperText=""
+                    name="carmake"
+                    label=""
+                    placeholder="Car Make"
+                    explicitWidth={200}
+                  />
+                  <InputField
+                    helperText=""
+                    name="carmodel"
+                    label=""
+                    placeholder="Car Model"
+                    explicitWidth={200}
+                  />
+                  <InputField
+                    helperText=""
+                    name="caryear"
+                    label=""
+                    placeholder="Car Year"
+                    explicitWidth={200}
+                  />
+                  <Button width="300px" colorScheme="red" type="submit">
+                    Apply filter
+                  </Button>
+                </Flex>
+              </Form>
+            )}
+          </Formik>
+        </Box>
+
+        {/* FILTER MENU END */}
         <Box>
           {!data || loading ? (
             <Box textAlign="center">

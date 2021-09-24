@@ -39,6 +39,7 @@ const profile = () => {
   const breakpoint = 700;
   const { isOpen, onOpen, onClose } = useDisclosure();
   let [commentText, setCommentText] = React.useState("");
+  let [commentTitle, setCommentTitle] = React.useState("");
   let [currBookingId, setCurrBookingId] = React.useState(0);
 
   const [addReview, { loading: updatingReview }] = useAddReviewMutation({
@@ -69,11 +70,17 @@ const profile = () => {
     setCommentText(inputValue);
   };
 
+  const handleTitleChange = (e) => {
+    let titleValue = e.target.value;
+    setCommentTitle(titleValue);
+  };
+
   const handleClose = async () => {
     await addReview({
       variables: {
         addReviewBookingId: currBookingId,
         addReviewCommentText: commentText,
+        addReviewCommentTitle: commentTitle,
       },
     });
 
@@ -239,12 +246,16 @@ const profile = () => {
           )}
         </Flex>
         <>
-          <Button onClick={onOpen}>Open Modal</Button>
-
           <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent>
-              <ModalHeader>Modal Title</ModalHeader>
+              <ModalHeader>
+                <Textarea
+                  value={commentTitle}
+                  onChange={handleTitleChange}
+                  placeholder="Type in your review.."
+                />
+              </ModalHeader>
               <ModalCloseButton />
               <ModalBody>
                 <Textarea

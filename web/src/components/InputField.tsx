@@ -16,6 +16,7 @@ type InputFieldProps = InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElemen
   label: string;
   placeholder: string;
   textarea?: Boolean;
+  explicitWidth?: number;
 };
 
 export const InputField: React.FC<InputFieldProps> = ({
@@ -23,6 +24,7 @@ export const InputField: React.FC<InputFieldProps> = ({
   label,
   size: _,
   textarea,
+  explicitWidth,
   ...props
 }) => {
   const [field, { error }] = useField(props);
@@ -35,7 +37,12 @@ export const InputField: React.FC<InputFieldProps> = ({
       {textarea ? (
         <Textarea {...field} {...props} id={field.name} />
       ) : (
-        <Input minW={width < breakpoint ? "90vw" : "400px"} {...field} {...props} id={field.name} />
+        <Input
+          minW={width < breakpoint ? "90vw" : explicitWidth ? explicitWidth : "400px"}
+          {...field}
+          {...props}
+          id={field.name}
+        />
       )}
       <FormHelperText>{helperText}</FormHelperText>
       {error ? <FormErrorMessage>{error}</FormErrorMessage> : null}

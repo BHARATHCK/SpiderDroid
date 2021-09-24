@@ -55,6 +55,7 @@ export type Comment = {
   __typename?: 'Comment';
   bookings?: Maybe<Bookings>;
   commentText?: Maybe<Scalars['String']>;
+  commentTitle?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['Int']>;
   updatedAt?: Maybe<Scalars['String']>;
@@ -103,6 +104,7 @@ export type Mutation = {
   changePassword: UserResponse;
   createPost: Scalars['Boolean'];
   createpost: Scalars['Boolean'];
+  filterCars?: Maybe<PaginatedPosts>;
   forgotPassword: Scalars['Boolean'];
   login: UserResponse;
   logout: Scalars['Boolean'];
@@ -115,6 +117,7 @@ export type Mutation = {
 export type MutationAddReviewArgs = {
   bookingId: Scalars['Float'];
   commentText: Scalars['String'];
+  commentTitle: Scalars['String'];
 };
 
 
@@ -126,6 +129,15 @@ export type MutationChangePasswordArgs = {
 
 export type MutationCreatePostArgs = {
   options: CreatePostType;
+};
+
+
+export type MutationFilterCarsArgs = {
+  carMake?: Maybe<Scalars['String']>;
+  carModel?: Maybe<Scalars['String']>;
+  carYear?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
+  skipVariable: Scalars['Int'];
 };
 
 
@@ -220,6 +232,9 @@ export type QueryFilterPostArgs = {
 
 
 export type QueryFindCarsArgs = {
+  carMake?: Maybe<Scalars['String']>;
+  carModel?: Maybe<Scalars['String']>;
+  carYear?: Maybe<Scalars['String']>;
   limit: Scalars['Int'];
   skipVariable: Scalars['Int'];
 };
@@ -293,6 +308,7 @@ export type RegularUserFragment = { __typename?: 'User', id: number, username: s
 export type AddReviewMutationVariables = Exact<{
   addReviewCommentText: Scalars['String'];
   addReviewBookingId: Scalars['Float'];
+  addReviewCommentTitle: Scalars['String'];
 }>;
 
 
@@ -305,6 +321,17 @@ export type ChangePasswordMutationVariables = Exact<{
 
 
 export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'UserResponse', errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>>, user?: Maybe<{ __typename?: 'User', id: number, username: string, email: string }> } };
+
+export type FilterCarsMutationVariables = Exact<{
+  findCarsLimit: Scalars['Int'];
+  findCarsSkipVariable: Scalars['Int'];
+  carMake?: Maybe<Scalars['String']>;
+  carYear?: Maybe<Scalars['String']>;
+  carModel?: Maybe<Scalars['String']>;
+}>;
+
+
+export type FilterCarsMutation = { __typename?: 'Mutation', filterCars?: Maybe<{ __typename?: 'PaginatedPosts', total: number, posts: Array<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, carCostPerDay?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', id: number, destinationName: string }> }> }> };
 
 export type ForgotPasswordMutationVariables = Exact<{
   email: Scalars['String'];
@@ -374,6 +401,9 @@ export type FilterPostQuery = { __typename?: 'Query', filterPost: Array<{ __type
 export type FindCarsQueryVariables = Exact<{
   findCarsLimit: Scalars['Int'];
   findCarsSkipVariable: Scalars['Int'];
+  carMake?: Maybe<Scalars['String']>;
+  carYear?: Maybe<Scalars['String']>;
+  carModel?: Maybe<Scalars['String']>;
 }>;
 
 
@@ -438,8 +468,12 @@ export const RegularUserFragmentDoc = gql`
 }
     `;
 export const AddReviewDocument = gql`
-    mutation AddReview($addReviewCommentText: String!, $addReviewBookingId: Float!) {
-  addReview(commentText: $addReviewCommentText, bookingId: $addReviewBookingId)
+    mutation AddReview($addReviewCommentText: String!, $addReviewBookingId: Float!, $addReviewCommentTitle: String!) {
+  addReview(
+    commentText: $addReviewCommentText
+    bookingId: $addReviewBookingId
+    commentTitle: $addReviewCommentTitle
+  )
 }
     `;
 export type AddReviewMutationFn = Apollo.MutationFunction<AddReviewMutation, AddReviewMutationVariables>;
@@ -459,6 +493,7 @@ export type AddReviewMutationFn = Apollo.MutationFunction<AddReviewMutation, Add
  *   variables: {
  *      addReviewCommentText: // value for 'addReviewCommentText'
  *      addReviewBookingId: // value for 'addReviewBookingId'
+ *      addReviewCommentTitle: // value for 'addReviewCommentTitle'
  *   },
  * });
  */
@@ -509,6 +544,63 @@ export function useChangePasswordMutation(baseOptions?: Apollo.MutationHookOptio
 export type ChangePasswordMutationHookResult = ReturnType<typeof useChangePasswordMutation>;
 export type ChangePasswordMutationResult = Apollo.MutationResult<ChangePasswordMutation>;
 export type ChangePasswordMutationOptions = Apollo.BaseMutationOptions<ChangePasswordMutation, ChangePasswordMutationVariables>;
+export const FilterCarsDocument = gql`
+    mutation FilterCars($findCarsLimit: Int!, $findCarsSkipVariable: Int!, $carMake: String, $carYear: String, $carModel: String) {
+  filterCars(
+    limit: $findCarsLimit
+    skipVariable: $findCarsSkipVariable
+    carMake: $carMake
+    carYear: $carYear
+    carModel: $carModel
+  ) {
+    posts {
+      id
+      carMake
+      carModel
+      imageUrl
+      carYear
+      trips
+      points
+      carCostPerDay
+      destination {
+        id
+        destinationName
+      }
+    }
+    total
+  }
+}
+    `;
+export type FilterCarsMutationFn = Apollo.MutationFunction<FilterCarsMutation, FilterCarsMutationVariables>;
+
+/**
+ * __useFilterCarsMutation__
+ *
+ * To run a mutation, you first call `useFilterCarsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useFilterCarsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [filterCarsMutation, { data, loading, error }] = useFilterCarsMutation({
+ *   variables: {
+ *      findCarsLimit: // value for 'findCarsLimit'
+ *      findCarsSkipVariable: // value for 'findCarsSkipVariable'
+ *      carMake: // value for 'carMake'
+ *      carYear: // value for 'carYear'
+ *      carModel: // value for 'carModel'
+ *   },
+ * });
+ */
+export function useFilterCarsMutation(baseOptions?: Apollo.MutationHookOptions<FilterCarsMutation, FilterCarsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<FilterCarsMutation, FilterCarsMutationVariables>(FilterCarsDocument, options);
+      }
+export type FilterCarsMutationHookResult = ReturnType<typeof useFilterCarsMutation>;
+export type FilterCarsMutationResult = Apollo.MutationResult<FilterCarsMutation>;
+export type FilterCarsMutationOptions = Apollo.BaseMutationOptions<FilterCarsMutation, FilterCarsMutationVariables>;
 export const ForgotPasswordDocument = gql`
     mutation forgotPassword($email: String!) {
   forgotPassword(email: $email)
@@ -848,8 +940,14 @@ export type FilterPostQueryHookResult = ReturnType<typeof useFilterPostQuery>;
 export type FilterPostLazyQueryHookResult = ReturnType<typeof useFilterPostLazyQuery>;
 export type FilterPostQueryResult = Apollo.QueryResult<FilterPostQuery, FilterPostQueryVariables>;
 export const FindCarsDocument = gql`
-    query FindCars($findCarsLimit: Int!, $findCarsSkipVariable: Int!) {
-  findCars(limit: $findCarsLimit, skipVariable: $findCarsSkipVariable) {
+    query FindCars($findCarsLimit: Int!, $findCarsSkipVariable: Int!, $carMake: String, $carYear: String, $carModel: String) {
+  findCars(
+    limit: $findCarsLimit
+    skipVariable: $findCarsSkipVariable
+    carMake: $carMake
+    carYear: $carYear
+    carModel: $carModel
+  ) {
     posts {
       id
       carMake
@@ -883,6 +981,9 @@ export const FindCarsDocument = gql`
  *   variables: {
  *      findCarsLimit: // value for 'findCarsLimit'
  *      findCarsSkipVariable: // value for 'findCarsSkipVariable'
+ *      carMake: // value for 'carMake'
+ *      carYear: // value for 'carYear'
+ *      carModel: // value for 'carModel'
  *   },
  * });
  */

@@ -93,33 +93,63 @@ export class PostResolver {
   @Query(() => [Post], { nullable: true })
   async posts(): Promise<Post[]> {
     const posts = await Post.find({ relations: ["destination"] });
-    console.log("STARTED *****************");
-    posts.forEach(async (post, index) => {
-      const carDetail = await CarDetails.findOne(index);
-      if (carDetail) {
-        post.carDetails = carDetail;
-        await Post.update(post.id, post);
-        console.log("UPDATED ");
-      }
-    });
-
-    return posts; //await Post.find({ relations: ["destination"] });
+    return posts;
   }
 
   @Query(() => PaginatedPosts, { nullable: true })
   async findCars(
     @Arg("limit", () => Int) limit: number,
     @Arg("skipVariable", () => Int) skipNumber: number,
+    @Arg("carMake", () => String, { nullable: true }) carMake: string,
+    @Arg("carModel", () => String, { nullable: true }) carModel: string,
+    @Arg("carYear", () => String, { nullable: true }) carYear: string,
   ): Promise<PaginatedPosts> {
     const realLimit = Math.min(50, limit);
 
-    const [result, total] = await Post.findAndCount({
-      order: { points: "DESC" },
-      skip: skipNumber,
-      take: realLimit,
-    });
+    const query = Post.createQueryBuilder("post").where(`id is NOT NULL`);
+    if (carMake) {
+      query.andWhere(`LOWER("carMake") LIKE LOWER('%${carMake}%')`);
+    }
+    if (carYear) {
+      query.andWhere(`"carYear" LIKE '%${carYear}%'`);
+    }
+    if (carModel) {
+      query.andWhere(`LOWER("carModel") LIKE LOWER('%${carModel}%')`);
+    }
 
-    return { posts: result, total: total };
+    query.skip(skipNumber).take(realLimit);
+
+    const posts = await query.getManyAndCount();
+
+    return { posts: posts[0], total: posts[1] };
+  }
+
+  @Mutation(() => PaginatedPosts, { nullable: true })
+  async filterCars(
+    @Arg("limit", () => Int) limit: number,
+    @Arg("skipVariable", () => Int) skipNumber: number,
+    @Arg("carMake", () => String, { nullable: true }) carMake: string,
+    @Arg("carModel", () => String, { nullable: true }) carModel: string,
+    @Arg("carYear", () => String, { nullable: true }) carYear: string,
+  ): Promise<PaginatedPosts> {
+    const realLimit = Math.min(50, limit);
+
+    const query = Post.createQueryBuilder("post").where(`id is NOT NULL`);
+    if (carMake) {
+      query.andWhere(`LOWER("carMake") LIKE LOWER('%${carMake}%')`);
+    }
+    if (carYear) {
+      query.andWhere(`"carYear" LIKE '%${carYear}%'`);
+    }
+    if (carModel) {
+      query.andWhere(`LOWER("carModel") LIKE LOWER('%${carModel}%')`);
+    }
+
+    query.skip(skipNumber).take(realLimit);
+
+    const posts = await query.getManyAndCount();
+
+    return { posts: posts[0], total: posts[1] };
   }
 
   @Query(() => Post, { nullable: true })
@@ -317,12 +347,14 @@ export class PostResolver {
   async addReview(
     @Arg("bookingId") bookingId: number,
     @Arg("commentText") commentText: string,
+    @Arg("commentTitle") commentTitle: string,
   ): Promise<boolean> {
     let commentSaved = false;
     try {
       await Comment.create({
         bookings: await Bookings.findOne(bookingId),
         commentText: commentText,
+        commentTitle: commentTitle,
       }).save();
       commentSaved = true;
     } catch (error) {

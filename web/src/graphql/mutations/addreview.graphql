@@ -1,3 +1,11 @@
-mutation AddReview($addReviewCommentText: String!, $addReviewBookingId: Float!) {
-  addReview(commentText: $addReviewCommentText, bookingId: $addReviewBookingId)
+mutation AddReview(
+  $addReviewCommentText: String!
+  $addReviewBookingId: Float!
+  $addReviewCommentTitle: String!
+) {
+  addReview(
+    commentText: $addReviewCommentText
+    bookingId: $addReviewBookingId
+    commentTitle: $addReviewCommentTitle
+  )
 }
