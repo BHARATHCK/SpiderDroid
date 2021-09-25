@@ -5,7 +5,7 @@ import { Box } from "@chakra-ui/layout";
 import { Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { PostQuery, RazorpayFields, useRazorpayPaymentMutation } from "../generated/graphql";
+import { PostQuery, RazorpayFields, useRazorpayPaymentMutation } from "../../generated/graphql";
 
 const loadScript = () => {
   return new Promise((resolve) => {

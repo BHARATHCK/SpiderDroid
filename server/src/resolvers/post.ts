@@ -11,7 +11,7 @@ import {
   Query,
   Resolver,
 } from "type-graphql";
-import { getConnection } from "typeorm";
+import { getConnection, MoreThan } from "typeorm";
 import { Bookings } from "../entities/Bookings";
 import { CarDetails } from "../entities/CarDetails";
 import { Destination } from "../entities/Destination";
@@ -93,6 +93,15 @@ export class PostResolver {
   @Query(() => [Post], { nullable: true })
   async posts(): Promise<Post[]> {
     const posts = await Post.find({ relations: ["destination"] });
+    return posts;
+  }
+
+  @Query(() => [Post], { nullable: true })
+  async allStarReviews(): Promise<Post[]> {
+    const posts = await Post.find({
+      where: { points: MoreThan(4) },
+      relations: ["creator", "bookings", "bookings.comment"],
+    });
     return posts;
   }
 
@@ -211,16 +220,16 @@ export class PostResolver {
     if (filterCategory.includes("carMake")) {
       return await getConnection().query(`
         SELECT post."createdAt", post."updatedAt", post.points, post."creatorId", post."carMake", post."carModel", post."carYear", post.trips, post.category, post."carVin", post."imageUrl", post."destinationId", post.id, post."carCostPerDay", post."rentedFrom", post."rentedUntil" FROM public.post INNER JOIN public.bookings on post.id = bookings."carId" where 
-        (('${new Date()
+        ((DATE('${new Date()
           .toISOString()
           .slice(0, 19)
           .replace(
             "T",
             " ",
-          )}' NOT BETWEEN bookings."fromDate" AND bookings."toDate") AND ('${afterDate
+          )}') NOT BETWEEN DATE(bookings."fromDate") AND DATE(bookings."toDate")) AND (DATE('${afterDate
         .toISOString()
         .slice(0, 19)
-        .replace("T", " ")}' NOT BETWEEN bookings."fromDate" AND bookings."toDate"))
+        .replace("T", " ")}') NOT BETWEEN DATE(bookings."fromDate") AND DATE(bookings."toDate")))
         AND post."carMake" = '${filterCriteria}'
         UNION
         select post."createdAt", post."updatedAt", post.points, post."creatorId", post."carMake", post."carModel", post."carYear", post.trips, post.category, post."carVin", post."imageUrl", post."destinationId", post.id, post."carCostPerDay", post."rentedFrom", post."rentedUntil" from public.post where post."carMake" = '${filterCriteria}' AND  post.id NOT IN (select bookings."carId" from public.bookings)
@@ -228,16 +237,16 @@ export class PostResolver {
     } else if (filterCategory.includes("destination")) {
       return await getConnection().query(`
         SELECT post."createdAt", post."updatedAt", post.points, post."creatorId", post."carMake", post."carModel", post."carYear", post.trips, post.category, post."carVin", post."imageUrl", post."destinationId", post.id, post."carCostPerDay", post."rentedFrom", post."rentedUntil" FROM public.post INNER JOIN public.bookings on post.id = bookings."carId" where 
-        (('${new Date()
+        ((DATE('${new Date()
           .toISOString()
           .slice(0, 19)
           .replace(
             "T",
             " ",
-          )}' NOT BETWEEN bookings."fromDate" AND bookings."toDate") AND ('${afterDate
+          )}') NOT BETWEEN DATE(bookings."fromDate") AND DATE(bookings."toDate")) AND (DATE('${afterDate
         .toISOString()
         .slice(0, 19)
-        .replace("T", " ")}' NOT BETWEEN bookings."fromDate" AND bookings."toDate"))
+        .replace("T", " ")}') NOT BETWEEN DATE(bookings."fromDate") AND DATE(bookings."toDate")))
         AND post."destinationId" = '${filterCriteria}' 
         UNION
         select post."createdAt", post."updatedAt", post.points, post."creatorId", post."carMake", post."carModel", post."carYear", post.trips, post.category, post."carVin", post."imageUrl", post."destinationId", post.id, post."carCostPerDay", post."rentedFrom", post."rentedUntil" from public.post where post."destinationId" = '${filterCriteria}' AND post.id NOT IN (select bookings."carId" from public.bookings)
@@ -317,10 +326,9 @@ export class PostResolver {
         if (post.usersRated === 0) {
           post.points = totalPoints;
         } else {
-          post.points = totalPoints / post.usersRated;
+          post.points = Math.ceil(totalPoints / post.usersRated);
         }
         post.usersRated += 1;
-        console.log("POST ----------> ", post);
         await Post.update(post.id, post);
 
         ratingSubmitted = true;
@@ -367,9 +375,11 @@ export class PostResolver {
   async experienceReviews(@Arg("carId") carId: number): Promise<Comment[]> {
     const bookings = await Bookings.find({ where: { carId: carId, bookingStatus: "Success" } });
 
+    console.log("Bookings ********** ", bookings);
     const commentsArray: Comment[] = [];
 
     for (const booking of bookings) {
+      console.log("Nookings Arrray : ", booking);
       const comment = await Comment.findOne({ where: { bookings: booking.id } });
       if (comment?.id) {
         commentsArray.push(comment);

@@ -264,7 +264,13 @@ export class UserResolver {
       user: currentUser,
       fromDate: userFromDate,
       toDate: userToDate,
+      post: await Post.findOne(carId),
     }).save();
+
+    const user = await User.findOne(req.session.userId);
+    if (user) {
+      await sendEmail(user?.email, "", `${process.env.WEB_APP_URL}/profile`, true, user.username);
+    }
 
     return { paymentResponse: response };
   }
@@ -301,7 +307,7 @@ export class UserResolver {
     console.log("REDIS TOKEN SET : ", res);
 
     console.log("Sending Email $$$$$$$$$ ");
-    await sendEmail(email, `${process.env.WEB_APP_URL}/change-password/${token}`);
+    await sendEmail(email, `${process.env.WEB_APP_URL}/change-password/${token}`, "", false, "");
     return true;
   }
 

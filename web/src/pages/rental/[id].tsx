@@ -17,16 +17,16 @@ import { Spinner } from "@chakra-ui/spinner";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
-import styles from "../../components/Carousel.module.css";
-import Carouselize from "../../components/Carouselize";
-import Layout from "../../components/Layout";
-import NavBar from "../../components/NavBar";
-import PaymentButton from "../../components/Payment";
+import styles from "../../components/Carousel/Carousel.module.css";
+import Carouselize from "../../components/Carousel/Carouselize";
+import Layout from "../../components/IndexPageComponents/Layout";
+import NavBar from "../../components/IndexPageComponents/NavBar";
+import PaymentButton from "../../components/RentalComponents/Payment";
 import { useGetReviewsQuery, usePostQuery } from "../../generated/graphql";
 import { withApolloClient } from "../../utils/apollo-client";
 import isAuth from "../../utils/isAuth";
 import { Avatar } from "@chakra-ui/avatar";
-import { useViewport } from "../../components/ViewPortHook";
+import { useViewport } from "../../components/InteractiveComponents/ViewPortHook";
 import {
   Modal,
   ModalOverlay,

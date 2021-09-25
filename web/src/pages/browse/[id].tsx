@@ -3,10 +3,10 @@ import { Image } from "@chakra-ui/image";
 import { Badge, Box, Grid } from "@chakra-ui/layout";
 import { Spinner } from "@chakra-ui/spinner";
 import { useRouter } from "next/router";
-import CarDisplayCard from "../../components/CarDisplayCard";
-import Layout from "../../components/Layout";
-import NavBar from "../../components/NavBar";
-import { useViewport } from "../../components/ViewPortHook";
+import CarDisplayCard from "../../components/InteractiveComponents/CarDisplayCard";
+import Layout from "../../components/IndexPageComponents/Layout";
+import NavBar from "../../components/IndexPageComponents/NavBar";
+import { useViewport } from "../../components/InteractiveComponents/ViewPortHook";
 import { useFilterPostQuery } from "../../generated/graphql";
 import { withApolloClient } from "../../utils/apollo-client";
 

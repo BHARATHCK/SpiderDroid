@@ -4,7 +4,7 @@ import { useEmblaCarousel } from "embla-carousel/react";
 import { Props } from "framer-motion/types/types";
 import React, { useCallback } from "react";
 import styles from "./Carousel.module.css";
-import { useViewport } from "./ViewPortHook";
+import { useViewport } from "../InteractiveComponents/ViewPortHook";
 
 const Carouselize: React.FC<Props> = ({ children }) => {
   const { width } = useViewport();

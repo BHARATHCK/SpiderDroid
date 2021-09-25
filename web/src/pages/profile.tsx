@@ -7,10 +7,10 @@ import {
   useProfileQuery,
   useRatePostMutation,
 } from "../generated/graphql";
-import NavBar from "../components/NavBar";
-import Layout from "../components/Layout";
+import NavBar from "../components/IndexPageComponents/NavBar";
+import Layout from "../components/IndexPageComponents/Layout";
 import { Button } from "@chakra-ui/button";
-import { useApolloClient } from "@apollo/client";
+import { Cache, useApolloClient } from "@apollo/client";
 import { useRouter } from "next/router";
 import { Spinner } from "@chakra-ui/spinner";
 import {
@@ -30,9 +30,9 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import Image from "next/image";
-import React, { useState } from "react";
-import Rating from "../components/RatingComponent";
-import { useViewport } from "../components/ViewPortHook";
+import React, { useEffect, useState } from "react";
+import Rating from "../components/InteractiveComponents/RatingComponent";
+import { useViewport } from "../components/InteractiveComponents/ViewPortHook";
 
 const profile = () => {
   const { width } = useViewport();
@@ -59,6 +59,19 @@ const profile = () => {
   const apolloClient = useApolloClient();
   const router = useRouter();
 
+  useEffect(() => {
+    if (commentText.length >= 100) {
+      setCommentText(commentText.slice(0, 100));
+    }
+  }, [commentText]);
+
+  useEffect(() => {
+    if (commentTitle.length >= 50) {
+      console.log("SET TITLE TO 50 Chars");
+      setCommentTitle(commentTitle.slice(0, 50));
+    }
+  }, [commentTitle]);
+
   const handleLogout = async () => {
     await logout();
     apolloClient.resetStore();
@@ -81,6 +94,10 @@ const profile = () => {
         addReviewBookingId: currBookingId,
         addReviewCommentText: commentText,
         addReviewCommentTitle: commentTitle,
+      },
+      update: (cache) => {
+        console.log("Evicting cache : ", cache);
+        cache.evict({ fieldName: "me" });
       },
     });
 
@@ -266,9 +283,14 @@ const profile = () => {
               </ModalBody>
 
               <ModalFooter>
-                <Button colorScheme="blue" mr={3} onClick={handleClose} isLoading={updatingReview}>
-                  Close
-                </Button>
+                <Flex direction="row">
+                  <Button colorScheme="red" mr={3} onClick={handleClose} isLoading={updatingReview}>
+                    Submit
+                  </Button>
+                  <Button colorScheme="red" mr={3} onClick={onClose}>
+                    Close
+                  </Button>
+                </Flex>
               </ModalFooter>
             </ModalContent>
           </Modal>

@@ -1,12 +1,12 @@
 import { Badge, Box, Grid } from "@chakra-ui/layout";
 import { useRouter } from "next/router";
-import NavBar from "../components/NavBar";
-import Layout from "../components/Layout";
+import NavBar from "../components/IndexPageComponents/NavBar";
+import Layout from "../components/IndexPageComponents/Layout";
 import { withApolloClient } from "../utils/apollo-client";
 import { useSearchQuery } from "../generated/graphql";
 import React from "react";
 import Image from "next/image";
-import { useViewport } from "../components/ViewPortHook";
+import { useViewport } from "../components/InteractiveComponents/ViewPortHook";
 import { Spinner } from "@chakra-ui/spinner";
 import { StarIcon } from "@chakra-ui/icons";
 

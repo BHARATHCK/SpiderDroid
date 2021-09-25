@@ -1,8 +1,8 @@
 import { Box } from "@chakra-ui/layout";
 import Image from "next/image";
 import React from "react";
-import backgroundImage from "../../assets/backgroundImage.jpg";
-import { useViewport } from "./ViewPortHook";
+import backgroundImage from "../../../assets/backgroundImage.jpg";
+import { useViewport } from "../InteractiveComponents/ViewPortHook";
 
 const BackGroundImage = () => {
   const { width } = useViewport();

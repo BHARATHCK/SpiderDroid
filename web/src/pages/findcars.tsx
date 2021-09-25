@@ -4,18 +4,31 @@ import { Box, Flex, Grid } from "@chakra-ui/layout";
 import { Spinner } from "@chakra-ui/spinner";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import CarDisplayCard from "../components/CarDisplayCard";
-import { InputField } from "../components/InputField";
-import Layout from "../components/Layout";
-import NavBar from "../components/NavBar";
-import { useViewport } from "../components/ViewPortHook";
-import { useFindCarsLazyQuery, useFindCarsQuery } from "../generated/graphql";
+import CarDisplayCard from "../components/InteractiveComponents/CarDisplayCard";
+import { InputField } from "../components/IndexPageComponents/InputField";
+import Layout from "../components/IndexPageComponents/Layout";
+import NavBar from "../components/IndexPageComponents/NavBar";
+import { useViewport } from "../components/InteractiveComponents/ViewPortHook";
+import { Exact, useFindCarsLazyQuery, useFindCarsQuery } from "../generated/graphql";
 import { withApolloClient } from "../utils/apollo-client";
+import {
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  useDisclosure,
+  ResponsiveValue,
+} from "@chakra-ui/react";
 
 const findCars = () => {
   const { width } = useViewport();
   const breakpoint = 700;
   const breakPointTablet = 900;
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [disableLoadMore, setDisableLoadMore] = useState(false);
 
@@ -41,59 +54,42 @@ const findCars = () => {
     <>
       <NavBar />
       <Layout variantType="regular">
-        {/* FILTER MENU */}
+        {width < breakpoint ? (
+          <Box>
+            <Flex alignItems="center" justifyContent="center">
+              <Button colorScheme="blue" variant="outline" onClick={onOpen}>
+                Filters
+              </Button>
+            </Flex>
+          </Box>
+        ) : (
+          ""
+        )}
 
-        <Box minWidth="100%" maxW="700px" boxShadow="lg" mt={10} mb={10}>
-          <Formik
-            initialValues={{ carmake: "", caryear: "", carmodel: "" }}
-            onSubmit={(values, { setErrors }) => {
-              console.log("FORM SUBMITTED ***************** ");
-              refetch({
-                carMake: values.carmake,
-                carYear: values.caryear,
-                carModel: values.carmodel,
-                findCarsLimit: 10,
-                findCarsSkipVariable: 0,
-              });
-            }}
-          >
-            {({ isSubmitting }) => (
-              <Form>
-                <Flex alignItems="center" m={5} direction="row">
-                  <Image
-                    src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632495180/filter_zxl08n.png"
-                    width="30px"
-                    height="30px"
-                    mr={10}
-                  />
-                  <InputField
-                    helperText=""
-                    name="carmake"
-                    label=""
-                    placeholder="Car Make"
-                    explicitWidth={200}
-                  />
-                  <InputField
-                    helperText=""
-                    name="carmodel"
-                    label=""
-                    placeholder="Car Model"
-                    explicitWidth={200}
-                  />
-                  <InputField
-                    helperText=""
-                    name="caryear"
-                    label=""
-                    placeholder="Car Year"
-                    explicitWidth={200}
-                  />
-                  <Button width="300px" colorScheme="red" type="submit">
-                    Apply filter
-                  </Button>
-                </Flex>
-              </Form>
-            )}
-          </Formik>
+        {/* Filter Menu Mobile START*/}
+
+        <Drawer isOpen={isOpen} onClose={onClose} size="full">
+          <DrawerOverlay />
+          <DrawerContent>
+            <DrawerCloseButton />
+            <DrawerHeader>Search</DrawerHeader>
+            <DrawerBody>{formikFilterMenu(refetch, "column", onClose)}</DrawerBody>
+          </DrawerContent>
+        </Drawer>
+
+        {/* FILTER MENU MOBILE END */}
+
+        {/* FILTER MENU Destop*/}
+
+        <Box
+          minWidth="100%"
+          maxW="700px"
+          boxShadow="lg"
+          mt={10}
+          mb={10}
+          display={width < breakpoint ? "none" : undefined}
+        >
+          {formikFilterMenu(refetch, "row", undefined)}
         </Box>
 
         {/* FILTER MENU END */}
@@ -140,6 +136,62 @@ const findCars = () => {
         </Box>
       </Layout>
     </>
+  );
+};
+
+const formikFilterMenu = (refetch: any, direction: ResponsiveValue<any>, onClose: any) => {
+  return (
+    <Formik
+      initialValues={{ carmake: "", caryear: "", carmodel: "" }}
+      onSubmit={(values, { setErrors }) => {
+        refetch({
+          carMake: values.carmake,
+          carYear: values.caryear,
+          carModel: values.carmodel,
+          findCarsLimit: 10,
+          findCarsSkipVariable: 0,
+        });
+
+        onClose();
+      }}
+    >
+      {({ isSubmitting }) => (
+        <Form>
+          <Flex alignItems="center" m={5} direction={direction} justifyContent="center">
+            <Image
+              src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632495180/filter_zxl08n.png"
+              width="30px"
+              height="30px"
+              mr={10}
+            />
+            <InputField
+              helperText=""
+              name="carmake"
+              label=""
+              placeholder="Car Make"
+              explicitWidth={direction == "column" ? undefined : 200}
+            />
+            <InputField
+              helperText=""
+              name="carmodel"
+              label=""
+              placeholder="Car Model"
+              explicitWidth={direction == "column" ? undefined : 200}
+            />
+            <InputField
+              helperText=""
+              name="caryear"
+              label=""
+              placeholder="Car Year"
+              explicitWidth={direction == "column" ? undefined : 200}
+            />
+            <Button width="300px" colorScheme="red" type="submit">
+              Apply filter
+            </Button>
+          </Flex>
+        </Form>
+      )}
+    </Formik>
   );
 };
 

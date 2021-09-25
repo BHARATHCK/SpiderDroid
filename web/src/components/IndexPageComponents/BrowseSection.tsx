@@ -7,9 +7,9 @@ import {
   PostsQuery,
   useDestinationsQuery,
   usePostsQuery,
-} from "../generated/graphql";
-import styles from "./Carousel.module.css";
-import Carouselize from "./Carouselize";
+} from "../../generated/graphql";
+import styles from "../Carousel/Carousel.module.css";
+import Carouselize from "../Carousel/Carouselize";
 
 interface Props {
   itemsToFetch: string;

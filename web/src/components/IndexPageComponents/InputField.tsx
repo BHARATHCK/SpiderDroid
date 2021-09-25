@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { useField } from "formik";
 import React, { InputHTMLAttributes } from "react";
-import { useViewport } from "./ViewPortHook";
+import { useViewport } from "../InteractiveComponents/ViewPortHook";
 
 type InputFieldProps = InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> & {
   name: string;
@@ -38,7 +38,7 @@ export const InputField: React.FC<InputFieldProps> = ({
         <Textarea {...field} {...props} id={field.name} />
       ) : (
         <Input
-          minW={width < breakpoint ? "90vw" : explicitWidth ? explicitWidth : "400px"}
+          minW={width < breakpoint ? "70vw" : explicitWidth ? explicitWidth : "400px"}
           {...field}
           {...props}
           id={field.name}

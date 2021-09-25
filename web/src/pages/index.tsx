@@ -1,13 +1,13 @@
 import { Box, Button, Flex, Heading, Link, Text } from "@chakra-ui/react";
-import AllStarHostsSection from "../components/AllStarHostsSection";
-import BackGroundImage from "../components/BackGroundImage";
-import BrowseCarouselSection from "../components/BrowseSection";
-import ConcludeSection from "../components/ConcludeSection";
-import ExperienceBannerSection from "../components/ExperienceBannerSection";
-import Layout from "../components/Layout";
-import NavBar from "../components/NavBar";
-import SearchFilterMenu from "../components/SearchFilterMenu";
-import TravelogueSection from "../components/TravelogueSection";
+import AllStarHostsSection from "../components/IndexPageComponents/AllStarHostsSection";
+import BackGroundImage from "../components/IndexPageComponents/BackGroundImage";
+import BrowseCarouselSection from "../components/IndexPageComponents/BrowseSection";
+import ConcludeSection from "../components/IndexPageComponents/ConcludeSection";
+import ExperienceBannerSection from "../components/IndexPageComponents/ExperienceBannerSection";
+import Layout from "../components/IndexPageComponents/Layout";
+import NavBar from "../components/IndexPageComponents/NavBar";
+import SearchFilterMenu from "../components/InteractiveComponents/SearchFilterMenu";
+import TravelogueSection from "../components/IndexPageComponents/TravelogueSection";
 import { withApolloClient } from "../utils/apollo-client";
 
 const Index = () => (

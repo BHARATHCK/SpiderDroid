@@ -206,6 +206,7 @@ export type Post = {
 
 export type Query = {
   __typename?: 'Query';
+  allStarReviews?: Maybe<Array<Post>>;
   browseByCarMake: Array<Post>;
   browseByDestination: Array<Destination>;
   experienceReviews: Array<Comment>;
@@ -384,6 +385,11 @@ export type RegisterMutationVariables = Exact<{
 
 
 export type RegisterMutation = { __typename?: 'Mutation', register?: Maybe<{ __typename?: 'UserResponse', errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>>, user?: Maybe<{ __typename?: 'User', id: number, username: string, email: string }> }> };
+
+export type AllStarHostsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllStarHostsQuery = { __typename?: 'Query', allStarReviews?: Maybe<Array<{ __typename?: 'Post', id?: Maybe<number>, trips?: Maybe<number>, points?: Maybe<number>, createdAt?: Maybe<string>, creator?: Maybe<{ __typename?: 'User', id: number, username: string }>, bookings?: Maybe<Array<{ __typename?: 'Bookings', id: number, comment?: Maybe<Array<{ __typename?: 'Comment', commentText?: Maybe<string>, commentTitle?: Maybe<string> }>> }>> }>> };
 
 export type DestinationsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -856,6 +862,54 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const AllStarHostsDocument = gql`
+    query AllStarHosts {
+  allStarReviews {
+    id
+    trips
+    points
+    createdAt
+    creator {
+      id
+      username
+    }
+    bookings {
+      id
+      comment {
+        commentText
+        commentTitle
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useAllStarHostsQuery__
+ *
+ * To run a query within a React component, call `useAllStarHostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllStarHostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllStarHostsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllStarHostsQuery(baseOptions?: Apollo.QueryHookOptions<AllStarHostsQuery, AllStarHostsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AllStarHostsQuery, AllStarHostsQueryVariables>(AllStarHostsDocument, options);
+      }
+export function useAllStarHostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllStarHostsQuery, AllStarHostsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AllStarHostsQuery, AllStarHostsQueryVariables>(AllStarHostsDocument, options);
+        }
+export type AllStarHostsQueryHookResult = ReturnType<typeof useAllStarHostsQuery>;
+export type AllStarHostsLazyQueryHookResult = ReturnType<typeof useAllStarHostsLazyQuery>;
+export type AllStarHostsQueryResult = Apollo.QueryResult<AllStarHostsQuery, AllStarHostsQueryVariables>;
 export const DestinationsDocument = gql`
     query Destinations {
   browseByDestination {

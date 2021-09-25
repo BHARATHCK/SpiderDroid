@@ -1,0 +1,19 @@
+query AllStarHosts {
+  allStarReviews {
+    id
+    trips
+    points
+    createdAt
+    creator {
+      id
+      username
+    }
+    bookings {
+      id
+      comment {
+        commentText
+        commentTitle
+      }
+    }
+  }
+}

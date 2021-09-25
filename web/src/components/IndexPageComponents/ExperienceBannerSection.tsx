@@ -1,8 +1,8 @@
 import { Box, Button, Flex, Img, Text } from "@chakra-ui/react";
 import React from "react";
-import styles from "./Carousel.module.css";
-import Carouselize from "./Carouselize";
-import { useViewport } from "./ViewPortHook";
+import styles from "../Carousel/Carousel.module.css";
+import Carouselize from "../Carousel/Carouselize";
+import { useViewport } from "../InteractiveComponents/ViewPortHook";
 import NextLink from "next/link";
 
 const ExperienceBannerSection = () => {

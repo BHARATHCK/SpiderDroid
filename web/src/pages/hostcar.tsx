@@ -18,11 +18,11 @@ import {
 import { Field, Form, Formik } from "formik";
 import router from "next/router";
 import React from "react";
-import Upload from "../components/fileuploadzone";
-import Layout from "../components/Layout";
-import NavBar from "../components/NavBar";
-import { useViewport } from "../components/ViewPortHook";
-import { Wrapper } from "../components/Wrapper";
+import Upload from "../components/RentalComponents/fileuploadzone";
+import Layout from "../components/IndexPageComponents/Layout";
+import NavBar from "../components/IndexPageComponents/NavBar";
+import { useViewport } from "../components/InteractiveComponents/ViewPortHook";
+import { Wrapper } from "../components/IndexPageComponents/Wrapper";
 import { useDestinationsQuery, useHostCarMutation } from "../generated/graphql";
 import { withApolloClient } from "../utils/apollo-client";
 

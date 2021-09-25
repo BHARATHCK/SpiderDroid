@@ -7,7 +7,7 @@ import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
-import { useDestinationsQuery } from "../generated/graphql";
+import { useDestinationsQuery } from "../../generated/graphql";
 import { useViewport } from "./ViewPortHook";
 
 const SearchFilterMenu = () => {

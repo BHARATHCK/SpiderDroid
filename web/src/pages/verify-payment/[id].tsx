@@ -2,7 +2,7 @@ import { Box, Flex, Text } from "@chakra-ui/layout";
 import { Progress } from "@chakra-ui/progress";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import Layout from "../../components/Layout";
+import Layout from "../../components/IndexPageComponents/Layout";
 import { usePaymentStatusQuery } from "../../generated/graphql";
 import { withApolloClient } from "../../utils/apollo-client";
 

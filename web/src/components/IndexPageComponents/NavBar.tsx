@@ -19,7 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import NextLink from "next/link";
-import { useMeQuery } from "../generated/graphql";
+import { useMeQuery } from "../../generated/graphql";
 
 const NavBar = () => {
   const { isOpen, onToggle } = useDisclosure();

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Icon, Stack, Text } from "@chakra-ui/react";
-import { useRatePostMutation } from "../generated/graphql";
+import { useRatePostMutation } from "../../generated/graphql";
 import { StarIcon } from "@chakra-ui/icons";
 
 interface RatingProps {
@@ -29,6 +29,9 @@ const Rating: React.FC<RatingProps> = ({
   useEffect(() => {
     ratePost({
       variables: { bookingId: bookingId, postId: postId, userRating: rating },
+      update: (cache) => {
+        cache.evict({ fieldName: "me" });
+      },
     });
   }, [rating]);
 

@@ -21,6 +21,7 @@ import cors from "cors";
 import { Bookings } from "./entities/Bookings";
 import { CarDetails } from "./entities/CarDetails";
 import { Comment } from "./entities/Comment";
+import { sendEmail } from "./utils/sendEmail";
 
 const main = async () => {
   createConnection({
@@ -106,7 +107,7 @@ const main = async () => {
   apolloServer.applyMiddleware({ app, cors: false });
 
   // Rarzorpy WebHook API - Rest
-  app.post("/payment-verification", jsonParser, (req, res) => {
+  app.post("/payment-verification", jsonParser, async (req, res) => {
     console.log("VERIFICATION STARTED ****************************** ");
     // do a validation
     const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
@@ -134,6 +135,12 @@ const main = async () => {
         // eslint-disable-next-line quotes
         .where('"orderId" = :id', { id: req.body.payload.payment.entity.order_id })
         .execute();
+
+      // Send Email
+      const user = await User.findOne(req.session.userId);
+      if (user) {
+        await sendEmail(user?.email, "", `${process.env.WEB_APP_URL}/profile`, true, user.username);
+      }
     } else {
       console.log("VERIFICATION FAILED ^^^^^^^^^^^^^^^^^^^^^^^^^ ");
       // order specific signature verification failed update payment and booking table

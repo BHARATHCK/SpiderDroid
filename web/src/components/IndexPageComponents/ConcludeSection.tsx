@@ -1,5 +1,5 @@
 import { Box, Flex, Link } from "@chakra-ui/react";
-import { useViewport } from "./ViewPortHook";
+import { useViewport } from "../InteractiveComponents/ViewPortHook";
 import NextLink from "next/link";
 
 const ConcludeSection = () => {
