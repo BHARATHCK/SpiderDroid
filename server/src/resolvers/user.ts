@@ -11,7 +11,7 @@ import { Bookings } from "../entities/Bookings";
 import { _COOKIE_NAME, _FORGOT_PASSWORD_PREFIX } from "../constants";
 import { v4 } from "uuid";
 import { sendEmail } from "../utils/sendEmail";
-import { MoreThan, UsingJoinColumnOnlyOnOneSideAllowedError } from "typeorm";
+import { MoreThan } from "typeorm";
 
 @ObjectType()
 class FieldError {
