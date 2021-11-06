@@ -31,6 +31,12 @@ const main = async () => {
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASS,
     database: process.env.POSTGRES_DB,
+    ssl: true,
+    extra: {
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    },
     logging: true, // False in production
     synchronize: true, // False in production environment
     entities: [User, Post, Destination, Payment, Bookings, CarDetails, Comment],
