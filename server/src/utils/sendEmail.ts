@@ -327,6 +327,7 @@ export async function sendEmail(
         `,
     });
   } else {
+    console.log("sending forgot password email ****** ");
     await transporter.sendMail({
       // eslint-disable-next-line quotes
       from: `"Admin 🚗" <${process.env.MAIL_ID}>`,

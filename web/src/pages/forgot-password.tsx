@@ -27,7 +27,7 @@ const ForgotPassword: React.FC<{}> = ({}) => {
             <Form>
               <Box m={4}>
                 <InputField
-                  helperText="Enter New Password"
+                  helperText="Enter the EmailId associated with your account"
                   textarea={false}
                   name="email"
                   label="Email"

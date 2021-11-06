@@ -11,7 +11,7 @@ import { Bookings } from "../entities/Bookings";
 import { _COOKIE_NAME, _FORGOT_PASSWORD_PREFIX } from "../constants";
 import { v4 } from "uuid";
 import { sendEmail } from "../utils/sendEmail";
-import { MoreThan } from "typeorm";
+import { MoreThan, UsingJoinColumnOnlyOnOneSideAllowedError } from "typeorm";
 
 @ObjectType()
 class FieldError {
@@ -307,7 +307,12 @@ export class UserResolver {
     console.log("REDIS TOKEN SET : ", res);
 
     console.log("Sending Email $$$$$$$$$ ");
-    await sendEmail(email, `${process.env.WEB_APP_URL}/change-password/${token}`, "", false, "");
+    try {
+      await sendEmail(email, `${process.env.WEB_APP_URL}/change-password/${token}`, "", false, "");
+    } catch (error) {
+      console.log("Error while sending mail : ", error);
+    }
+    console.log("Mail Successfully Sent ");
     return true;
   }
 
