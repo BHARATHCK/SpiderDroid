@@ -75,7 +75,6 @@ const HostCar = () => {
                 if (imageURL.length < 3) {
                   return null;
                 }
-
                 // Use hook function here.
                 const response = await hostCar({
                   variables: {
@@ -98,7 +97,7 @@ const HostCar = () => {
                       mediaSystem: values.mediaSystem,
                       petSituation: values.petSituation,
                       destination: values.destination,
-                      carCostPerDay: values.carCostPerDay,
+                      carCostPerDay: parseInt(values.carCostPerDay),
                     },
                   },
                 });

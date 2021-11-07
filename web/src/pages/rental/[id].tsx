@@ -182,7 +182,7 @@ const RentCar = () => {
                       />
                       <Flex direction="column">
                         <Text ml={4}>{data.post.creator.username}</Text>
-                        <Text ml={4}>{data.post.creator.createdAt}</Text>
+                        <Text ml={4}>{data.post.creator.createdAt.slice(0, 10)}</Text>
                       </Flex>
                     </Flex>
                     <Flex mt={4}>
@@ -373,7 +373,7 @@ const RentCar = () => {
             <Heading fontWeight={600}>Reviews</Heading>
             <Stack spacing={8} mb={200} mt={10}>
               {reviewsData.experienceReviews.map((review) => (
-                <Feature title="Plan Money" desc={review.commentText} />
+                <Feature title={review.commentTitle} desc={review.commentText} />
               ))}
             </Stack>
           </>

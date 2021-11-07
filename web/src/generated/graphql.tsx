@@ -21,14 +21,14 @@ export type Bookings = {
   bookingStatus?: Maybe<Scalars['String']>;
   carId?: Maybe<Scalars['Float']>;
   comment?: Maybe<Array<Comment>>;
-  createdAt?: Maybe<Scalars['String']>;
-  fromDate?: Maybe<Scalars['String']>;
+  createdAt: Scalars['DateTime'];
+  fromDate?: Maybe<Scalars['DateTime']>;
   id: Scalars['Int'];
   orderId?: Maybe<Scalars['String']>;
   post: Post;
   ratingStatus?: Maybe<Scalars['Boolean']>;
-  toDate?: Maybe<Scalars['String']>;
-  updatedAt?: Maybe<Scalars['String']>;
+  toDate?: Maybe<Scalars['DateTime']>;
+  updatedAt: Scalars['DateTime'];
 };
 
 export type CarDetails = {
@@ -420,7 +420,7 @@ export type GetReviewsQueryVariables = Exact<{
 }>;
 
 
-export type GetReviewsQuery = { __typename?: 'Query', experienceReviews: Array<{ __typename?: 'Comment', commentText?: Maybe<string>, id?: Maybe<number> }> };
+export type GetReviewsQuery = { __typename?: 'Query', experienceReviews: Array<{ __typename?: 'Comment', commentTitle?: Maybe<string>, commentText?: Maybe<string>, id?: Maybe<number> }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -439,7 +439,7 @@ export type PostQueryVariables = Exact<{
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', post?: Maybe<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, carCostPerDay?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', destinationName: string }>, creator?: Maybe<{ __typename?: 'User', username: string, createdAt: any }>, carDetails: { __typename?: 'CarDetails', condition?: Maybe<string>, description?: Maybe<string>, doors?: Maybe<number>, fuelType?: Maybe<string>, mediaSystem?: Maybe<Array<string>>, mileage?: Maybe<number>, petSituation?: Maybe<Array<string>>, seats?: Maybe<number>, transmission?: Maybe<string>, commentId?: Maybe<number> }, bookings?: Maybe<Array<{ __typename?: 'Bookings', fromDate?: Maybe<string>, toDate?: Maybe<string> }>> }> };
+export type PostQuery = { __typename?: 'Query', post?: Maybe<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, carCostPerDay?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', destinationName: string }>, creator?: Maybe<{ __typename?: 'User', username: string, createdAt: any }>, carDetails: { __typename?: 'CarDetails', condition?: Maybe<string>, description?: Maybe<string>, doors?: Maybe<number>, fuelType?: Maybe<string>, mediaSystem?: Maybe<Array<string>>, mileage?: Maybe<number>, petSituation?: Maybe<Array<string>>, seats?: Maybe<number>, transmission?: Maybe<string>, commentId?: Maybe<number> }, bookings?: Maybe<Array<{ __typename?: 'Bookings', fromDate?: Maybe<any>, toDate?: Maybe<any> }>> }> };
 
 export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -449,7 +449,7 @@ export type PostsQuery = { __typename?: 'Query', browseByCarMake: Array<{ __type
 export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProfileQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', id: number, username: string, email: string, bookings?: Maybe<Array<{ __typename?: 'Bookings', id: number, carId?: Maybe<number>, fromDate?: Maybe<string>, toDate?: Maybe<string>, ratingStatus?: Maybe<boolean>, bookingStatus?: Maybe<string>, comment?: Maybe<Array<{ __typename?: 'Comment', commentText?: Maybe<string>, id?: Maybe<number> }>> }>>, posts?: Maybe<Array<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, carYear?: Maybe<string> }>> }> };
+export type ProfileQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', id: number, username: string, email: string, bookings?: Maybe<Array<{ __typename?: 'Bookings', id: number, carId?: Maybe<number>, fromDate?: Maybe<any>, toDate?: Maybe<any>, ratingStatus?: Maybe<boolean>, bookingStatus?: Maybe<string>, comment?: Maybe<Array<{ __typename?: 'Comment', commentText?: Maybe<string>, id?: Maybe<number> }>> }>>, posts?: Maybe<Array<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, carYear?: Maybe<string> }>> }> };
 
 export type SearchQueryVariables = Exact<{
   searchToDate: Scalars['DateTime'];
@@ -1055,6 +1055,7 @@ export type FindCarsQueryResult = Apollo.QueryResult<FindCarsQuery, FindCarsQuer
 export const GetReviewsDocument = gql`
     query GetReviews($carId: Float!) {
   experienceReviews(carId: $carId) {
+    commentTitle
     commentText
     id
   }

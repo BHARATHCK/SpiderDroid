@@ -20,12 +20,12 @@ export class Bookings extends BaseEntity {
   @PrimaryGeneratedColumn("increment")
   id!: number;
 
-  @Field(() => String, { nullable: true })
-  @CreateDateColumn()
+  @Field()
+  @CreateDateColumn({ type: "timestamp with time zone", nullable: true })
   createdAt: Date;
 
-  @Field(() => String, { nullable: true })
-  @UpdateDateColumn()
+  @Field()
+  @UpdateDateColumn({ type: "timestamp with time zone", nullable: true })
   updatedAt: Date;
 
   @Field({ nullable: true })
@@ -36,11 +36,11 @@ export class Bookings extends BaseEntity {
   @Column()
   orderId: string;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => Date, { nullable: true })
   @Column()
   fromDate: Date;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => Date, { nullable: true })
   @Column()
   toDate: Date;
 

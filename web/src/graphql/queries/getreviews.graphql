@@ -1,5 +1,6 @@
 query GetReviews($carId: Float!) {
   experienceReviews(carId: $carId) {
+    commentTitle
     commentText
     id
   }

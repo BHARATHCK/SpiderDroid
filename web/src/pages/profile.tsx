@@ -172,7 +172,7 @@ const profile = () => {
                                   height={30}
                                   src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632258679/date_eg4qze.png"
                                 ></Image>
-                                <Text ml={4}>From - {booking.fromDate}</Text>
+                                <Text ml={4}>From - {booking.fromDate.split("T")[0]}</Text>
                               </Flex>
                             </Box>
                             <Box>
@@ -182,7 +182,7 @@ const profile = () => {
                                   height={30}
                                   src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632258679/date_eg4qze.png"
                                 ></Image>
-                                <Text ml={4}>Until - {booking.toDate}</Text>
+                                <Text ml={4}>Until - {booking.toDate.split("T")[0]}</Text>
                               </Flex>
                             </Box>
                             <Box>
