@@ -222,7 +222,7 @@ export async function sendEmail(
                         <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
                             <img class="center" width="300px" height="250px" src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632063598/rohbabtglelb2bjhpxnr.svg" />
                             <p style="margin: 0;">
-                                Hi ${username}! , Thank you for trusting SpiderDroid. The rental of <b>Tesla P100D</b> has been confirmed and the same can be found in the booking page of your profile. Also , While you are
+                                Hi ${username}! , Thank you for trusting SpiderDroid. The rental of a car has been confirmed and the same can be found in the booking page of your profile. Also , While you are
                                 there, you can rate the experience and add a review which would help us keep this place safe and fun.
                                 <br /> <br /> You can contact the Host with below credentials, also the host would contact you soon for any other information to help you with :
                                 <br />
