@@ -69,12 +69,13 @@ const HostCar = () => {
                 carvin: "",
                 destination: "",
                 isSubmitButton: false,
-                carCostPerDay: 0,
+                carCostPerDay: "",
               }}
               onSubmit={async (values, { setErrors }) => {
                 if (imageURL.length < 3) {
                   return null;
                 }
+
                 // Use hook function here.
                 const response = await hostCar({
                   variables: {
