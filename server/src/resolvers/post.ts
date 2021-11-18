@@ -112,8 +112,15 @@ export class PostResolver {
     @Arg("carMake", () => String, { nullable: true }) carMake: string,
     @Arg("carModel", () => String, { nullable: true }) carModel: string,
     @Arg("carYear", () => String, { nullable: true }) carYear: string,
+    @Arg("host", () => String, { nullable: true }) host: string,
   ): Promise<PaginatedPosts> {
     const realLimit = Math.min(50, limit);
+    let creatorId;
+
+    if (host) {
+      const tempUser = await User.findOne({ where: { username: host } });
+      creatorId = tempUser?.id;
+    }
 
     const query = Post.createQueryBuilder("post").where(`id is NOT NULL`);
     if (carMake) {
@@ -125,9 +132,13 @@ export class PostResolver {
     if (carModel) {
       query.andWhere(`LOWER("carModel") LIKE LOWER('%${carModel}%')`);
     }
+    if (creatorId) {
+      query.andWhere(`"creatorId" = ${creatorId}`);
+    }
 
     query.skip(skipNumber).take(realLimit);
-
+    console.log("QUERY ************ ");
+    console.log(query);
     const posts = await query.getManyAndCount();
 
     return { posts: posts[0], total: posts[1] };

@@ -38,6 +38,7 @@ import {
   Button,
   useDisclosure,
 } from "@chakra-ui/react";
+import NextLink from "next/link";
 
 const RentCar = () => {
   const router = useRouter();
@@ -46,7 +47,7 @@ const RentCar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   // Check for authentication
-  isAuth("?next=" + router.pathname);
+  isAuth("?next=" + router.asPath);
 
   // From Date
   let minFromDay = new Date();
@@ -112,9 +113,14 @@ const RentCar = () => {
       <NavBar />
       {data && !loading ? (
         <Carouselize
+          source="rental"
           children={data.post.imageUrl.map((image, index) => (
-            <div className={styles.embla__slide} key={index}>
-              <Image src={image} width={1500} height={900} />
+            <div
+              className={styles.embla__slide}
+              key={index}
+              style={{ width: "100%", paddingBottom: "20%", height: "900px" }}
+            >
+              <Image src={image} layout="fill" objectFit="contain" />
             </div>
           ))}
         />
@@ -173,18 +179,22 @@ const RentCar = () => {
                   </Box>
                   <Box maxW="80%" mt={10}>
                     <Text fontWeight={600}>HOSTED BY</Text>
-                    <Flex direction="row" justifyContent="left" alignItems="center" mt={4}>
-                      <Avatar
-                        name={data.post.creator.username}
-                        width={90}
-                        height={90}
-                        round={true}
-                      />
-                      <Flex direction="column">
-                        <Text ml={4}>{data.post.creator.username}</Text>
-                        <Text ml={4}>{data.post.creator.createdAt.slice(0, 10)}</Text>
-                      </Flex>
-                    </Flex>
+                    <NextLink href={`/host/` + data.post.creator.username}>
+                      <Box cursor="pointer">
+                        <Flex direction="row" justifyContent="left" alignItems="center" mt={4}>
+                          <Avatar
+                            name={data.post.creator.username}
+                            width={90}
+                            height={90}
+                            round={true}
+                          />
+                          <Flex direction="column">
+                            <Text ml={4}>{data.post.creator.username}</Text>
+                            <Text ml={4}>{data.post.creator.createdAt.slice(0, 10)}</Text>
+                          </Flex>
+                        </Flex>
+                      </Box>
+                    </NextLink>
                     <Flex mt={4}>
                       {width < breakpoint ? (
                         <Image
@@ -217,6 +227,7 @@ const RentCar = () => {
                       </Text>
                     </Flex>
                   </Box>
+
                   {/* Modal */}
 
                   <Modal isOpen={isOpen} onClose={onClose}>

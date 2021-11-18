@@ -4,6 +4,7 @@ query FindCars(
   $carMake: String
   $carYear: String
   $carModel: String
+  $host: String
 ) {
   findCars(
     limit: $findCarsLimit
@@ -11,6 +12,7 @@ query FindCars(
     carMake: $carMake
     carYear: $carYear
     carModel: $carModel
+    host: $host
   ) {
     posts {
       id

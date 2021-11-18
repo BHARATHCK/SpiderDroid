@@ -12,12 +12,18 @@ query Profile {
         commentText
         id
       }
+      post {
+        carMake
+        carModel
+        carYear
+      }
     }
     posts {
       id
       carMake
       carModel
       carYear
+      imageUrl
     }
   }
 }

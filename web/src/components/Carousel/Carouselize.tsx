@@ -6,7 +6,7 @@ import React, { useCallback } from "react";
 import styles from "./Carousel.module.css";
 import { useViewport } from "../InteractiveComponents/ViewPortHook";
 
-const Carouselize: React.FC<Props> = ({ children }) => {
+const Carouselize: React.FC<Props> = ({ children, source }) => {
   const { width } = useViewport();
   const breakpoint = 700;
 
@@ -29,8 +29,19 @@ const Carouselize: React.FC<Props> = ({ children }) => {
       {width < breakpoint ? (
         ""
       ) : (
-        <Box>
-          <ChevronLeftIcon w={8} h={8} color="black.500" onClick={scrollPrev} cursor="pointer" />
+        <Box
+          zIndex="overlay"
+          position={source === "rental" ? "absolute" : "unset"}
+          left={source === "rental" ? "0.5" : undefined}
+        >
+          <ChevronLeftIcon
+            w={8}
+            h={8}
+            color="black.500"
+            onClick={scrollPrev}
+            cursor="pointer"
+            zIndex="overlay"
+          />
         </Box>
       )}
       <div className={styles.embla}>
@@ -43,14 +54,17 @@ const Carouselize: React.FC<Props> = ({ children }) => {
       {width < breakpoint ? (
         ""
       ) : (
-        <Box>
+        <Box
+          position={source === "rental" ? "absolute" : "unset"}
+          right={source === "rental" ? "0.5" : undefined}
+        >
           <ChevronRightIcon
             w={8}
             h={8}
             color="black.500"
             onClick={scrollNext}
             cursor="pointer"
-            zIndex={1000}
+            zIndex="overlay"
           />
         </Box>
       )}

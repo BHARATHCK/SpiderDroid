@@ -14,6 +14,10 @@ import { toErrorMap } from "../utils/toErrorMap";
 
 const Login = () => {
   const [login, { data, loading, error }] = useLoginMutation();
+  let guestLogin = false;
+  let doGuestLogin = () => {
+    guestLogin = true;
+  };
 
   return (
     <>
@@ -23,6 +27,13 @@ const Login = () => {
           <Formik
             initialValues={{ username: "", password: "" }}
             onSubmit={async (values, { setErrors }) => {
+              if (guestLogin) {
+                values = {
+                  username: process.env.NEXT_PUBLIC_GUEST_USER_NAME,
+                  password: process.env.NEXT_PUBLIC_GUEST_PASSWORD,
+                };
+              }
+
               const response = await login({
                 variables: values,
                 update: (cache, { data }) => {
@@ -35,12 +46,15 @@ const Login = () => {
                   });
                 },
               });
+              // Make guest login false
+              guestLogin = false;
 
               if (response.data.login.errors) {
                 console.log(response.data.login.errors);
                 setErrors(toErrorMap(response.data.login.errors));
               } else if (response.data.login.user) {
                 if (typeof router.query.next === "string") {
+                  console.log("ROUTER OBJECT ******** : ", router.query);
                   router.push(router.query.next);
                 } else {
                   router.push("/");
@@ -73,9 +87,16 @@ const Login = () => {
                     <Button mt="4" colorScheme="red" isLoading={isSubmitting} type="submit">
                       Login
                     </Button>
-                    <NextLink href="/forgot-password">
-                      <Link ml="auto">Forgot Password?</Link>
-                    </NextLink>
+                    <Button
+                      mt="4"
+                      ml="6"
+                      colorScheme="red"
+                      isLoading={isSubmitting}
+                      type="submit"
+                      onClick={() => doGuestLogin()}
+                    >
+                      Guest Login
+                    </Button>
                   </Flex>
                 </Box>
               </Form>
@@ -84,11 +105,16 @@ const Login = () => {
           <Flex alignItems="center">
             <Divider /> <Text fontWeight={100}>OR</Text> <Divider />
           </Flex>
-          <NextLink href="/register">
-            <Button m="4" colorScheme="red" type="submit">
-              Register
-            </Button>
-          </NextLink>
+          <Flex alignItems="center">
+            <NextLink href="/register">
+              <Button m="4" colorScheme="red" type="submit">
+                Register
+              </Button>
+            </NextLink>
+            <NextLink href="/forgot-password">
+              <Link ml="auto">Forgot Password?</Link>
+            </NextLink>
+          </Flex>
         </Wrapper>
       </Layout>
     </>

@@ -25,7 +25,7 @@ export type Bookings = {
   fromDate?: Maybe<Scalars['DateTime']>;
   id: Scalars['Int'];
   orderId?: Maybe<Scalars['String']>;
-  post: Post;
+  post?: Maybe<Post>;
   ratingStatus?: Maybe<Scalars['Boolean']>;
   toDate?: Maybe<Scalars['DateTime']>;
   updatedAt: Scalars['DateTime'];
@@ -185,7 +185,7 @@ export type Post = {
   __typename?: 'Post';
   bookings?: Maybe<Array<Bookings>>;
   carCostPerDay?: Maybe<Scalars['Float']>;
-  carDetails: CarDetails;
+  carDetails?: Maybe<CarDetails>;
   carMake?: Maybe<Scalars['String']>;
   carModel?: Maybe<Scalars['String']>;
   carVin?: Maybe<Scalars['String']>;
@@ -212,6 +212,7 @@ export type Query = {
   experienceReviews: Array<Comment>;
   filterPost: Array<Post>;
   findCars?: Maybe<PaginatedPosts>;
+  findHost?: Maybe<User>;
   hello: Scalars['String'];
   me?: Maybe<User>;
   paymentstatus: PaymentStatus;
@@ -236,8 +237,14 @@ export type QueryFindCarsArgs = {
   carMake?: Maybe<Scalars['String']>;
   carModel?: Maybe<Scalars['String']>;
   carYear?: Maybe<Scalars['String']>;
+  host?: Maybe<Scalars['String']>;
   limit: Scalars['Int'];
   skipVariable: Scalars['Int'];
+};
+
+
+export type QueryFindHostArgs = {
+  userName: Scalars['String'];
 };
 
 
@@ -404,12 +411,20 @@ export type FilterPostQueryVariables = Exact<{
 
 export type FilterPostQuery = { __typename?: 'Query', filterPost: Array<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, carCostPerDay?: Maybe<number>, trips?: Maybe<number>, points?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', id: number, destinationName: string }> }> };
 
+export type FindHostQueryVariables = Exact<{
+  userName: Scalars['String'];
+}>;
+
+
+export type FindHostQuery = { __typename?: 'Query', findHost?: Maybe<{ __typename?: 'User', posts?: Maybe<Array<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, carCostPerDay?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', destinationName: string }>, carDetails?: Maybe<{ __typename?: 'CarDetails', condition?: Maybe<string>, description?: Maybe<string>, doors?: Maybe<number>, fuelType?: Maybe<string>, mediaSystem?: Maybe<Array<string>>, mileage?: Maybe<number>, petSituation?: Maybe<Array<string>>, seats?: Maybe<number>, transmission?: Maybe<string>, commentId?: Maybe<number> }> }>> }> };
+
 export type FindCarsQueryVariables = Exact<{
   findCarsLimit: Scalars['Int'];
   findCarsSkipVariable: Scalars['Int'];
   carMake?: Maybe<Scalars['String']>;
   carYear?: Maybe<Scalars['String']>;
   carModel?: Maybe<Scalars['String']>;
+  host?: Maybe<Scalars['String']>;
 }>;
 
 
@@ -439,7 +454,7 @@ export type PostQueryVariables = Exact<{
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', post?: Maybe<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, carCostPerDay?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', destinationName: string }>, creator?: Maybe<{ __typename?: 'User', username: string, createdAt: any }>, carDetails: { __typename?: 'CarDetails', condition?: Maybe<string>, description?: Maybe<string>, doors?: Maybe<number>, fuelType?: Maybe<string>, mediaSystem?: Maybe<Array<string>>, mileage?: Maybe<number>, petSituation?: Maybe<Array<string>>, seats?: Maybe<number>, transmission?: Maybe<string>, commentId?: Maybe<number> }, bookings?: Maybe<Array<{ __typename?: 'Bookings', fromDate?: Maybe<any>, toDate?: Maybe<any> }>> }> };
+export type PostQuery = { __typename?: 'Query', post?: Maybe<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, carCostPerDay?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', destinationName: string }>, creator?: Maybe<{ __typename?: 'User', username: string, createdAt: any }>, carDetails?: Maybe<{ __typename?: 'CarDetails', condition?: Maybe<string>, description?: Maybe<string>, doors?: Maybe<number>, fuelType?: Maybe<string>, mediaSystem?: Maybe<Array<string>>, mileage?: Maybe<number>, petSituation?: Maybe<Array<string>>, seats?: Maybe<number>, transmission?: Maybe<string>, commentId?: Maybe<number> }>, bookings?: Maybe<Array<{ __typename?: 'Bookings', fromDate?: Maybe<any>, toDate?: Maybe<any> }>> }> };
 
 export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -449,7 +464,7 @@ export type PostsQuery = { __typename?: 'Query', browseByCarMake: Array<{ __type
 export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProfileQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', id: number, username: string, email: string, bookings?: Maybe<Array<{ __typename?: 'Bookings', id: number, carId?: Maybe<number>, fromDate?: Maybe<any>, toDate?: Maybe<any>, ratingStatus?: Maybe<boolean>, bookingStatus?: Maybe<string>, comment?: Maybe<Array<{ __typename?: 'Comment', commentText?: Maybe<string>, id?: Maybe<number> }>> }>>, posts?: Maybe<Array<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, carYear?: Maybe<string> }>> }> };
+export type ProfileQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', id: number, username: string, email: string, bookings?: Maybe<Array<{ __typename?: 'Bookings', id: number, carId?: Maybe<number>, fromDate?: Maybe<any>, toDate?: Maybe<any>, ratingStatus?: Maybe<boolean>, bookingStatus?: Maybe<string>, comment?: Maybe<Array<{ __typename?: 'Comment', commentText?: Maybe<string>, id?: Maybe<number> }>>, post?: Maybe<{ __typename?: 'Post', carMake?: Maybe<string>, carModel?: Maybe<string>, carYear?: Maybe<string> }> }>>, posts?: Maybe<Array<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, carYear?: Maybe<string>, imageUrl?: Maybe<Array<string>> }>> }> };
 
 export type SearchQueryVariables = Exact<{
   searchToDate: Scalars['DateTime'];
@@ -993,14 +1008,74 @@ export function useFilterPostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type FilterPostQueryHookResult = ReturnType<typeof useFilterPostQuery>;
 export type FilterPostLazyQueryHookResult = ReturnType<typeof useFilterPostLazyQuery>;
 export type FilterPostQueryResult = Apollo.QueryResult<FilterPostQuery, FilterPostQueryVariables>;
+export const FindHostDocument = gql`
+    query FindHost($userName: String!) {
+  findHost(userName: $userName) {
+    posts {
+      id
+      carMake
+      carModel
+      imageUrl
+      carYear
+      trips
+      points
+      destination {
+        destinationName
+      }
+      carCostPerDay
+      carDetails {
+        condition
+        description
+        doors
+        fuelType
+        mediaSystem
+        mileage
+        petSituation
+        seats
+        transmission
+        commentId
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindHostQuery__
+ *
+ * To run a query within a React component, call `useFindHostQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindHostQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindHostQuery({
+ *   variables: {
+ *      userName: // value for 'userName'
+ *   },
+ * });
+ */
+export function useFindHostQuery(baseOptions: Apollo.QueryHookOptions<FindHostQuery, FindHostQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindHostQuery, FindHostQueryVariables>(FindHostDocument, options);
+      }
+export function useFindHostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindHostQuery, FindHostQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindHostQuery, FindHostQueryVariables>(FindHostDocument, options);
+        }
+export type FindHostQueryHookResult = ReturnType<typeof useFindHostQuery>;
+export type FindHostLazyQueryHookResult = ReturnType<typeof useFindHostLazyQuery>;
+export type FindHostQueryResult = Apollo.QueryResult<FindHostQuery, FindHostQueryVariables>;
 export const FindCarsDocument = gql`
-    query FindCars($findCarsLimit: Int!, $findCarsSkipVariable: Int!, $carMake: String, $carYear: String, $carModel: String) {
+    query FindCars($findCarsLimit: Int!, $findCarsSkipVariable: Int!, $carMake: String, $carYear: String, $carModel: String, $host: String) {
   findCars(
     limit: $findCarsLimit
     skipVariable: $findCarsSkipVariable
     carMake: $carMake
     carYear: $carYear
     carModel: $carModel
+    host: $host
   ) {
     posts {
       id
@@ -1038,6 +1113,7 @@ export const FindCarsDocument = gql`
  *      carMake: // value for 'carMake'
  *      carYear: // value for 'carYear'
  *      carModel: // value for 'carModel'
+ *      host: // value for 'host'
  *   },
  * });
  */
@@ -1282,12 +1358,18 @@ export const ProfileDocument = gql`
         commentText
         id
       }
+      post {
+        carMake
+        carModel
+        carYear
+      }
     }
     posts {
       id
       carMake
       carModel
       carYear
+      imageUrl
     }
   }
 }

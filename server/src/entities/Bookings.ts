@@ -56,7 +56,7 @@ export class Bookings extends BaseEntity {
   @ManyToOne(() => User, (user) => user.bookings)
   user: User;
 
-  @Field(() => Post)
+  @Field(() => Post, { nullable: true })
   @ManyToOne(() => Post, (post) => post.bookings)
   post: Post;
 

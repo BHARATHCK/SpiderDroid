@@ -98,7 +98,7 @@ export class UserResolver {
       return undefined;
     }
     return await User.findOne(req.session.userId, {
-      relations: ["bookings", "bookings.comment", "posts"],
+      relations: ["bookings", "bookings.comment", "bookings.post", "posts"],
     });
   }
 
@@ -391,5 +391,15 @@ export class UserResolver {
         return true;
       }),
     );
+  }
+
+  // Host page query
+  @Query(() => User, { nullable: true })
+  async findHost(@Arg("userName") userName: string): Promise<User | undefined> {
+    const host = await User.findOne({
+      where: { username: userName },
+      relations: ["posts", "posts.carDetails"],
+    });
+    return host;
   }
 }

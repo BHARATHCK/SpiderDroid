@@ -1,0 +1,29 @@
+query FindHost($userName: String!) {
+  findHost(userName: $userName) {
+    posts {
+      id
+      carMake
+      carModel
+      imageUrl
+      carYear
+      trips
+      points
+      destination {
+        destinationName
+      }
+      carCostPerDay
+      carDetails {
+        condition
+        description
+        doors
+        fuelType
+        mediaSystem
+        mileage
+        petSituation
+        seats
+        transmission
+        commentId
+      }
+    }
+  }
+}

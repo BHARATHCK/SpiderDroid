@@ -88,7 +88,7 @@ export class Post extends BaseEntity {
   @ManyToOne(() => Destination, (destination) => destination.posts)
   destination: Destination;
 
-  @Field(() => CarDetails)
+  @Field(() => CarDetails, { nullable: true })
   @OneToOne(() => CarDetails)
   @JoinColumn()
   carDetails: CarDetails;

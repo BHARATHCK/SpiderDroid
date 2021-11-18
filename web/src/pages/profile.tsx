@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/layout";
+import { Box, Flex, Grid, Heading, Stack, Text } from "@chakra-ui/layout";
 import { withApolloClient } from "../utils/apollo-client";
 import Avatar from "react-avatar";
 import {
@@ -141,9 +141,9 @@ const profile = () => {
                 </TabList>
                 <TabPanels>
                   <TabPanel>
-                    {data.me.bookings.map((booking) => (
-                      <Stack mt={4} direction="row" minW="400px">
-                        <Box boxShadow="lg" padding="10px">
+                    <Grid mt={4} templateColumns="repeat(3, 1fr)" gap={6}>
+                      {data.me.bookings.map((booking) => (
+                        <Box boxShadow="lg" padding="10px" minW="300px" maxW="300px">
                           <Flex direction="column">
                             <Box>
                               <Flex direction="row">
@@ -152,7 +152,10 @@ const profile = () => {
                                   height={30}
                                   src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632257775/car_s9lslv.png"
                                 ></Image>
-                                <Text ml={4}> Car ID : {booking.carId}</Text>
+                                <Text ml={4}>
+                                  {" "}
+                                  Car : {booking.post?.carMake} [{booking.post?.carModel}]
+                                </Text>
                               </Flex>
                             </Box>
                             <Box>
@@ -217,12 +220,14 @@ const profile = () => {
                               <Flex justifyContent="space-between" alignItems="center">
                                 {booking!.comment[0] ? (
                                   <Flex>
-                                    <Image
-                                      width={30}
-                                      height={30}
-                                      layout="fixed"
-                                      src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632258715/rating_l1tu3h.png"
-                                    ></Image>
+                                    <Box width={30} height={30}>
+                                      <Image
+                                        width={30}
+                                        height={30}
+                                        layout="fixed"
+                                        src="https://res.cloudinary.com/dhmtg163x/image/upload/v1632258715/rating_l1tu3h.png"
+                                      ></Image>
+                                    </Box>
                                     <Text maxW={width < breakpoint ? width - 150 : ""} ml={4}>
                                       {booking.comment[0].commentText}
                                     </Text>
@@ -244,18 +249,20 @@ const profile = () => {
                             </Box>
                           </Flex>
                         </Box>
-                      </Stack>
-                    ))}
+                      ))}
+                    </Grid>
                   </TabPanel>
                   <TabPanel>
-                    {data.me.posts.map((post) => (
-                      <Stack direction="row" border="1px">
-                        <Text>{post.id}</Text>
-                        <Text>{post.carMake}</Text>
-                        <Text>{post.carModel}</Text>
-                        <Text>{post.carYear}</Text>
-                      </Stack>
-                    ))}
+                    <Grid mt={4} templateColumns="repeat(3, 1fr)" gap={6}>
+                      {data.me.posts.map((post) => (
+                        <Box boxShadow="lg" padding="10px" minW="300px" maxW="300px">
+                          <Text>
+                            {post.carMake} {post.carModel} {post.carYear}
+                          </Text>
+                          <Image width={250} height={200} src={post.imageUrl[0]}></Image>
+                        </Box>
+                      ))}
+                    </Grid>
                   </TabPanel>
                 </TabPanels>
               </Tabs>
