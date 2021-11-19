@@ -254,21 +254,21 @@ interface NavItem {
 }
 
 const NAV_ITEMS: Array<NavItem> = [
-  {
-    label: "More",
-    children: [
-      {
-        label: "How SpiderDroid works",
-        subLabel: "Know our buissiness model",
-        href: "#",
-      },
-      {
-        label: "Help",
-        subLabel: "Find FAQs and other helpful resources",
-        href: "#",
-      },
-    ],
-  },
+  // {
+  //   label: "More",
+  //   children: [
+  //     {
+  //       label: "How SpiderDroid works",
+  //       subLabel: "Know our buissiness model",
+  //       href: "#",
+  //     },
+  //     {
+  //       label: "Help",
+  //       subLabel: "Find FAQs and other helpful resources",
+  //       href: "#",
+  //     },
+  //   ],
+  // },
   {
     label: "Become a Host",
     href: "/hostcar",

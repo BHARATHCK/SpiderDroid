@@ -22,10 +22,18 @@ const PaymentCompleted = () => {
     notifyOnNetworkStatusChange: true,
   });
 
+  // Start Timer
+  useEffect(() => {
+    setTimeout(() => {
+      stopPolling();
+      router.push("/?toast=fail");
+    }, 60000);
+  }, []);
+
   useEffect(() => {
     if (data?.paymentstatus?.status) {
       stopPolling();
-      router.push("/");
+      router.push("/?toast=success");
     }
   }, [data]);
 
