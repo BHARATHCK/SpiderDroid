@@ -35,7 +35,7 @@ const Index = () => {
         });
         router.replace("/?toast=success", "/", { shallow: true });
       }
-    } else {
+    } else if (router.query?.toast === "fail") {
       const id = "fail-toast";
       if (!toast.isActive(id)) {
         toast({
@@ -49,6 +49,21 @@ const Index = () => {
           variant: "left-accent",
         });
         router.replace("/?toast=fail", "/", { shallow: true });
+      }
+    } else {
+      const id = "cancel-toast";
+      if (!toast.isActive(id)) {
+        toast({
+          id: "cancel-toast",
+          title: "Payment Cancelled",
+          description: "Any amount debited will be refunded. You'll receive a mail shortly.",
+          status: "error",
+          duration: 6000,
+          isClosable: true,
+          position: "top-right",
+          variant: "left-accent",
+        });
+        router.replace("/?toast=cancel", "/", { shallow: true });
       }
     }
   }

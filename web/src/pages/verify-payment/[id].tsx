@@ -1,3 +1,4 @@
+import { Button } from "@chakra-ui/button";
 import { Box, Flex, Text } from "@chakra-ui/layout";
 import { Progress } from "@chakra-ui/progress";
 import { useRouter } from "next/router";
@@ -12,6 +13,10 @@ const PaymentCompleted = () => {
   if (!router.isReady) {
     return <div>Checking ...</div>;
   }
+
+  let cancelPayment = () => {
+    router.push("/?toast=cancel");
+  };
 
   const { id } = router.query;
 
@@ -45,6 +50,9 @@ const PaymentCompleted = () => {
         <Box>
           <Progress size="md" isIndeterminate />
         </Box>
+        <Button mt="4" ml="6" colorScheme="red" type="submit" onClick={() => cancelPayment()}>
+          Cancel Payment
+        </Button>
       </Flex>
     </Layout>
   );
