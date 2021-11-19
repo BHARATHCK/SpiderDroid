@@ -26,11 +26,11 @@ import { sendEmail } from "./utils/sendEmail";
 const main = async () => {
   createConnection({
     type: "postgres",
-    host: process.env.POSTGRES_HOST,
-    port: parseInt(process.env.POSTGRES_PORT || ""),
-    username: process.env.POSTGRES_USER,
-    password: process.env.POSTGRES_PASS,
-    database: process.env.POSTGRES_DB,
+    // host: process.env.POSTGRES_HOST,
+    // port: parseInt(process.env.POSTGRES_PORT || ""),
+    // username: process.env.POSTGRES_USER,
+    // password: process.env.POSTGRES_PASS,
+    // database: process.env.POSTGRES_DB,
     ssl: true,
     extra: {
       ssl: {
@@ -40,6 +40,7 @@ const main = async () => {
     logging: true, // False in production
     synchronize: true, // False in production environment
     entities: [User, Post, Destination, Payment, Bookings, CarDetails, Comment],
+    url: process.env.HEROKU_POSTGRESQL_CRIMSON_URL,
   });
 
   // Setup expres server
