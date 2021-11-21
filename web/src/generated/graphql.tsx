@@ -16,6 +16,15 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type Blog = {
+  __typename?: 'Blog';
+  blogData?: Maybe<Scalars['String']>;
+  createdAt: Scalars['DateTime'];
+  creator?: Maybe<User>;
+  id: Scalars['Int'];
+  updatedAt: Scalars['DateTime'];
+};
+
 export type Bookings = {
   __typename?: 'Bookings';
   bookingStatus?: Maybe<Scalars['String']>;
@@ -100,6 +109,7 @@ export type FieldError = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addBlog: Scalars['Boolean'];
   addReview: Scalars['Boolean'];
   changePassword: UserResponse;
   createPost: Scalars['Boolean'];
@@ -111,6 +121,12 @@ export type Mutation = {
   ratePost: Scalars['Boolean'];
   razorpaypayment: RazorpayResponse;
   register?: Maybe<UserResponse>;
+  updatePost: Scalars['Boolean'];
+};
+
+
+export type MutationAddBlogArgs = {
+  blogData: Scalars['String'];
 };
 
 
@@ -170,6 +186,12 @@ export type MutationRegisterArgs = {
   options: UsernamePasswordRegistrationInput;
 };
 
+
+export type MutationUpdatePostArgs = {
+  options: CreatePostType;
+  postID: Scalars['Float'];
+};
+
 export type PaginatedPosts = {
   __typename?: 'PaginatedPosts';
   posts: Array<Post>;
@@ -213,6 +235,8 @@ export type Query = {
   filterPost: Array<Post>;
   findCars?: Maybe<PaginatedPosts>;
   findHost?: Maybe<User>;
+  getBlog: Blog;
+  getBlogs: Array<Blog>;
   hello: Scalars['String'];
   me?: Maybe<User>;
   paymentstatus: PaymentStatus;
@@ -245,6 +269,11 @@ export type QueryFindCarsArgs = {
 
 export type QueryFindHostArgs = {
   userName: Scalars['String'];
+};
+
+
+export type QueryGetBlogArgs = {
+  blogId: Scalars['Float'];
 };
 
 
@@ -312,6 +341,13 @@ export type UsernamePasswordRegistrationInput = {
 export type RegularErrorsFragment = { __typename?: 'FieldError', field: string, message: string };
 
 export type RegularUserFragment = { __typename?: 'User', id: number, username: string, email: string };
+
+export type AddBlogMutationVariables = Exact<{
+  blogData: Scalars['String'];
+}>;
+
+
+export type AddBlogMutation = { __typename?: 'Mutation', addBlog: boolean };
 
 export type AddReviewMutationVariables = Exact<{
   addReviewCommentText: Scalars['String'];
@@ -393,6 +429,14 @@ export type RegisterMutationVariables = Exact<{
 
 export type RegisterMutation = { __typename?: 'Mutation', register?: Maybe<{ __typename?: 'UserResponse', errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>>, user?: Maybe<{ __typename?: 'User', id: number, username: string, email: string }> }> };
 
+export type UpdatePostMutationVariables = Exact<{
+  options: CreatePostType;
+  postId: Scalars['Float'];
+}>;
+
+
+export type UpdatePostMutation = { __typename?: 'Mutation', updatePost: boolean };
+
 export type AllStarHostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -430,6 +474,18 @@ export type FindCarsQueryVariables = Exact<{
 
 export type FindCarsQuery = { __typename?: 'Query', findCars?: Maybe<{ __typename?: 'PaginatedPosts', total: number, posts: Array<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, carCostPerDay?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', id: number, destinationName: string }> }> }> };
 
+export type GetBlogQueryVariables = Exact<{
+  blogId: Scalars['Float'];
+}>;
+
+
+export type GetBlogQuery = { __typename?: 'Query', getBlog: { __typename?: 'Blog', blogData?: Maybe<string>, createdAt: any, id: number, creator?: Maybe<{ __typename?: 'User', username: string }> } };
+
+export type GetBlogsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetBlogsQuery = { __typename?: 'Query', getBlogs: Array<{ __typename?: 'Blog', id: number, blogData?: Maybe<string>, creator?: Maybe<{ __typename?: 'User', username: string }> }> };
+
 export type GetReviewsQueryVariables = Exact<{
   carId: Scalars['Float'];
 }>;
@@ -454,7 +510,7 @@ export type PostQueryVariables = Exact<{
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', post?: Maybe<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, carCostPerDay?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', destinationName: string }>, creator?: Maybe<{ __typename?: 'User', username: string, createdAt: any }>, carDetails?: Maybe<{ __typename?: 'CarDetails', condition?: Maybe<string>, description?: Maybe<string>, doors?: Maybe<number>, fuelType?: Maybe<string>, mediaSystem?: Maybe<Array<string>>, mileage?: Maybe<number>, petSituation?: Maybe<Array<string>>, seats?: Maybe<number>, transmission?: Maybe<string>, commentId?: Maybe<number> }>, bookings?: Maybe<Array<{ __typename?: 'Bookings', fromDate?: Maybe<any>, toDate?: Maybe<any> }>> }> };
+export type PostQuery = { __typename?: 'Query', post?: Maybe<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carVin?: Maybe<string>, category?: Maybe<string>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, carCostPerDay?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', destinationName: string }>, creator?: Maybe<{ __typename?: 'User', username: string, createdAt: any }>, carDetails?: Maybe<{ __typename?: 'CarDetails', condition?: Maybe<string>, description?: Maybe<string>, doors?: Maybe<number>, fuelType?: Maybe<string>, mediaSystem?: Maybe<Array<string>>, mileage?: Maybe<number>, petSituation?: Maybe<Array<string>>, seats?: Maybe<number>, transmission?: Maybe<string>, commentId?: Maybe<number> }>, bookings?: Maybe<Array<{ __typename?: 'Bookings', fromDate?: Maybe<any>, toDate?: Maybe<any> }>> }> };
 
 export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -488,6 +544,37 @@ export const RegularUserFragmentDoc = gql`
   email
 }
     `;
+export const AddBlogDocument = gql`
+    mutation AddBlog($blogData: String!) {
+  addBlog(blogData: $blogData)
+}
+    `;
+export type AddBlogMutationFn = Apollo.MutationFunction<AddBlogMutation, AddBlogMutationVariables>;
+
+/**
+ * __useAddBlogMutation__
+ *
+ * To run a mutation, you first call `useAddBlogMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddBlogMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addBlogMutation, { data, loading, error }] = useAddBlogMutation({
+ *   variables: {
+ *      blogData: // value for 'blogData'
+ *   },
+ * });
+ */
+export function useAddBlogMutation(baseOptions?: Apollo.MutationHookOptions<AddBlogMutation, AddBlogMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddBlogMutation, AddBlogMutationVariables>(AddBlogDocument, options);
+      }
+export type AddBlogMutationHookResult = ReturnType<typeof useAddBlogMutation>;
+export type AddBlogMutationResult = Apollo.MutationResult<AddBlogMutation>;
+export type AddBlogMutationOptions = Apollo.BaseMutationOptions<AddBlogMutation, AddBlogMutationVariables>;
 export const AddReviewDocument = gql`
     mutation AddReview($addReviewCommentText: String!, $addReviewBookingId: Float!, $addReviewCommentTitle: String!) {
   addReview(
@@ -877,6 +964,38 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const UpdatePostDocument = gql`
+    mutation UpdatePost($options: CreatePostType!, $postId: Float!) {
+  updatePost(options: $options, postID: $postId)
+}
+    `;
+export type UpdatePostMutationFn = Apollo.MutationFunction<UpdatePostMutation, UpdatePostMutationVariables>;
+
+/**
+ * __useUpdatePostMutation__
+ *
+ * To run a mutation, you first call `useUpdatePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePostMutation, { data, loading, error }] = useUpdatePostMutation({
+ *   variables: {
+ *      options: // value for 'options'
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function useUpdatePostMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePostMutation, UpdatePostMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument, options);
+      }
+export type UpdatePostMutationHookResult = ReturnType<typeof useUpdatePostMutation>;
+export type UpdatePostMutationResult = Apollo.MutationResult<UpdatePostMutation>;
+export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<UpdatePostMutation, UpdatePostMutationVariables>;
 export const AllStarHostsDocument = gql`
     query AllStarHosts {
   allStarReviews {
@@ -1128,6 +1247,84 @@ export function useFindCarsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<F
 export type FindCarsQueryHookResult = ReturnType<typeof useFindCarsQuery>;
 export type FindCarsLazyQueryHookResult = ReturnType<typeof useFindCarsLazyQuery>;
 export type FindCarsQueryResult = Apollo.QueryResult<FindCarsQuery, FindCarsQueryVariables>;
+export const GetBlogDocument = gql`
+    query GetBlog($blogId: Float!) {
+  getBlog(blogId: $blogId) {
+    blogData
+    createdAt
+    id
+    creator {
+      username
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetBlogQuery__
+ *
+ * To run a query within a React component, call `useGetBlogQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBlogQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBlogQuery({
+ *   variables: {
+ *      blogId: // value for 'blogId'
+ *   },
+ * });
+ */
+export function useGetBlogQuery(baseOptions: Apollo.QueryHookOptions<GetBlogQuery, GetBlogQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBlogQuery, GetBlogQueryVariables>(GetBlogDocument, options);
+      }
+export function useGetBlogLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBlogQuery, GetBlogQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBlogQuery, GetBlogQueryVariables>(GetBlogDocument, options);
+        }
+export type GetBlogQueryHookResult = ReturnType<typeof useGetBlogQuery>;
+export type GetBlogLazyQueryHookResult = ReturnType<typeof useGetBlogLazyQuery>;
+export type GetBlogQueryResult = Apollo.QueryResult<GetBlogQuery, GetBlogQueryVariables>;
+export const GetBlogsDocument = gql`
+    query GetBlogs {
+  getBlogs {
+    id
+    blogData
+    creator {
+      username
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetBlogsQuery__
+ *
+ * To run a query within a React component, call `useGetBlogsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBlogsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBlogsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetBlogsQuery(baseOptions?: Apollo.QueryHookOptions<GetBlogsQuery, GetBlogsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBlogsQuery, GetBlogsQueryVariables>(GetBlogsDocument, options);
+      }
+export function useGetBlogsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBlogsQuery, GetBlogsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBlogsQuery, GetBlogsQueryVariables>(GetBlogsDocument, options);
+        }
+export type GetBlogsQueryHookResult = ReturnType<typeof useGetBlogsQuery>;
+export type GetBlogsLazyQueryHookResult = ReturnType<typeof useGetBlogsLazyQuery>;
+export type GetBlogsQueryResult = Apollo.QueryResult<GetBlogsQuery, GetBlogsQueryVariables>;
 export const GetReviewsDocument = gql`
     query GetReviews($carId: Float!) {
   experienceReviews(carId: $carId) {
@@ -1241,6 +1438,8 @@ export const PostDocument = gql`
     carMake
     carModel
     imageUrl
+    carVin
+    category
     carYear
     trips
     points

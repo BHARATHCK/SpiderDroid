@@ -399,4 +399,54 @@ export class PostResolver {
 
     return commentsArray;
   }
+
+  @Mutation(() => Boolean)
+  async updatePost(
+    @Arg("postID") postID: number,
+    @Arg("options") options: CreatePostType,
+  ): Promise<boolean> {
+    let updatedResult = false;
+
+    const post = await Post.findOne(postID);
+
+    if (post) {
+      try {
+        // CarDetails update
+        post.carDetails.additionalFAQ = [""];
+        post.carDetails.availableTo = new Date();
+        post.carDetails.availableFrom = new Date();
+        post.carDetails.condition = options.carCondition;
+        post.carDetails.description = options.description;
+        post.carDetails.doors = options.Doors;
+        post.carDetails.mediaSystem = options.mediaSystem;
+        post.carDetails.mileage = options.Mileage;
+        post.carDetails.fuelType = options.fuelType;
+        post.carDetails.petSituation = options.petSituation;
+        post.carDetails.seats = options.Seats;
+        post.carDetails.transmission = options.Transmission;
+
+        // Post Update
+        post.carCostPerDay = options.carCostPerDay;
+        post.carMake = options.carMake;
+        post.carModel = options.carModel;
+        post.carVin = options.carVin;
+        post.carYear = options.carYear;
+        post.category = options.category;
+        const destinationData = await Destination.findOne(parseInt(options.destination));
+        if (destinationData) {
+          post.destination = destinationData;
+        }
+        post.imageUrl = options.imageUrl;
+
+        // Update post
+        await Post.update(postID, post);
+
+        updatedResult = true;
+      } catch (error) {
+        updatedResult = false;
+      }
+    }
+
+    return updatedResult;
+  }
 }

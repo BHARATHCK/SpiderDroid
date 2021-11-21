@@ -1,0 +1,9 @@
+query GetBlogs {
+  getBlogs {
+    id
+    blogData
+    creator {
+      username
+    }
+  }
+}

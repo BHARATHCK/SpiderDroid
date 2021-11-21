@@ -4,6 +4,8 @@ query Post($postId: Float!) {
     carMake
     carModel
     imageUrl
+    carVin
+    category
     carYear
     trips
     points

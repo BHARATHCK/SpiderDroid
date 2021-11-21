@@ -1,0 +1,10 @@
+query GetBlog($blogId: Float!) {
+  getBlog(blogId: $blogId) {
+    blogData
+    createdAt
+    id
+    creator {
+      username
+    }
+  }
+}

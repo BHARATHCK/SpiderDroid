@@ -33,6 +33,9 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import Rating from "../components/InteractiveComponents/RatingComponent";
 import { useViewport } from "../components/InteractiveComponents/ViewPortHook";
+import NextLink from "next/link";
+import { IconButton } from "@chakra-ui/react";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 
 const profile = () => {
   const { width } = useViewport();
@@ -100,7 +103,8 @@ const profile = () => {
         cache.evict({ fieldName: "me" });
       },
     });
-
+    setCommentText("");
+    setCommentTitle("");
     onClose();
   };
 
@@ -117,9 +121,14 @@ const profile = () => {
             )}
           </Box>
           <Box>
-            <Button m={10} isLoading={logoutLoading} onClick={handleLogout} colorScheme="red">
+            <Button ml={10} isLoading={logoutLoading} onClick={handleLogout} colorScheme="red">
               Log Out
             </Button>
+            <NextLink href="/createTravelogue">
+              <Button m={10} colorScheme="red">
+                Create Travelogue
+              </Button>
+            </NextLink>
           </Box>
         </Flex>
         <Flex>
@@ -255,11 +264,40 @@ const profile = () => {
                   <TabPanel>
                     <Grid mt={4} templateColumns="repeat(3, 1fr)" gap={6}>
                       {data.me.posts.map((post) => (
-                        <Box boxShadow="lg" padding="10px" minW="300px" maxW="300px">
-                          <Text>
-                            {post.carMake} {post.carModel} {post.carYear}
-                          </Text>
-                          <Image width={250} height={200} src={post.imageUrl[0]}></Image>
+                        <Box maxW="md" borderWidth="1px" borderRadius="lg" overflow="hidden">
+                          <Image
+                            width={250}
+                            height={200}
+                            layout="responsive"
+                            src={post.imageUrl[0]}
+                            alt={"no image"}
+                          />
+
+                          <Box p="6">
+                            <Box
+                              mt="1"
+                              fontWeight="semibold"
+                              as="h4"
+                              lineHeight="tight"
+                              isTruncated
+                            >
+                              {post.carMake} &bull; {post.carModel} &bull; {post.carYear}
+                            </Box>
+                          </Box>
+                          <Box p="6">
+                            <IconButton
+                              colorScheme="red"
+                              aria-label="Delete Post"
+                              icon={<DeleteIcon />}
+                            />
+                            <IconButton
+                              onClick={() => router.push(`/edit-post/${post.id}`)}
+                              ml={5}
+                              colorScheme="red"
+                              aria-label="Edit Post"
+                              icon={<EditIcon />}
+                            />
+                          </Box>
                         </Box>
                       ))}
                     </Grid>

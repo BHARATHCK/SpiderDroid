@@ -22,6 +22,7 @@ import { Bookings } from "./entities/Bookings";
 import { CarDetails } from "./entities/CarDetails";
 import { Comment } from "./entities/Comment";
 import { sendEmail } from "./utils/sendEmail";
+import { Blog } from "./entities/Blog";
 
 const main = async () => {
   createConnection({
@@ -39,7 +40,7 @@ const main = async () => {
     },
     logging: true, // False in production
     synchronize: true, // False in production environment
-    entities: [User, Post, Destination, Payment, Bookings, CarDetails, Comment],
+    entities: [User, Post, Destination, Payment, Bookings, CarDetails, Comment, Blog],
     url: process.env.HEROKU_POSTGRESQL_CRIMSON_URL,
   });
 

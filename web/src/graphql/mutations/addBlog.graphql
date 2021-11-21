@@ -1,0 +1,3 @@
+mutation AddBlog($blogData: String!) {
+  addBlog(blogData: $blogData)
+}

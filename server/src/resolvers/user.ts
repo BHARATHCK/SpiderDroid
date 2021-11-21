@@ -12,6 +12,7 @@ import { _COOKIE_NAME, _FORGOT_PASSWORD_PREFIX } from "../constants";
 import { v4 } from "uuid";
 import { sendEmail } from "../utils/sendEmail";
 import { MoreThan } from "typeorm";
+import { Blog } from "../entities/Blog";
 
 @ObjectType()
 class FieldError {
@@ -401,5 +402,33 @@ export class UserResolver {
       relations: ["posts", "posts.carDetails"],
     });
     return host;
+  }
+
+  // Mutation to add Blog
+  @Mutation(() => Boolean)
+  async addBlog(@Arg("blogData") blogData: string, @Ctx() { req }: MyContext): Promise<boolean> {
+    let blogCreationSuccess = false;
+
+    try {
+      await Blog.create({
+        blogData: blogData,
+        creator: await User.findOne(req.session.userId),
+      }).save();
+      blogCreationSuccess = true;
+    } catch (error) {
+      blogCreationSuccess = false;
+    }
+
+    return blogCreationSuccess;
+  }
+
+  @Query(() => Blog)
+  async getBlog(@Arg("blogId") blogId: number): Promise<Blog | undefined> {
+    return await Blog.findOne(blogId);
+  }
+
+  @Query(() => [Blog])
+  async getBlogs(): Promise<Blog[]> {
+    return await Blog.find({ relations: ["creator"] });
   }
 }

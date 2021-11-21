@@ -8,6 +8,8 @@ interface uploadprops {
 const Upload: React.FC<uploadprops> = ({ setImageResponse }) => {
   const [files, setFiles] = useState<File[]>([]);
 
+  let preUFile = [];
+
   const toBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();

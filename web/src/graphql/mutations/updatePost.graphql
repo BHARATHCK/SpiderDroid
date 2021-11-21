@@ -1,0 +1,3 @@
+mutation UpdatePost($options: CreatePostType!, $postId: Float!) {
+  updatePost(options: $options, postID: $postId)
+}

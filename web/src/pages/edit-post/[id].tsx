@@ -1,124 +1,79 @@
-import { FormControl, FormHelperText, FormLabel } from "@chakra-ui/form-control";
+import { useRouter } from "next/router";
+import NavBar from "../../components/IndexPageComponents/NavBar";
+import { useDestinationsQuery, usePostQuery, useUpdatePostMutation } from "../../generated/graphql";
+import { withApolloClient } from "../../utils/apollo-client";
+import Layout from "../../components/IndexPageComponents/Layout";
+import { Spinner } from "@chakra-ui/spinner";
+import { CheckboxGroup } from "@chakra-ui/checkbox";
+import { FormControl, FormLabel, FormHelperText } from "@chakra-ui/form-control";
+import { Input } from "@chakra-ui/input";
 import { Box, Flex, HStack, Stack, Text } from "@chakra-ui/layout";
 import {
-  Button,
-  CheckboxGroup,
-  Input,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  Radio,
-  RadioGroup,
-  Select,
-  Spinner,
-  Textarea,
-} from "@chakra-ui/react";
-import { Field, Form, Formik } from "formik";
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+} from "@chakra-ui/number-input";
+import { RadioGroup, Radio } from "@chakra-ui/radio";
+import { Textarea, Button } from "@chakra-ui/react";
+import { toast, useToast } from "@chakra-ui/toast";
+import { Formik, Form, Field } from "formik";
 import router from "next/router";
 import React from "react";
-import Upload from "../components/RentalComponents/fileuploadzone";
-import Layout from "../components/IndexPageComponents/Layout";
-import NavBar from "../components/IndexPageComponents/NavBar";
-import { useViewport } from "../components/InteractiveComponents/ViewPortHook";
-import { Wrapper } from "../components/IndexPageComponents/Wrapper";
-import { useDestinationsQuery, useHostCarMutation } from "../generated/graphql";
-import { withApolloClient } from "../utils/apollo-client";
-import { useToast } from "@chakra-ui/toast";
+import { Wrapper } from "../../components/IndexPageComponents/Wrapper";
+import Upload from "../../components/RentalComponents/fileuploadzone";
 
-const HostCar = () => {
+const EditPost = () => {
+  const router = useRouter();
   const toast = useToast();
   let [value, setValue] = React.useState("");
-  let [enableGuestHosting, setEnableGuestHosting] = React.useState(false);
-  let [guestFormData, setGuestFormData] = React.useState({
-    carmake: "",
-    carmodel: "",
-    caryear: "",
-    description: "",
-    transmission: "automatic",
-    category: "daily",
-    miles: "",
-    mileage: "",
-    doors: "",
-    seats: "",
-    mediaSystem: ["android auto", "apple carplay", ""],
-    condition: "average",
-    conditionDescription: "",
-    petSituation: ["pet friendly"],
-    fuelType: "electric",
-    carvin: "",
-    destination: "",
-    isSubmitButton: false,
-    carCostPerDay: "",
-  });
   let [imageURL, setImageURL] = React.useState([]);
-  const { width } = useViewport();
-  const breakpoint = 700;
 
-  const { data } = useDestinationsQuery();
+  const { data: destinationData } = useDestinationsQuery();
 
-  const [hostCar, { loading, error }] = useHostCarMutation({
+  const { id } = router.query;
+
+  const { data, loading, error } = usePostQuery({
     notifyOnNetworkStatusChange: true,
+    variables: {
+      postId: typeof id === "string" ? parseInt(id) : undefined,
+    },
   });
+
+  const [updatePost, {}] = useUpdatePostMutation({ notifyOnNetworkStatusChange: true });
 
   let handleInputChange = (e) => {
     let inputValue = e.target.value;
     setValue(inputValue);
   };
 
-  let toggleGuestHosting = () => {
-    setEnableGuestHosting(true);
-    setGuestFormData({
-      carmake: "Demo",
-      carmodel: "project spider",
-      caryear: "2021",
-      description: "Cool car !",
-      transmission: "automatic",
-      category: "daily",
-      miles: "200",
-      mileage: "18",
-      doors: "4",
-      seats: "5",
-      mediaSystem: ["android auto", "apple carplay", ""],
-      condition: "average",
-      conditionDescription: "In good condition",
-      petSituation: ["pet friendly"],
-      fuelType: "electric",
-      carvin: "1HFGDYTH45JHGY56",
-      destination: "1",
-      isSubmitButton: false,
-      carCostPerDay: "2500",
-    });
-  };
-
   return (
     <>
-      <Box backgroundImage="url('https://res.cloudinary.com/dhmtg163x/image/upload/v1631903194/confetti-doodles_ysjon8.svg')">
-        <NavBar />
-        <Layout variantType="regular">
+      <NavBar />
+      <Layout variantType="regular">
+        {data && !loading ? (
           <Wrapper variant="regular">
             <Formik
               initialValues={{
-                carmake: guestFormData.carmake,
-                carmodel: guestFormData.carmodel,
-                caryear: guestFormData.caryear,
-                description: guestFormData.description,
-                transmission: guestFormData.transmission,
-                category: guestFormData.category,
-                miles: guestFormData.miles,
-                mileage: guestFormData.mileage,
-                doors: guestFormData.doors,
-                seats: guestFormData.seats,
-                mediaSystem: guestFormData.mediaSystem,
-                condition: guestFormData.condition,
-                conditionDescription: guestFormData.conditionDescription,
-                petSituation: guestFormData.petSituation,
-                fuelType: guestFormData.fuelType,
-                carvin: guestFormData.carvin,
-                destination: guestFormData.destination,
-                isSubmitButton: guestFormData.isSubmitButton,
-                carCostPerDay: guestFormData.carCostPerDay,
+                carmake: data.post.carMake,
+                carmodel: data.post.carModel,
+                caryear: data.post.carYear,
+                description: data.post.carDetails.description,
+                transmission: data.post.carDetails.transmission,
+                category: data.post.category,
+                miles: "",
+                mileage: 200,
+                doors: 4,
+                seats: 4,
+                mediaSystem: data.post.carDetails.mediaSystem,
+                condition: data.post.carDetails.condition,
+                conditionDescription: "",
+                petSituation: data.post.carDetails.petSituation,
+                fuelType: data.post.carDetails.fuelType,
+                carvin: data.post.carVin,
+                destination: data.post.destination,
+                carCostPerDay: data.post.carCostPerDay,
               }}
               onSubmit={async (values, { setErrors }) => {
                 let o = Object.fromEntries(
@@ -127,7 +82,7 @@ const HostCar = () => {
 
                 console.log("Empty : ", o);
 
-                if (o && !enableGuestHosting) {
+                if (Object.keys(o).length > 0) {
                   toast({
                     id: "host-failed",
                     title: "Unable to host",
@@ -155,19 +110,14 @@ const HostCar = () => {
                   return null;
                 }
 
-                if (enableGuestHosting) {
-                  console.log("Guest values Populated");
-                  values = guestFormData;
-                }
-
                 // Use hook function here.
-                const response = await hostCar({
+                const response = await updatePost({
                   variables: {
                     options: {
-                      Doors: parseInt(values.doors),
-                      Mileage: parseInt(values.mileage),
+                      Doors: values.doors,
+                      Mileage: values.mileage,
                       Miles: parseInt(values.miles),
-                      Seats: parseInt(values.seats),
+                      Seats: values.seats,
                       Transmission: values.transmission,
                       carCondition: values.condition,
                       carMake: values.carmake,
@@ -181,13 +131,14 @@ const HostCar = () => {
                       imageUrl: imageURL,
                       mediaSystem: values.mediaSystem,
                       petSituation: values.petSituation,
-                      destination: values.destination,
-                      carCostPerDay: parseInt(values.carCostPerDay),
+                      destination: values.destination.destinationName,
+                      carCostPerDay: values.carCostPerDay,
                     },
+                    postId: typeof id === "string" ? parseInt(id) : undefined,
                   },
                 });
 
-                if (response.data.createPost) {
+                if (response.data.updatePost) {
                   router.push("/");
                 }
               }}
@@ -230,7 +181,11 @@ const HostCar = () => {
                             render={({ field }) => (
                               <FormControl id="caryear">
                                 <FormLabel>Year</FormLabel>
-                                <NumberInput max={new Date().getFullYear()} min={1800}>
+                                <NumberInput
+                                  max={new Date().getFullYear()}
+                                  min={1800}
+                                  defaultValue={data.post.carYear}
+                                >
                                   <NumberInputField minW="60%" {...field} />
                                   <NumberInputStepper>
                                     <NumberIncrementStepper />
@@ -264,7 +219,11 @@ const HostCar = () => {
                           render={({ field }) => (
                             <FormControl id="carCostPerDay">
                               <FormLabel>Rental Cost / Day</FormLabel>
-                              <NumberInput max={4000} min={800}>
+                              <NumberInput
+                                max={4000}
+                                min={800}
+                                defaultValue={data.post.carCostPerDay}
+                              >
                                 <NumberInputField minW="100%" placeholder="0" {...field} />
                                 <NumberInputStepper>
                                   <NumberIncrementStepper />
@@ -425,7 +384,11 @@ const HostCar = () => {
                             render={({ field }) => (
                               <FormControl id="carmileage">
                                 <FormLabel>Approx. Mileage</FormLabel>
-                                <NumberInput max={30} min={6}>
+                                <NumberInput
+                                  max={30}
+                                  min={6}
+                                  defaultValue={data.post.carDetails.mileage}
+                                >
                                   <NumberInputField minW="100%" {...field} />
                                   <NumberInputStepper>
                                     <NumberIncrementStepper />
@@ -446,7 +409,11 @@ const HostCar = () => {
                             render={({ field }) => (
                               <FormControl id="cardoors">
                                 <FormLabel>Doors</FormLabel>
-                                <NumberInput max={4} min={2}>
+                                <NumberInput
+                                  max={4}
+                                  min={2}
+                                  defaultValue={data.post.carDetails.doors}
+                                >
                                   <NumberInputField {...field} />
                                   <NumberInputStepper>
                                     <NumberIncrementStepper />
@@ -466,7 +433,12 @@ const HostCar = () => {
                             render={({ field }) => (
                               <FormControl id="carseats">
                                 <FormLabel>Seats</FormLabel>
-                                <NumberInput max={4} min={2} name="seats">
+                                <NumberInput
+                                  max={4}
+                                  min={2}
+                                  name="seats"
+                                  defaultValue={data.post.carDetails.seats}
+                                >
                                   <NumberInputField {...field} />
                                   <NumberInputStepper>
                                     <NumberIncrementStepper />
@@ -676,8 +648,8 @@ const HostCar = () => {
                         <FormControl as="fieldset">
                           <FormLabel as="legend">Destination</FormLabel>
                           <Field as="select" name="destination">
-                            {data
-                              ? data.browseByDestination.map((destination) => (
+                            {destinationData
+                              ? destinationData.browseByDestination.map((destination) => (
                                   <option value={destination.id}>
                                     {destination.destinationName}
                                   </option>
@@ -700,19 +672,7 @@ const HostCar = () => {
                         type="submit"
                         //isDisabled={imageURL.length < 3}
                       >
-                        Host
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          toggleGuestHosting();
-                        }}
-                        mt="4"
-                        colorScheme="red"
-                        isLoading={isSubmitting}
-                        type="submit"
-                        //isDisabled={imageURL.length < 3}
-                      >
-                        Guest Hosting
+                        Publish Changes
                       </Button>
                     </Box>
                   </Box>
@@ -720,10 +680,21 @@ const HostCar = () => {
               )}
             </Formik>
           </Wrapper>
-        </Layout>
-      </Box>
+        ) : (
+          <Box textAlign="center">
+            <Spinner
+              m="auto"
+              thickness="6px"
+              speed="0.65s"
+              emptyColor="gray.200"
+              color="blue.500"
+              size="xl"
+            />
+          </Box>
+        )}
+      </Layout>
     </>
   );
 };
 
-export default withApolloClient({})(HostCar);
+export default withApolloClient()(EditPost);

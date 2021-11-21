@@ -11,6 +11,7 @@ import SearchFilterMenu from "../components/InteractiveComponents/SearchFilterMe
 import TravelogueSection from "../components/IndexPageComponents/TravelogueSection";
 import { withApolloClient } from "../utils/apollo-client";
 import { useRouter } from "next/router";
+import NextLink from "next/link";
 
 const Index = () => {
   const toast = useToast();
@@ -108,15 +109,27 @@ const Index = () => {
           <Text>
             Stoke your wanderlust with some dreamy photo chronicles of road trip adventures.
           </Text>
-          <Button mt={20} colorScheme="red">
-            Explore Travelogues
-          </Button>
+          <NextLink href="/exploretravelogue">
+            <Button mt={20} colorScheme="red">
+              Explore Travelogues
+            </Button>
+          </NextLink>
           <Box>
             <TravelogueSection />
           </Box>
         </Flex>
         <AllStarHostsSection />
         <ConcludeSection />
+        <Flex alignItems="center" textAlign="center" direction="column" mt={20} mb={20}>
+          <Box>
+            Made with 💖 by{" "}
+            <a href="https://github.com/BHARATHCK">
+              <Text textDecoration="underline" display="inline-block">
+                Bharath
+              </Text>
+            </a>
+          </Box>
+        </Flex>
       </Layout>
     </>
   );
