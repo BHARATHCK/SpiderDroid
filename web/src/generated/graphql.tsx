@@ -188,6 +188,7 @@ export type MutationRegisterArgs = {
 
 
 export type MutationUpdatePostArgs = {
+  carDetailsId: Scalars['Float'];
   options: CreatePostType;
   postID: Scalars['Float'];
 };
@@ -432,6 +433,7 @@ export type RegisterMutation = { __typename?: 'Mutation', register?: Maybe<{ __t
 export type UpdatePostMutationVariables = Exact<{
   options: CreatePostType;
   postId: Scalars['Float'];
+  carDetailsId: Scalars['Float'];
 }>;
 
 
@@ -510,7 +512,7 @@ export type PostQueryVariables = Exact<{
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', post?: Maybe<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carVin?: Maybe<string>, category?: Maybe<string>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, carCostPerDay?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', destinationName: string }>, creator?: Maybe<{ __typename?: 'User', username: string, createdAt: any }>, carDetails?: Maybe<{ __typename?: 'CarDetails', condition?: Maybe<string>, description?: Maybe<string>, doors?: Maybe<number>, fuelType?: Maybe<string>, mediaSystem?: Maybe<Array<string>>, mileage?: Maybe<number>, petSituation?: Maybe<Array<string>>, seats?: Maybe<number>, transmission?: Maybe<string>, commentId?: Maybe<number> }>, bookings?: Maybe<Array<{ __typename?: 'Bookings', fromDate?: Maybe<any>, toDate?: Maybe<any> }>> }> };
+export type PostQuery = { __typename?: 'Query', post?: Maybe<{ __typename?: 'Post', id?: Maybe<number>, carMake?: Maybe<string>, carModel?: Maybe<string>, imageUrl?: Maybe<Array<string>>, carVin?: Maybe<string>, category?: Maybe<string>, carYear?: Maybe<string>, trips?: Maybe<number>, points?: Maybe<number>, carCostPerDay?: Maybe<number>, destination?: Maybe<{ __typename?: 'Destination', destinationName: string, id: number }>, creator?: Maybe<{ __typename?: 'User', username: string, createdAt: any }>, carDetails?: Maybe<{ __typename?: 'CarDetails', id: number, condition?: Maybe<string>, description?: Maybe<string>, doors?: Maybe<number>, fuelType?: Maybe<string>, mediaSystem?: Maybe<Array<string>>, mileage?: Maybe<number>, petSituation?: Maybe<Array<string>>, seats?: Maybe<number>, transmission?: Maybe<string>, commentId?: Maybe<number> }>, bookings?: Maybe<Array<{ __typename?: 'Bookings', fromDate?: Maybe<any>, toDate?: Maybe<any> }>> }> };
 
 export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -965,8 +967,8 @@ export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
 export const UpdatePostDocument = gql`
-    mutation UpdatePost($options: CreatePostType!, $postId: Float!) {
-  updatePost(options: $options, postID: $postId)
+    mutation UpdatePost($options: CreatePostType!, $postId: Float!, $carDetailsId: Float!) {
+  updatePost(options: $options, postID: $postId, carDetailsId: $carDetailsId)
 }
     `;
 export type UpdatePostMutationFn = Apollo.MutationFunction<UpdatePostMutation, UpdatePostMutationVariables>;
@@ -986,6 +988,7 @@ export type UpdatePostMutationFn = Apollo.MutationFunction<UpdatePostMutation, U
  *   variables: {
  *      options: // value for 'options'
  *      postId: // value for 'postId'
+ *      carDetailsId: // value for 'carDetailsId'
  *   },
  * });
  */
@@ -1445,6 +1448,7 @@ export const PostDocument = gql`
     points
     destination {
       destinationName
+      id
     }
     creator {
       username
@@ -1452,6 +1456,7 @@ export const PostDocument = gql`
     }
     carCostPerDay
     carDetails {
+      id
       condition
       description
       doors

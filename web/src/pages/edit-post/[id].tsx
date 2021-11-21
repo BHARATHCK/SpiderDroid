@@ -64,15 +64,15 @@ const EditPost = () => {
                 category: data.post.category,
                 miles: "",
                 mileage: 200,
-                doors: 4,
-                seats: 4,
+                doors: data.post.carDetails.doors,
+                seats: data.post.carDetails.seats,
                 mediaSystem: data.post.carDetails.mediaSystem,
                 condition: data.post.carDetails.condition,
                 conditionDescription: "",
                 petSituation: data.post.carDetails.petSituation,
                 fuelType: data.post.carDetails.fuelType,
                 carvin: data.post.carVin,
-                destination: data.post.destination,
+                destination: data.post?.destination?.destinationName,
                 carCostPerDay: data.post.carCostPerDay,
               }}
               onSubmit={async (values, { setErrors }) => {
@@ -114,10 +114,10 @@ const EditPost = () => {
                 const response = await updatePost({
                   variables: {
                     options: {
-                      Doors: values.doors,
-                      Mileage: values.mileage,
+                      Doors: Number(values.doors),
+                      Mileage: Number(values.mileage),
                       Miles: parseInt(values.miles),
-                      Seats: values.seats,
+                      Seats: Number(values.seats),
                       Transmission: values.transmission,
                       carCondition: values.condition,
                       carMake: values.carmake,
@@ -131,10 +131,11 @@ const EditPost = () => {
                       imageUrl: imageURL,
                       mediaSystem: values.mediaSystem,
                       petSituation: values.petSituation,
-                      destination: values.destination.destinationName,
-                      carCostPerDay: values.carCostPerDay,
+                      destination: values.destination,
+                      carCostPerDay: Number(values.carCostPerDay),
                     },
                     postId: typeof id === "string" ? parseInt(id) : undefined,
+                    carDetailsId: data.post.carDetails.id,
                   },
                 });
 

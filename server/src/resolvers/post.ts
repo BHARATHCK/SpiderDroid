@@ -403,46 +403,67 @@ export class PostResolver {
   @Mutation(() => Boolean)
   async updatePost(
     @Arg("postID") postID: number,
+    @Arg("carDetailsId") carDetailsId: number,
     @Arg("options") options: CreatePostType,
   ): Promise<boolean> {
+    console.log("DATA RECEIVED ****************** ");
+    console.log(postID);
+    console.log("Options: ", options);
     let updatedResult = false;
 
     const post = await Post.findOne(postID);
-
-    if (post) {
+    console.log("POST FOUND : ", post);
+    console.log("IF CHECK ^^^^^^^^^^ ", post?.id);
+    if (post?.id) {
+      console.log("tyring Updation !!!!!!!!!!!!");
       try {
-        // CarDetails update
-        post.carDetails.additionalFAQ = [""];
-        post.carDetails.availableTo = new Date();
-        post.carDetails.availableFrom = new Date();
-        post.carDetails.condition = options.carCondition;
-        post.carDetails.description = options.description;
-        post.carDetails.doors = options.Doors;
-        post.carDetails.mediaSystem = options.mediaSystem;
-        post.carDetails.mileage = options.Mileage;
-        post.carDetails.fuelType = options.fuelType;
-        post.carDetails.petSituation = options.petSituation;
-        post.carDetails.seats = options.Seats;
-        post.carDetails.transmission = options.Transmission;
+        const destinationData = await Destination.findOne({
+          where: { destinationName: options.destination },
+        });
+        console.log("UPDATION POST ****** ", postID);
+        const post = await Post.findOne(postID);
+        console.log(post);
 
-        // Post Update
-        post.carCostPerDay = options.carCostPerDay;
-        post.carMake = options.carMake;
-        post.carModel = options.carModel;
-        post.carVin = options.carVin;
-        post.carYear = options.carYear;
-        post.category = options.category;
-        const destinationData = await Destination.findOne(parseInt(options.destination));
-        if (destinationData) {
-          post.destination = destinationData;
-        }
-        post.imageUrl = options.imageUrl;
+        await getConnection()
+          .createQueryBuilder()
+          .update(Post)
+          .set({
+            destination: destinationData,
+            carCostPerDay: options.carCostPerDay,
+            carMake: options.carMake,
+            carModel: options.carModel,
+            carVin: options.carVin,
+            carYear: options.carYear,
+            category: options.category,
+            imageUrl: options.imageUrl,
+          })
+          .where("id = :id", { id: postID })
+          .execute();
 
-        // Update post
-        await Post.update(postID, post);
+        // Update carDetails
+        await getConnection()
+          .createQueryBuilder()
+          .update(CarDetails)
+          .set({
+            additionalFAQ: [""],
+            availableTo: new Date(),
+            availableFrom: new Date(),
+            condition: options.carCondition,
+            description: options.description,
+            doors: options.Doors,
+            mediaSystem: options.mediaSystem,
+            mileage: options.Mileage,
+            fuelType: options.fuelType,
+            petSituation: options.petSituation,
+            seats: options.Seats,
+            transmission: options.Transmission,
+          })
+          .where("id = :id", { id: carDetailsId })
+          .execute();
 
         updatedResult = true;
       } catch (error) {
+        console.log(error);
         updatedResult = false;
       }
     }
