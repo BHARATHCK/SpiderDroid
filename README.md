@@ -25,9 +25,7 @@ An Airbnb for cars
 
 # Architecture
 
-![image](https://user-images.githubusercontent.com/18285895/142740407-1a6268f4-0ce9-45a4-9ed5-5dce108645c4.png)
-
-
+![Spider_Arch](https://user-images.githubusercontent.com/18285895/142775720-0976062e-495d-4088-81fc-1f0b0704bbb9.png)
 
 
 # GraphQL Schema
